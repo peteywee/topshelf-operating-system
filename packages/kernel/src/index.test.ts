@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -81,5 +81,15 @@ describe("canonical state inspection", () => {
   it("passes when all required state records exist", async () => {
     const root = await createStateFixture();
     await expect(validateProject(root)).resolves.toEqual({ valid: true, issues: [] });
+  });
+
+  it("fails when a required state record is removed", async () => {
+    const root = await createStateFixture();
+    await rm(path.join(root, ".tos", "evidence-index.yaml"));
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(
+      report.issues.some((issue) => issue.path === ".tos/evidence-index.yaml"),
+    ).toBe(true);
   });
 });
