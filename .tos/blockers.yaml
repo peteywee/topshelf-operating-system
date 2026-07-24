@@ -1,0 +1,14 @@
+schema_version: 1
+blockers:
+  - id: TOS-BLK-001
+    title: Local runtime validation pending
+    status: open
+    severity: medium
+    owner: Patrick Craven
+    opened_on: "2026-07-24"
+    reason: The Batch 1 workspace must be installed and validated in a clean local checkout before merge.
+    unblock_when:
+      - corepack pnpm install succeeds on Node.js 20.
+      - pnpm check succeeds.
+      - pnpm tos -- status succeeds.
+      - pnpm tos -- validate succeeds.
