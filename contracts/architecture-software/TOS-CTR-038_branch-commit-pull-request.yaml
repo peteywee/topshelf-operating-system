@@ -1,0 +1,62 @@
+contract:
+  contract_id: TOS-CTR-038
+  contract_type: Branch Commit and Pull Request
+  title: <Branch Commit and Pull Request title>
+  version: 0.1.0
+  status: draft
+  applicability: conditional
+  not_applicable_reason: <required when not_applicable>
+  owner_function: Infrastructure DevOps
+  approver: <approval authority>
+  applies_to:
+  - <project/component/domain/task/etc.>
+  effective_date: <YYYY-MM-DD>
+  review_due: <YYYY-MM-DD or event>
+  supersedes: []
+  source_of_truth: <canonical file path or system>
+definition:
+  purpose: Defines naming, scope, commit quality, review, merge, and traceability rules.
+  scope: <included scope>
+  out_of_scope:
+  - <explicit exclusions>
+  terms:
+    <term>: <definition>
+  trigger: Any source-controlled change
+obligations:
+  inputs:
+  - <required input>
+  outputs:
+  - <required output>
+  preconditions:
+  - <must be true before execution>
+  invariants:
+  - <must always remain true>
+  postconditions:
+  - <must be true after execution>
+  permissions:
+  - <allowed action>
+  prohibitions:
+  - <forbidden action>
+  failure_behavior:
+  - <required failure behavior>
+assurance:
+  acceptance_criteria:
+  - <observable pass/fail condition>
+  validation:
+  - <command/check/review>
+  negative_controls:
+  - <deliberate violation that must be detected>
+  required_evidence:
+  - <evidence class and artifact>
+change_and_exit:
+  change_control: <decision/change record required>
+  compatibility: <compatibility rule>
+  deprecation: <deprecation procedure>
+  retirement: <retirement and archive procedure>
+contract_body:
+  branch_naming: <define branch naming>
+  commit_format: <define commit format>
+  pr_requirements: <define pr requirements>
+  review_requirements: <define review requirements>
+  merge_strategy: <define merge strategy>
+  traceability: <define traceability>

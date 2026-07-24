@@ -1,0 +1,63 @@
+contract:
+  contract_id: TOS-CTR-066
+  contract_type: Data Retention and Deletion
+  title: <Data Retention and Deletion title>
+  version: 0.1.0
+  status: draft
+  applicability: conditional
+  not_applicable_reason: <required when not_applicable>
+  owner_function: Security Privacy
+  approver: <approval authority>
+  applies_to:
+  - <project/component/domain/task/etc.>
+  effective_date: <YYYY-MM-DD>
+  review_due: <YYYY-MM-DD or event>
+  supersedes: []
+  source_of_truth: <canonical file path or system>
+definition:
+  purpose: Defines retention periods, legal/business basis, deletion triggers, verification, exceptions, and archive.
+  scope: <included scope>
+  out_of_scope:
+  - <explicit exclusions>
+  terms:
+    <term>: <definition>
+  trigger: Any persisted data
+obligations:
+  inputs:
+  - <required input>
+  outputs:
+  - <required output>
+  preconditions:
+  - <must be true before execution>
+  invariants:
+  - <must always remain true>
+  postconditions:
+  - <must be true after execution>
+  permissions:
+  - <allowed action>
+  prohibitions:
+  - <forbidden action>
+  failure_behavior:
+  - <required failure behavior>
+assurance:
+  acceptance_criteria:
+  - <observable pass/fail condition>
+  validation:
+  - <command/check/review>
+  negative_controls:
+  - <deliberate violation that must be detected>
+  required_evidence:
+  - <evidence class and artifact>
+change_and_exit:
+  change_control: <decision/change record required>
+  compatibility: <compatibility rule>
+  deprecation: <deprecation procedure>
+  retirement: <retirement and archive procedure>
+contract_body:
+  data_classes: <define data classes>
+  retention_periods: <define retention periods>
+  basis: <define basis>
+  deletion_triggers: <define deletion triggers>
+  verification: <define verification>
+  exceptions: <define exceptions>
+  archive: <define archive>

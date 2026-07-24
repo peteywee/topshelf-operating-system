@@ -1,0 +1,25 @@
+term,definition
+TopShelf Operating System,The official product name. The only permitted expansion of TOS.
+TOS,The official short name for TopShelf Operating System.
+Kernel,"Stable schemas, state model, policy evaluation, contract system, and validation primitives."
+Runtime,"Executable services and CLI that inspect, schedule, constrain, verify, promote, recover, and upgrade projects."
+Module,"Versioned package of contracts, controls, workflows, and checks activated by project facts."
+Adapter,Provider-specific implementation of an agnostic TOS capability.
+Project instance,A repository or initiative governed by a specific TOS version and project manifest.
+Contract,"A versioned, owned, testable statement of obligations, permissions, prohibitions, failure behavior, and evidence."
+Contract catalog,The complete list of named foundation concerns that every project must evaluate.
+Project fact,Evidence-backed record of current and intended project state.
+Truth engine,"TOS subsystem that inspects evidence, compares declarations, classifies facts, detects conflict, and asks targeted questions."
+Task graph,"Machine-readable dependency graph of work, decisions, blockers, and gates."
+Vertical slice,A bounded end-to-end unit of value or control that can be independently implemented and proven.
+Work order,Compiled execution contract for a human or AI function.
+Task lease,Time-bounded claim on a task and resource scope.
+Evidence,Version-bound proof supporting a specific claim and evidence class.
+Promotion,Controlled transition from one lifecycle state to another.
+Negative control,Deliberate invalid condition proving that a checker or gate can fail correctly.
+Owner,The human with final business authority: Patrick Craven unless formally delegated.
+Function,"An accountable operating responsibility; it may be performed by Patrick, an AI agent, or another authorized person."
+Canonical state,Authoritative human-readable records under `.tos/`.
+Derived state,"Rebuildable indexes, caches, summaries, or views that are not authoritative."
+Fail closed,"Deny or block when authority, scope, state, evidence, or applicability cannot be determined safely."
+Not applicable,An explicit evaluated disposition with recorded reason and authority; never an omitted contract.

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/project-fact.schema.json",
+  "title": "TOS Project Fact",
+  "required": [
+    "fact_id",
+    "question",
+    "observed_state",
+    "target_state",
+    "truth_status",
+    "confidence",
+    "evidence",
+    "invalidated_by"
+  ],
+  "properties": {
+    "fact_id": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string"
+    },
+    "observed_state": {},
+    "target_state": {},
+    "truth_status": {
+      "enum": [
+        "verified_yes",
+        "verified_no",
+        "declared_yes",
+        "declared_no",
+        "inferred_yes",
+        "inferred_no",
+        "unknown",
+        "conflicting",
+        "stale",
+        "not_applicable"
+      ]
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "none"
+      ]
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "invalidated_by": {
+      "type": "array"
+    }
+  }
+}

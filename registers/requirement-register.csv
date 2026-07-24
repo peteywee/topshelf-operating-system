@@ -1,0 +1,19 @@
+requirement_id,requirement,priority
+TOS-REQ-001,TOS shall expose a single `tos` CLI entry point.,P0
+TOS-REQ-002,TOS shall maintain canonical project state under `.tos/`.,P0
+TOS-REQ-003,TOS shall inspect repositories and operational sources before asking intake questions.,P0
+TOS-REQ-004,TOS shall classify facts using the controlled truth-status enumeration.,P0
+TOS-REQ-005,"TOS shall detect conflicts, stale evidence, and material unknowns.",P0
+TOS-REQ-006,TOS shall select and validate modules from project facts.,P0
+TOS-REQ-007,TOS shall require disposition of every foundation contract.,P0
+TOS-REQ-008,TOS shall build a dependency-aware task graph and identify the next valid work.,P0
+TOS-REQ-009,TOS shall compile bounded work orders with permissions and stop conditions.,P0
+TOS-REQ-010,TOS shall enforce independent review and evidence verification.,P0
+TOS-REQ-011,TOS shall bind evidence to exact versions and evidence classes.,P0
+TOS-REQ-012,TOS shall require negative controls for material gates and checkers.,P0
+TOS-REQ-013,TOS shall control lifecycle promotions and explain denial.,P0
+TOS-REQ-014,"TOS shall support rollback, recovery, incident, and restore verification.",P1
+TOS-REQ-015,"TOS shall install, remove, validate, and upgrade modules safely.",P1
+TOS-REQ-016,TOS shall support provider adapters without provider coupling in the kernel.,P1
+TOS-REQ-017,TOS shall propagate approved lessons into versioned controls and downstream upgrades.,P1
+TOS-REQ-018,"TOS itself shall use least privilege, auditability, secret isolation, and tamper-evident records.",P0

@@ -1,0 +1,63 @@
+contract:
+  contract_id: TOS-CTR-089
+  contract_type: Prompt and Instruction
+  title: <Prompt and Instruction title>
+  version: 0.1.0
+  status: draft
+  applicability: conditional
+  not_applicable_reason: <required when not_applicable>
+  owner_function: Knowledge Manager
+  approver: <approval authority>
+  applies_to:
+  - <project/component/domain/task/etc.>
+  effective_date: <YYYY-MM-DD>
+  review_due: <YYYY-MM-DD or event>
+  supersedes: []
+  source_of_truth: <canonical file path or system>
+definition:
+  purpose: Defines purpose, precedence, inputs, outputs, prohibited behavior, verification, and versioning.
+  scope: <included scope>
+  out_of_scope:
+  - <explicit exclusions>
+  terms:
+    <term>: <definition>
+  trigger: Any reusable agent prompt, system instruction, or skill
+obligations:
+  inputs:
+  - <required input>
+  outputs:
+  - <required output>
+  preconditions:
+  - <must be true before execution>
+  invariants:
+  - <must always remain true>
+  postconditions:
+  - <must be true after execution>
+  permissions:
+  - <allowed action>
+  prohibitions:
+  - <forbidden action>
+  failure_behavior:
+  - <required failure behavior>
+assurance:
+  acceptance_criteria:
+  - <observable pass/fail condition>
+  validation:
+  - <command/check/review>
+  negative_controls:
+  - <deliberate violation that must be detected>
+  required_evidence:
+  - <evidence class and artifact>
+change_and_exit:
+  change_control: <decision/change record required>
+  compatibility: <compatibility rule>
+  deprecation: <deprecation procedure>
+  retirement: <retirement and archive procedure>
+contract_body:
+  purpose: <define purpose>
+  precedence: <define precedence>
+  inputs: <define inputs>
+  outputs: <define outputs>
+  prohibited_behavior: <define prohibited behavior>
+  verification: <define verification>
+  versioning: <define versioning>

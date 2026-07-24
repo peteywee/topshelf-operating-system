@@ -1,0 +1,12 @@
+stateDiagram-v2
+  [*] --> idea
+  idea --> discovery
+  discovery --> prototype
+  prototype --> internal_demo
+  internal_demo --> release_candidate
+  release_candidate --> authorized_pilot
+  authorized_pilot --> production
+  production --> general_availability
+  general_availability --> retired
+  authorized_pilot --> internal_demo: revoke / rollback
+  production --> release_candidate: recovery

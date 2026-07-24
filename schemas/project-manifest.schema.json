@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/project-manifest.schema.json",
+  "title": "TOS Project Manifest",
+  "required": [
+    "project",
+    "tos",
+    "lifecycle",
+    "modules",
+    "canonical_sources"
+  ],
+  "properties": {
+    "project": {
+      "type": "object"
+    },
+    "tos": {
+      "type": "object"
+    },
+    "lifecycle": {
+      "type": "object"
+    },
+    "modules": {
+      "type": "array"
+    },
+    "canonical_sources": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+flowchart LR
+  Inspect[Deterministic inspection] --> Compare[Compare declarations and evidence]
+  Ops[Operational verification] --> Compare
+  Human[Owner / external declaration] --> Compare
+  Compare --> Verified[Verified]
+  Compare --> Conflict[Conflicting]
+  Compare --> Unknown[Unknown]
+  Compare --> Stale[Stale]
+  Conflict --> Ask[Targeted interactive question]
+  Unknown --> Ask
+  Stale --> Reverify[Reverify]
+  Ask --> Conservative[Conservative controls and blockers]

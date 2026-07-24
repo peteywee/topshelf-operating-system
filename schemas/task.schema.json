@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/task.schema.json",
+  "title": "TOS Task",
+  "required": [
+    "task_id",
+    "title",
+    "status",
+    "outcome",
+    "dependencies",
+    "binding_contracts",
+    "acceptance",
+    "validation",
+    "evidence"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "backlog",
+        "ready",
+        "leased",
+        "active",
+        "review",
+        "verification",
+        "blocked",
+        "done",
+        "cancelled"
+      ]
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "dependencies": {
+      "type": "array"
+    },
+    "binding_contracts": {
+      "type": "array"
+    },
+    "acceptance": {
+      "type": "array"
+    },
+    "validation": {
+      "type": "array"
+    },
+    "evidence": {
+      "type": "array"
+    }
+  }
+}

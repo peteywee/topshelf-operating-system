@@ -1,0 +1,62 @@
+contract:
+  contract_id: TOS-CTR-097
+  contract_type: Product Outcome
+  title: <Product Outcome title>
+  version: 0.1.0
+  status: draft
+  applicability: conditional
+  not_applicable_reason: <required when not_applicable>
+  owner_function: Product Manager
+  approver: <approval authority>
+  applies_to:
+  - <project/component/domain/task/etc.>
+  effective_date: <YYYY-MM-DD>
+  review_due: <YYYY-MM-DD or event>
+  supersedes: []
+  source_of_truth: <canonical file path or system>
+definition:
+  purpose: Defines target user, problem, outcome, value measure, constraints, and non-goals.
+  scope: <included scope>
+  out_of_scope:
+  - <explicit exclusions>
+  terms:
+    <term>: <definition>
+  trigger: Any product, service, client engagement, or internal initiative
+obligations:
+  inputs:
+  - <required input>
+  outputs:
+  - <required output>
+  preconditions:
+  - <must be true before execution>
+  invariants:
+  - <must always remain true>
+  postconditions:
+  - <must be true after execution>
+  permissions:
+  - <allowed action>
+  prohibitions:
+  - <forbidden action>
+  failure_behavior:
+  - <required failure behavior>
+assurance:
+  acceptance_criteria:
+  - <observable pass/fail condition>
+  validation:
+  - <command/check/review>
+  negative_controls:
+  - <deliberate violation that must be detected>
+  required_evidence:
+  - <evidence class and artifact>
+change_and_exit:
+  change_control: <decision/change record required>
+  compatibility: <compatibility rule>
+  deprecation: <deprecation procedure>
+  retirement: <retirement and archive procedure>
+contract_body:
+  target_user: <define target user>
+  problem: <define problem>
+  outcome: <define outcome>
+  value_measure: <define value measure>
+  constraints: <define constraints>
+  non_goals: <define non goals>

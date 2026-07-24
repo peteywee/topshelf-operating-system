@@ -1,46 +1,34 @@
-# TopShelf Operating System Foundation Contract Package v2.0
+# TopShelf Operating System Foundation Contract Package
 
-**Official name:** TopShelf Operating System  
-**Abbreviation:** TOS  
+**Short name:** TOS  
+**Version:** 2.0.0  
+**Decision date:** 2026-07-23  
 **Owner:** Patrick Craven  
 **Company:** Top Shelf Service LLC
 
-This package supersedes the prior TOS v1.0 decision package and any use of the name "TopShelf Op Sys."
+This package supersedes the earlier package that expanded TOS as "TopShelf Op Sys." The official and exclusive expansion is **TopShelf Operating System**.
 
 ## Governing rule
 
-Every foundation concern must be named, evaluated, owned, contracted, validated, and evidenced.
-An omitted contract is a failure, not an implied determination that the concern does not apply.
+Every foundation concern is named in the contract catalog. Every project must evaluate every catalog entry as `required`, `conditional`, or `not_applicable`. A `not_applicable` decision requires a reason and authority. Absence of a contract is never interpreted as absence of the concern.
 
-## Package contents
+## Package layout
 
-- `final/` — publication DOCX and PDF.
-- `docs/` — modular governing documents.
-- `registers/` — contract, decision, requirement, and terminology registers.
-- `schemas/` — machine-readable JSON Schemas.
-- `contracts/` — one YAML template for each named contract type.
-- `examples/` — project, fact, and work-order examples.
-- `visuals/` — Mermaid architecture and lifecycle sources.
-- `TOS_PACKAGE_MANIFEST.json` — file inventory and SHA-256 checksums.
+- `docs/` - formal decision baseline and operating specification.
+- `contracts/` - agnostic contract templates for all named foundation concerns.
+- `schemas/` - machine-readable schemas for core TOS records.
+- `registers/` - complete contract, terminology, decision, and requirement registers.
+- `examples/` - filled examples of core records.
+- `visuals/` - Mermaid architecture and lifecycle sources.
+- `final/` - publication DOCX and PDF.
 
-## Contract population
+## Core implementation defaults
 
-The package contains 105 individually named agnostic contract templates across these families:
-
-1. Governance and authority.
-2. Planning and delivery.
-3. Architecture and software.
-4. Security, privacy, and identity.
-5. Operations and evidence.
-6. Commercial, product, and client controls.
-
-Every project must evaluate every registered contract and classify it as:
-
-- `required`;
-- `conditional`; or
-- `not_applicable` with an owner-approved reason and evidence.
-
-## Status
-
-This package is the approved foundation baseline. It defines the required system and contract surface.
-It does not claim that the TOS runtime, CLI, adapters, or Teach reference implementation are complete.
+- Repository: `topshelf-operating-system`
+- CLI command: `tos`
+- Runtime: TypeScript on Node.js 20+, managed with pnpm
+- Canonical project state: human-readable YAML under `.tos/`
+- Derived local index/cache: SQLite, rebuildable from canonical records
+- Append-only activity stream: `.tos/activity.jsonl`
+- Contract IDs: `TOS-CTR-###`
+- Versioning: Semantic Versioning

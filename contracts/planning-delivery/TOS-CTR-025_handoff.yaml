@@ -1,0 +1,63 @@
+contract:
+  contract_id: TOS-CTR-025
+  contract_type: Handoff
+  title: <Handoff title>
+  version: 0.1.0
+  status: draft
+  applicability: core
+  not_applicable_reason: <required when not_applicable>
+  owner_function: Workflow Coordinator
+  approver: <approval authority>
+  applies_to:
+  - <project/component/domain/task/etc.>
+  effective_date: <YYYY-MM-DD>
+  review_due: <YYYY-MM-DD or event>
+  supersedes: []
+  source_of_truth: <canonical file path or system>
+definition:
+  purpose: Transfers state, evidence, unresolved items, and next authority without loss.
+  scope: <included scope>
+  out_of_scope:
+  - <explicit exclusions>
+  terms:
+    <term>: <definition>
+  trigger: Any transfer between functions, agents, phases, or owners
+obligations:
+  inputs:
+  - <required input>
+  outputs:
+  - <required output>
+  preconditions:
+  - <must be true before execution>
+  invariants:
+  - <must always remain true>
+  postconditions:
+  - <must be true after execution>
+  permissions:
+  - <allowed action>
+  prohibitions:
+  - <forbidden action>
+  failure_behavior:
+  - <required failure behavior>
+assurance:
+  acceptance_criteria:
+  - <observable pass/fail condition>
+  validation:
+  - <command/check/review>
+  negative_controls:
+  - <deliberate violation that must be detected>
+  required_evidence:
+  - <evidence class and artifact>
+change_and_exit:
+  change_control: <decision/change record required>
+  compatibility: <compatibility rule>
+  deprecation: <deprecation procedure>
+  retirement: <retirement and archive procedure>
+contract_body:
+  from: <define from>
+  to: <define to>
+  completed_work: <define completed work>
+  evidence: <define evidence>
+  open_items: <define open items>
+  risks: <define risks>
+  next_action: <define next action>

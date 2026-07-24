@@ -1,0 +1,709 @@
+{
+  "package_name": "TopShelf Operating System Foundation Contract Package",
+  "version": "2.0.0",
+  "decision_date": "2026-07-23",
+  "owner": "Patrick Craven",
+  "company": "Top Shelf Service LLC",
+  "official_name": "TopShelf Operating System",
+  "short_name": "TOS",
+  "contract_count": 105,
+  "validation": {
+    "yaml_templates": "pass",
+    "json_schemas": "pass",
+    "contract_register": "pass",
+    "docx_visual_qa": "pass",
+    "pdf_visual_qa": "pass"
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "fbd69e65a8d021325b17e331b17211a57ef4f564b21e0a0f90a514294a7199ff",
+      "bytes": 1524
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-085_agent-role.yaml",
+      "sha256": "e2845bb860f61cc16528bdaed31c8c78700ca0b0771e79b5f8fd91d5b3d57ed6",
+      "bytes": 1797
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-086_agent-authority.yaml",
+      "sha256": "db4f975ebdf1444e471e0c010c87ba7ca5898a6789acfd9bc73b0c11262cb110",
+      "bytes": 1773
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-087_agent-tool-permission.yaml",
+      "sha256": "ff43a544be78d1c60b23be19366e879df39fec58b5502a61524cda23f371cb53",
+      "bytes": 1809
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-088_agent-work-context.yaml",
+      "sha256": "c234ae77e033b307e93d2eae3cfd0b34404899440cb918b5d91035ad03b17022",
+      "bytes": 1815
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-089_prompt-instruction.yaml",
+      "sha256": "98e110b38712d5980e18de0849952b7884bd60c4edfb25f5ad8166aa3b6ed55a",
+      "bytes": 1824
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-090_agent-memory.yaml",
+      "sha256": "ebd335b2e83c5317a6ea21f9ba60cd7488879388d9dd39955c85b313db511fa1",
+      "bytes": 1786
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-091_agent-evaluation.yaml",
+      "sha256": "215539118400de481aacd73f95a5e077685e64415e634f2243570d42257f0540",
+      "bytes": 1790
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-092_agent-handoff.yaml",
+      "sha256": "6846132e121dcc82bd3ce86fb8ae41e85143c2416db9c85afaa118f78fb9df28",
+      "bytes": 1761
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-093_agent-review-separation.yaml",
+      "sha256": "56cbddbf1000308722ac3f3e2c916395220a802bb260e0597badad00380efa71",
+      "bytes": 1766
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-094_agent-failure-retry.yaml",
+      "sha256": "c3ebf62443b92de08236f43fc399644c35bcedaf3dc6b75bbd7da4009a72ae4d",
+      "bytes": 1803
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-095_agent-audit.yaml",
+      "sha256": "ea7fa810725d0a9ee457ef88b893ac4e97894841d48b7e92673561c16f3936ba",
+      "bytes": 1747
+    },
+    {
+      "path": "contracts/ai-agent/TOS-CTR-096_human-override.yaml",
+      "sha256": "4f8cf9603d82fcd65c4c022c38aae19a5f45946d5b86f3887139e022ad94f39f",
+      "bytes": 1749
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-033_system-architecture.yaml",
+      "sha256": "bd20effc72f41252a7d3979f1c7dd64a6a4895d1ae111eb8812db65909ca7a71",
+      "bytes": 1784
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-034_domain.yaml",
+      "sha256": "b8c5251e71c97a764dfd9f4699bd509e6cd3e157b3dd7e50507fe3134c276d43",
+      "bytes": 1765
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-035_component.yaml",
+      "sha256": "3e22d0a0e913869ee7975583774e96f02c4b8150bd99662e2acf7e610e470288",
+      "bytes": 1895
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-036_package-boundary.yaml",
+      "sha256": "21ed5be47685b65bfba89101197d797d42b695813f41e38bc32623ed1cf1209c",
+      "bytes": 1791
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-037_repository.yaml",
+      "sha256": "5049ab6b46383fc66a03416ee8cadfd00826eb3eb7044464b5d0dd76e33ff3b4",
+      "bytes": 1802
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-038_branch-commit-pull-request.yaml",
+      "sha256": "01ba63c2f72a1393fde9c8aa64bf9913503c657d71bca526970b33e6b70d142d",
+      "bytes": 1814
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-039_software-dependency.yaml",
+      "sha256": "ae9704fdcfad8e656d86283bf0903cb21cac6469f48430942b26a7e30d9c7bd8",
+      "bytes": 1828
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-040_data-schema.yaml",
+      "sha256": "ad44ff564a04881abd76094c71d709a9ed60b69ab5ecfeb47df39fb36ad4d00b",
+      "bytes": 1815
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-041_state-machine.yaml",
+      "sha256": "840127349778d4a8f4f565f1b17697a9659d3893d5281863f68921544fbdde61",
+      "bytes": 1779
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-042_transaction.yaml",
+      "sha256": "4ee6035207362c74a9dac0a23c37b2cbabeef10b7090ef928cef55e7966238cf",
+      "bytes": 1798
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-043_api.yaml",
+      "sha256": "8b2cefb3634026beef18619eb0fca38b658c8fc3a80dfc0e74c37c78ac0a7788",
+      "bytes": 1855
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-044_event-message.yaml",
+      "sha256": "06a2d7ce414f1854b3580072161928534775b993103590b0ecd1c82830476a85",
+      "bytes": 1842
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-045_service.yaml",
+      "sha256": "ae5b807eb64757627c31302e8f1f35e44e3190060be4bce48a7d5dfba5aa97ec",
+      "bytes": 1767
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-046_integration.yaml",
+      "sha256": "058251f1c777b672b962b1ac47e84e4840246291e4d7f0ba382c9b43f4cebd9d",
+      "bytes": 1836
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-047_provider-adapter.yaml",
+      "sha256": "93a509085ea91fad704e656d9e6b4e224d98ef93ac6904389eaa324c41fa1d01",
+      "bytes": 1843
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-048_environment.yaml",
+      "sha256": "b28b87ccc78ba98f6084be23709ceaa1b6802a5727bd3bf1a048991320f3495a",
+      "bytes": 1819
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-049_deployment.yaml",
+      "sha256": "b969b3d10486b7a33c605588aa97f0592f07843c3aeb358f2694ad02e293815f",
+      "bytes": 1758
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-050_migration.yaml",
+      "sha256": "e0bc2f3e34e09a34bfb55ce96a9bb8ff2ee27f1a5407e34af04d541dfbfd4d4b",
+      "bytes": 1787
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-051_deprecation.yaml",
+      "sha256": "7c22120bc7a2dbbf24a26c570e261dc84bc71b8ca3fcccf34c6fcfd80a710920",
+      "bytes": 1811
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-052_ui-route-surface.yaml",
+      "sha256": "949ac8c0f1d42bc5895f4e0616de103a8532da9343500f5688f84111107bad3a",
+      "bytes": 1856
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-053_design-system-brand.yaml",
+      "sha256": "f28d660d9e0990e641621ba3e989917095bfd9588d95f936bdc076a32898a503",
+      "bytes": 1822
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-054_content-pack-engine-fuel.yaml",
+      "sha256": "247802524042b208708c2ba069b55dd580414bd2a35cee8732cdf71ddcba2591",
+      "bytes": 1855
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-055_configuration.yaml",
+      "sha256": "dcf31addbca6ecd24ecea266cf2ce9eeedb7d53d6b36cd375793f718cf1b6eec",
+      "bytes": 1809
+    },
+    {
+      "path": "contracts/architecture-software/TOS-CTR-056_feature-flag.yaml",
+      "sha256": "89e1fd697c877c59364f4c3dec7e525e6876d88f70d20c240d99d9a17488c2b9",
+      "bytes": 1797
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-097_product-outcome.yaml",
+      "sha256": "ed066bd6c13eb07e4dc2a6ccc4ced8c8c8184682c3e64020823f22c1c8d26fa8",
+      "bytes": 1761
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-098_user-actor.yaml",
+      "sha256": "a8bec195f01a2aa2daaaf86672e6b78a12efda5c3aa7bc3c4663052f651af488",
+      "bytes": 1780
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-099_customer-organization-lifecycle.yaml",
+      "sha256": "ea76ae350a4feb886c58ce1fcc45f23530db91323e824f602343fa6ea0208e0b",
+      "bytes": 1896
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-100_entitlement-billing.yaml",
+      "sha256": "c708955d1a6b1c5afa70ab030b3c2f6ceeb829f67bbb61837faddc0fa3068ee6",
+      "bytes": 1812
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-101_offer-service-tier.yaml",
+      "sha256": "33ca6409bad069639c3cf64b80b619ee6828bc132e28eb301521f771ef866991",
+      "bytes": 1831
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-102_client-contract-sow.yaml",
+      "sha256": "db538c83afa27f84df334180011fc944bf4c666e6ee23a2b82b5c5ec3195d7b3",
+      "bytes": 1935
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-103_pilot.yaml",
+      "sha256": "339a734f36834a37d7ae496ed339b2253a6e31bebda04a74e1257726dbb66f81",
+      "bytes": 1871
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-104_consent-participation.yaml",
+      "sha256": "83301580e9a0ac226a8f0b00388817b66b2534e768f3495f7fa533898edb6395",
+      "bytes": 1835
+    },
+    {
+      "path": "contracts/commercial-product-client/TOS-CTR-105_pricing-budget.yaml",
+      "sha256": "41aeda545a35139b66de8510d2c604b35872e104a3ba9bc35225df0aa704533b",
+      "bytes": 1845
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-001_system-charter.yaml",
+      "sha256": "81f99bf5a9780a0e1f002a4a9fd02471be923a90a146dbdca644be1273460620",
+      "bytes": 1711
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-002_constitutional-principles.yaml",
+      "sha256": "a0fb9d080420f0ea70103e47df3a0ee826dbd92c01614cb92df96fd6f0000481",
+      "bytes": 1671
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-003_naming-terminology.yaml",
+      "sha256": "ebac4e23e8b7d4ad62899ab2726408e9523e29a3b026ef1e7a1d2513f85c72f8",
+      "bytes": 1744
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-004_authority-approval.yaml",
+      "sha256": "e334483eb61155d1d1415c3753cd0a6a297f8f1dbb782241d23da8ab9614d3bf",
+      "bytes": 1729
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-005_source-of-truth.yaml",
+      "sha256": "d4d08dcbacfd0e52c4099cff9014770fc75f14a10307991be466edcc7bf08da1",
+      "bytes": 1706
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-006_project-manifest.yaml",
+      "sha256": "4828139a07660e3747f1cc1b0be295caca759b3a7b5d5e8de10000439daec592",
+      "bytes": 1744
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-007_project-fact.yaml",
+      "sha256": "676c966c21363b7324d05fe66bea1c2a73b0987dcff91bfc3a2800b1e85f15ff",
+      "bytes": 1801
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-008_assumption.yaml",
+      "sha256": "b29e00849e9506738ee9f0e4c1151a9ec3b1004c689c3c1f670f425034f35238",
+      "bytes": 1677
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-009_decision.yaml",
+      "sha256": "80c44e37364f8a59d962b0730f54a96fdcdb2f095f75bc52e8e4e6bf973e951c",
+      "bytes": 1698
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-010_risk.yaml",
+      "sha256": "76fca9a375e02a57eaaa601a0a39dea9bc06848710141f6159e066153fdf6d72",
+      "bytes": 1738
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-011_issue.yaml",
+      "sha256": "064fb575a723469e9c27bfc9c1081187edf87a045da7faf90b3f2c82c8ce018e",
+      "bytes": 1751
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-012_change-control.yaml",
+      "sha256": "e7f7c8c580bb0a6ea32eda37e96a9f77dbd1a42f50da580ebaa428d5c8aeb432",
+      "bytes": 1779
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-013_dependency-governance.yaml",
+      "sha256": "6985ff92b92ea6d4c90131c420bc251b423412cc24be31ece74c1d77413a4893",
+      "bytes": 1763
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-014_requirement.yaml",
+      "sha256": "4be161f319c3d946bad5692dfb94af984dbfbd509a363f55a3199d76d58a2c44",
+      "bytes": 1765
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-015_acceptance-criteria.yaml",
+      "sha256": "d014866a106e83e63db414ffe3b310453e1ff5b48c5adb5edf04bc967784195e",
+      "bytes": 1741
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-016_definition-of-done.yaml",
+      "sha256": "f3a416ac0e50f16953774b69db8055bbad9bcd1f81e1ae5b3b5b65621c1fe8a7",
+      "bytes": 1738
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-017_milestone.yaml",
+      "sha256": "59aa8394a6e64d04481b7f145b1f0129d46842e77864b2b7baa347a80c124f49",
+      "bytes": 1720
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-018_promotion.yaml",
+      "sha256": "2643f512ff49a36bd2b80c6dfc5149aae60594e015f721d1f42fd0dcac67903e",
+      "bytes": 1702
+    },
+    {
+      "path": "contracts/foundation-governance/TOS-CTR-019_retirement.yaml",
+      "sha256": "9065def22f65186ccef40e522b128a1225001a4e6da43c3994eed21dc7a7051d",
+      "bytes": 1826
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-069_evidence.yaml",
+      "sha256": "4772787528240c0592d91b38ffb6f3a22deaacc56b6586672b955f29dce345f6",
+      "bytes": 1809
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-070_validation.yaml",
+      "sha256": "a44344efd6e8c38537a5e5abf7f65984211dcaee3029ed024811cc1cce84b2a8",
+      "bytes": 1719
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-071_test-strategy.yaml",
+      "sha256": "ef142b8b3e8716c227636253915b6bc1638d0c520465a29129b5e6e798cc91ff",
+      "bytes": 1760
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-072_negative-control.yaml",
+      "sha256": "a501403c93a8e5594ccbe07d4055d929d12cf4349f933c6de47164617bcafe13",
+      "bytes": 1787
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-073_observability.yaml",
+      "sha256": "09e2a3fd5dd4309b8400fe6446cb923b1b327e58d4a1a1694ab72a027c6bf97e",
+      "bytes": 1790
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-074_sli-slo.yaml",
+      "sha256": "0799c56f60c7cdc603290f28c07f579b6e7ae6d95e20d5accd3a7f83d496e44b",
+      "bytes": 1785
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-075_alert.yaml",
+      "sha256": "938a8d746acc27cad03d6dae23ce896eade3dd85c81a3d1c921a1b9569822795",
+      "bytes": 1767
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-076_incident.yaml",
+      "sha256": "7cebdc8c9f10c37791d897df80afcca6a3b6dc58747f5fff0dc7b9a61abe3fdc",
+      "bytes": 1838
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-077_postmortem.yaml",
+      "sha256": "8690df3b510e988f11610a8f4a59ae2be1bd24606724401be1096a20f1acce89",
+      "bytes": 1782
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-078_backup.yaml",
+      "sha256": "90092558c1fb9bb345fe1d2bab2b20d8ea6f42bc3e9c21039a0dd2bf406262e1",
+      "bytes": 1772
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-079_restore.yaml",
+      "sha256": "27c3127e8cbfc2b271cede71c4cd63d32aaa2d91c7958fa996bdc164aedc31dc",
+      "bytes": 1760
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-080_runbook-support.yaml",
+      "sha256": "1837cf2c10856c894b4bd81e8a22269e58b7f9e682b9316f2d09ead8e0b53b21",
+      "bytes": 1790
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-081_cost-vendor.yaml",
+      "sha256": "fd895acfd977d8433bd7e473fec6d8d936f68829fcf15cd39f8eed7b3756f990",
+      "bytes": 1771
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-082_business-continuity.yaml",
+      "sha256": "43f7a464a3f061326a92b84d0b9fe2f350fcf6c019cdc1a7174c2293c17b8ca8",
+      "bytes": 1791
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-083_external-authorization.yaml",
+      "sha256": "d2aaa6abda9fe7fb7a69d92edc7d898cc9a2a953467702b279736234815c5b38",
+      "bytes": 1807
+    },
+    {
+      "path": "contracts/operations-evidence/TOS-CTR-084_public-claim.yaml",
+      "sha256": "21f04081b5cc6f12a9b44996c21ffbe5458583e535c3c8db1e6ae0941e11cd59",
+      "bytes": 1805
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-020_roadmap.yaml",
+      "sha256": "d2f3404a738072b772d4e491071bd5502f4ba798bdb336b6b79ab9b8afe1127f",
+      "bytes": 1669
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-021_work-breakdown-structure.yaml",
+      "sha256": "c3a169558a8a7b40aaeb7d6aa3306262a5c9d5d95c656c6c022d9af53a47b9dc",
+      "bytes": 1716
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-022_task-slice.yaml",
+      "sha256": "20b8f73c6ef6c5f6d0482fc0288dc454f4d906e94931eb12ce6cf526702696e5",
+      "bytes": 1776
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-023_agent-work-order.yaml",
+      "sha256": "80b5e9d08aa1e7980d22262653be12a976a14323873566f1f20c2a10dbd6c53e",
+      "bytes": 1847
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-024_task-lease.yaml",
+      "sha256": "a9b90d674c7c5b83b5f61f23cec766436ca5a68f75956426a95c964568c08d39",
+      "bytes": 1785
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-025_handoff.yaml",
+      "sha256": "8dd5c98bc4d8310082e5393005cb2d848c365e34847dbec01bf6418ed2b95cf5",
+      "bytes": 1739
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-026_review.yaml",
+      "sha256": "22c719ab994570d5a10c75d1060b7919fea2f200dd0bc9f26f6112f239be9d76",
+      "bytes": 1748
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-027_blocker.yaml",
+      "sha256": "f8d7d6fb42cfbead12a41b6b771ea6d5354582f866f3a70b7ccc2103aee3be81",
+      "bytes": 1714
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-028_schedule.yaml",
+      "sha256": "a22d1fa4af8cc2003e342196d027b0e8044c46e2b6cae7ea8d8590e5f490d691",
+      "bytes": 1739
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-029_release.yaml",
+      "sha256": "5b53fb1e34a5a8e5858780d709077300416c248ba935a192b4eca60c343d8127",
+      "bytes": 1759
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-030_rollback.yaml",
+      "sha256": "4efb897d6f6d85cccdad798b81fff436a704a98d45fbc2174e6a887cb03eb733",
+      "bytes": 1767
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-031_closeout.yaml",
+      "sha256": "598b444f7f61040955f36f979092cf61c8d0d53774406fc153fe378aff5a4bfc",
+      "bytes": 1753
+    },
+    {
+      "path": "contracts/planning-delivery/TOS-CTR-032_lesson-improvement.yaml",
+      "sha256": "7fe69adcc2d9533d219a41d8257f9d61b978c431a9a114c59ffecb0817b25ce4",
+      "bytes": 1799
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-057_security-policy.yaml",
+      "sha256": "bf7d15154ac27499f2cc2dc121a08924a74dccd41ee092208810911335c6efbb",
+      "bytes": 1756
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-058_threat-model.yaml",
+      "sha256": "d9b3dbae052e19ab24b59a121a4c1b9e1c876a19b25ef358a4cefbc6fee50b39",
+      "bytes": 1836
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-059_data-classification.yaml",
+      "sha256": "2c44009d7c2d154a8e77d27df79a91bddfacc1cd0195d0a4e0cdbfed769ad413",
+      "bytes": 1740
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-060_privacy.yaml",
+      "sha256": "6261a64690cb5f1a0b3ee24765b78060db0158621ce335ab434cc6dfda012615",
+      "bytes": 1805
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-061_identity-lifecycle.yaml",
+      "sha256": "f79e767abeeaad49c0129e3dedc229e589db48281343aac0e2eb7b9c0755c19a",
+      "bytes": 1819
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-062_credential-secret.yaml",
+      "sha256": "99288ae08938e747f9d0b49410938dc63811181d241962b88847862fe8dd06a7",
+      "bytes": 1827
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-063_authorization-capability.yaml",
+      "sha256": "799bda6edabb7038ff7a2c1350c0f12f6e59b4d9be4194d53c488b652b524293",
+      "bytes": 1805
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-064_tenant-scope.yaml",
+      "sha256": "f108497c64e9ab0d66db45feeadf2d6d95544e51474aea7b684c80799cb6b6ac",
+      "bytes": 1818
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-065_audit-log.yaml",
+      "sha256": "fedc6bf58918fc45e59edb08a25c4d925de06e0f91e2aecbc8f68abb889e161b",
+      "bytes": 1814
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-066_data-retention-deletion.yaml",
+      "sha256": "1cf9980762c59dee0ac7e64139bd08c303452414eea3ea971912f7e7b99c737e",
+      "bytes": 1824
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-067_security-vulnerability.yaml",
+      "sha256": "d0ea3ff68eb873c239864dd21bea6e33868aeea2322679eb2409645af9544a32",
+      "bytes": 1826
+    },
+    {
+      "path": "contracts/security-privacy-identity/TOS-CTR-068_compliance-approval.yaml",
+      "sha256": "de4ed4f9b8e9855dfac9fa911ce8ca83e77346e5c1339c5e552217632bc22a4b",
+      "bytes": 1786
+    },
+    {
+      "path": "docs/00_GOVERNING_DECISION.md",
+      "sha256": "3df68f27f6cc9d5e8575abd114570d066b2356dce9ab0272fedb794480fabd1e",
+      "bytes": 718
+    },
+    {
+      "path": "docs/01_OFFICIAL_IDENTITY_AND_NAMING.md",
+      "sha256": "1171445b0f5812af528450a79f440144f755e674814657adb9c6405f0d59a06a",
+      "bytes": 815
+    },
+    {
+      "path": "docs/02_SYSTEM_ARCHITECTURE.md",
+      "sha256": "517d935d7b4cee9c618bc9dc63d37d84503d30a94deeeb590ba0276aa5b627a7",
+      "bytes": 1111
+    },
+    {
+      "path": "docs/03_CONTRACT_SYSTEM.md",
+      "sha256": "a17f4486a92190f887abb48206b26befccb7b2e88ecd868d4ff1c4cd9cd5a5cd",
+      "bytes": 937
+    },
+    {
+      "path": "docs/04_TRUTH_AND_INTERACTIVE_INTAKE.md",
+      "sha256": "e3da4fc4583ee63f23545416237132559548d1088db4bf36f0714cfd7bfd1242",
+      "bytes": 837
+    },
+    {
+      "path": "docs/05_AGENT_OPERATING_MODEL.md",
+      "sha256": "bcd96a4840efece0c219b2a90b8753ddc57cff1e441f5f5639be1f8de5a049c3",
+      "bytes": 670
+    },
+    {
+      "path": "docs/06_LIFECYCLE_EVIDENCE_AND_RECOVERY.md",
+      "sha256": "8d4f69ff4b1b64415db9b33c65a0479fbfb1bf170d85316d1d7bf219304d9981",
+      "bytes": 703
+    },
+    {
+      "path": "docs/07_MODULE_ADAPTER_AND_UPGRADE_MODEL.md",
+      "sha256": "43227fb5d0134a52e122a03a7e090075278868c414229201c002c77953b78043",
+      "bytes": 722
+    },
+    {
+      "path": "docs/08_TEACH_REFERENCE_AND_MIGRATION.md",
+      "sha256": "28552f52a4596019072f05153db53704d5ef6d9e7a92bdf85b2a9c0611db4848",
+      "bytes": 700
+    },
+    {
+      "path": "docs/09_ROADMAP.md",
+      "sha256": "18805ec3afa1f3547c2785b661b4cf011343d1bec28b5746d8a5a42dc3ec9212",
+      "bytes": 1039
+    },
+    {
+      "path": "docs/10_FOUNDATION_DEFINITION_OF_DONE.md",
+      "sha256": "e7eb0bdd610f9731db1c97fc2c202709299d7ada3d9d47b01b42834a0f8d7b33",
+      "bytes": 1103
+    },
+    {
+      "path": "examples/agent-work-order.example.yaml",
+      "sha256": "ab2b36e7c00a6876424847f871ce44754e82f72c8fe25bd32390fd2f011af99f",
+      "bytes": 450
+    },
+    {
+      "path": "examples/project-fact.example.yaml",
+      "sha256": "0e59137a062ee6cdbf4c836703fe55aec86af277f21c2a2d6c040ea0b73563a6",
+      "bytes": 474
+    },
+    {
+      "path": "examples/project-manifest.example.yaml",
+      "sha256": "6f48f75482a59df8ac8e52d5cfcedd8f1e03d3a46da44be6f9c7f4a88d79ad78",
+      "bytes": 589
+    },
+    {
+      "path": "final/TopShelf_Operating_System_Foundation_Contract_Package_v2.0.docx",
+      "sha256": "0dda1cabf4a5ec131da056647406793b35a53df871f9198c924774d6f7a1e4a0",
+      "bytes": 52913
+    },
+    {
+      "path": "final/TopShelf_Operating_System_Foundation_Contract_Package_v2.0.pdf",
+      "sha256": "30a881fae5f6099b4598a2bec5c22c2a17e535ca309e204f036509ef1b3754db",
+      "bytes": 477406
+    },
+    {
+      "path": "registers/contract-register.csv",
+      "sha256": "8c7ccc3684756e1a265e7bbc320dc3e049987effb071745a77e4a7aa2de4ab46",
+      "bytes": 30495
+    },
+    {
+      "path": "registers/decision-register.csv",
+      "sha256": "0909b03c0827c710f532f708b69cebff2de1c39b80a91ea27b01bd14e027b93e",
+      "bytes": 1826
+    },
+    {
+      "path": "registers/requirement-register.csv",
+      "sha256": "f29d3f9c4bba0b51040ca12328ff603cdc973d317eaf3d946875b6186d31f4f8",
+      "bytes": 1596
+    },
+    {
+      "path": "registers/term-register.csv",
+      "sha256": "a6216fcdf28296743fdc4bdb18e9f695ab5739563b20c7b9af035d6a81cd8b0c",
+      "bytes": 2297
+    },
+    {
+      "path": "schemas/agent-work-order.schema.json",
+      "sha256": "793c65f0cf03b9533b79c9b951af982ad19f2ba2d3e62d999c2c1fc5da0deb95",
+      "bytes": 856
+    },
+    {
+      "path": "schemas/contract-envelope.schema.json",
+      "sha256": "7debeb8fbc9dcd586d05b2e24494f993a65618a09a881b97f5c23a0561999399",
+      "bytes": 973
+    },
+    {
+      "path": "schemas/decision.schema.json",
+      "sha256": "e46fa3480a041efc26bcb8b243daeafb92cc1f824af749319e65c95d12e84924",
+      "bytes": 751
+    },
+    {
+      "path": "schemas/evidence.schema.json",
+      "sha256": "377f341766fc082f0acdb58262cd870c9538ede8debcc7739a8c30147dadb437",
+      "bytes": 813
+    },
+    {
+      "path": "schemas/module.schema.json",
+      "sha256": "1eee3e080a0c577491483a4bf7d13f3d42379ec4eeb53af9c79a94a38b3782da",
+      "bytes": 757
+    },
+    {
+      "path": "schemas/project-fact.schema.json",
+      "sha256": "a9e1437ca42638207350c56c53d996b0c1df6803078e9d6972f3643ecf631545",
+      "bytes": 1044
+    },
+    {
+      "path": "schemas/project-manifest.schema.json",
+      "sha256": "6eda9de03ef3961a2ceba199c376cc4dd3388db8dfdf6171670c8e37437749bc",
+      "bytes": 590
+    },
+    {
+      "path": "schemas/promotion.schema.json",
+      "sha256": "e8c0cf1d6eed47284019218cabfcbb44dc0e0b12e513650bbc9f3954b5596b7d",
+      "bytes": 1124
+    },
+    {
+      "path": "schemas/task.schema.json",
+      "sha256": "1479639a9b8faaea037e3759437b4d247f9de5e9b93286472d4791c7062ea07a",
+      "bytes": 1002
+    },
+    {
+      "path": "visuals/project-lifecycle.mmd",
+      "sha256": "799e6edc2a9abaefb9ed3e2579f7c84da658d43db47b67c0f0ac2f6fa7cf85c1",
+      "bytes": 395
+    },
+    {
+      "path": "visuals/tos-architecture.mmd",
+      "sha256": "ca44f4a95e81354b741869d24a1ea218dc35b4c62f42f1c4fcaa5e9c19cec144",
+      "bytes": 614
+    },
+    {
+      "path": "visuals/truth-resolution.mmd",
+      "sha256": "c515630ad91d7053459047315778a7b856f6eb950aba8eeda1352866c598e322",
+      "bytes": 475
+    }
+  ]
+}

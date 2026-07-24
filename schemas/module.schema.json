@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/module.schema.json",
+  "title": "TOS Module",
+  "required": [
+    "name",
+    "version",
+    "provides",
+    "requires",
+    "conflicts",
+    "activation_rules",
+    "contracts",
+    "checks"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "provides": {
+      "type": "array"
+    },
+    "requires": {
+      "type": "array"
+    },
+    "conflicts": {
+      "type": "array"
+    },
+    "activation_rules": {
+      "type": "array"
+    },
+    "contracts": {
+      "type": "array"
+    },
+    "checks": {
+      "type": "array"
+    }
+  }
+}

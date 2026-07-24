@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/promotion.schema.json",
+  "title": "TOS Promotion",
+  "required": [
+    "promotion_id",
+    "from_state",
+    "to_state",
+    "gates",
+    "approvals",
+    "decision"
+  ],
+  "properties": {
+    "promotion_id": {
+      "type": "string"
+    },
+    "from_state": {
+      "enum": [
+        "idea",
+        "discovery",
+        "prototype",
+        "internal_demo",
+        "release_candidate",
+        "authorized_pilot",
+        "production",
+        "general_availability",
+        "retired"
+      ]
+    },
+    "to_state": {
+      "enum": [
+        "idea",
+        "discovery",
+        "prototype",
+        "internal_demo",
+        "release_candidate",
+        "authorized_pilot",
+        "production",
+        "general_availability",
+        "retired"
+      ]
+    },
+    "gates": {
+      "type": "array"
+    },
+    "approvals": {
+      "type": "array"
+    },
+    "decision": {
+      "enum": [
+        "approved",
+        "denied",
+        "pending"
+      ]
+    }
+  }
+}

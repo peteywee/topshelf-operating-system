@@ -1,0 +1,64 @@
+contract:
+  contract_id: TOS-CTR-052
+  contract_type: UI Route and Surface
+  title: <UI Route and Surface title>
+  version: 0.1.0
+  status: draft
+  applicability: conditional
+  not_applicable_reason: <required when not_applicable>
+  owner_function: Frontend Engineer
+  approver: <approval authority>
+  applies_to:
+  - <project/component/domain/task/etc.>
+  effective_date: <YYYY-MM-DD>
+  review_due: <YYYY-MM-DD or event>
+  supersedes: []
+  source_of_truth: <canonical file path or system>
+definition:
+  purpose: Defines actor, purpose, route, capabilities, states, accessibility, telemetry, and visual evidence.
+  scope: <included scope>
+  out_of_scope:
+  - <explicit exclusions>
+  terms:
+    <term>: <definition>
+  trigger: Any user-visible route, screen, or interaction surface
+obligations:
+  inputs:
+  - <required input>
+  outputs:
+  - <required output>
+  preconditions:
+  - <must be true before execution>
+  invariants:
+  - <must always remain true>
+  postconditions:
+  - <must be true after execution>
+  permissions:
+  - <allowed action>
+  prohibitions:
+  - <forbidden action>
+  failure_behavior:
+  - <required failure behavior>
+assurance:
+  acceptance_criteria:
+  - <observable pass/fail condition>
+  validation:
+  - <command/check/review>
+  negative_controls:
+  - <deliberate violation that must be detected>
+  required_evidence:
+  - <evidence class and artifact>
+change_and_exit:
+  change_control: <decision/change record required>
+  compatibility: <compatibility rule>
+  deprecation: <deprecation procedure>
+  retirement: <retirement and archive procedure>
+contract_body:
+  actor: <define actor>
+  purpose: <define purpose>
+  route: <define route>
+  required_capabilities: <define required capabilities>
+  states: <define states>
+  accessibility: <define accessibility>
+  telemetry: <define telemetry>
+  visual_evidence: <define visual evidence>

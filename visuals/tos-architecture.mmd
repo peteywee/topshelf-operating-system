@@ -1,0 +1,26 @@
+flowchart TB
+  Owner[Owner / Human Authority]
+  CLI[tos CLI]
+  Kernel[TOS Kernel]
+  Runtime[TOS Runtime]
+  Truth[Truth Engine]
+  Scheduler[Task Scheduler]
+  Agent[Agent Control Plane]
+  Evidence[Evidence Engine]
+  Promotion[Promotion Controller]
+  Recovery[Recovery Manager]
+  Modules[Modules]
+  Adapters[Provider Adapters]
+  Project[Project Instance .tos/]
+  Owner --> CLI
+  CLI --> Runtime
+  Runtime --> Kernel
+  Runtime --> Truth
+  Runtime --> Scheduler
+  Runtime --> Agent
+  Runtime --> Evidence
+  Runtime --> Promotion
+  Runtime --> Recovery
+  Kernel --> Modules
+  Runtime --> Adapters
+  Runtime <--> Project

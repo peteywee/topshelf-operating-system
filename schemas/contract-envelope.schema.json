@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/contract-envelope.schema.json",
+  "title": "TOS Contract Envelope",
+  "required": [
+    "contract",
+    "definition",
+    "obligations",
+    "assurance",
+    "change_and_exit",
+    "contract_body"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": [
+        "contract_id",
+        "contract_type",
+        "title",
+        "version",
+        "status",
+        "applicability",
+        "owner_function",
+        "approver",
+        "applies_to",
+        "source_of_truth"
+      ],
+      "additionalProperties": true
+    },
+    "definition": {
+      "type": "object"
+    },
+    "obligations": {
+      "type": "object"
+    },
+    "assurance": {
+      "type": "object"
+    },
+    "change_and_exit": {
+      "type": "object"
+    },
+    "contract_body": {
+      "type": "object"
+    }
+  }
+}

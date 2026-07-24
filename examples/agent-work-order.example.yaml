@@ -1,0 +1,22 @@
+task_id: SF1.4
+agent_function: Backend API Engineer
+base_sha: <exact-sha>
+allowed_paths:
+- packages/api-server/**
+- packages/shared/**
+forbidden_paths:
+- apps/web/**
+- packages/database/migrations/**
+binding_contracts:
+- TOS-CTR-043
+- TOS-CTR-063
+- TOS-CTR-064
+required_commands:
+- pnpm lint
+- pnpm typecheck
+- pnpm test
+- pnpm openapi:check
+stop_conditions:
+- contract conflict
+- migration required without approval
+- branch base materially changed

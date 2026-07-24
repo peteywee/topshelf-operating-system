@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/decision.schema.json",
+  "title": "TOS Decision",
+  "required": [
+    "decision_id",
+    "status",
+    "statement",
+    "authority",
+    "rationale",
+    "consequences"
+  ],
+  "properties": {
+    "decision_id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "approved",
+        "rejected",
+        "superseded",
+        "withdrawn"
+      ]
+    },
+    "statement": {
+      "type": "string"
+    },
+    "authority": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "consequences": {
+      "type": "array"
+    }
+  }
+}

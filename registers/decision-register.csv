@@ -1,0 +1,16 @@
+decision_id,title,decision,status
+TOS-DEC-001,Official name,TopShelf Operating System is the official product name; TOS is the short name.,approved
+TOS-DEC-002,Product type,"TOS is a project operating system, not merely a template or kernel.",approved
+TOS-DEC-003,Repository,The core repository is named topshelf-operating-system.,approved
+TOS-DEC-004,CLI,The primary command is tos.,approved
+TOS-DEC-005,Implementation baseline,"TypeScript, Node.js 20+, and pnpm are the default implementation stack.",approved
+TOS-DEC-006,Canonical state,Canonical project state is YAML under .tos; SQLite is a rebuildable derived index.,approved
+TOS-DEC-007,Contract completeness,"Every catalog contract is evaluated as required, conditional, or not_applicable with reason.",approved
+TOS-DEC-008,Truth model,"Project answers are evidence-backed records, not plain booleans.",approved
+TOS-DEC-009,Interaction model,"TOS inspects first, asks only unresolved questions, and defaults conservatively on material uncertainty.",approved
+TOS-DEC-010,Human authority,"Patrick retains final risk, external authorization, promotion, financial, and merge authority unless delegated.",approved
+TOS-DEC-011,Agent separation,Implementers may not approve their own work; review and evidence verification are separate functions.,approved
+TOS-DEC-012,Evidence classes,"Automated, local manual, deployed/delivered, and external approval evidence remain distinct.",approved
+TOS-DEC-013,Promotion,Lifecycle labels may change only through the promotion controller and required evidence.,approved
+TOS-DEC-014,Teach strategy,"Teach remains the product reference; migration uses bounded strangler slices, not a blind rewrite.",approved
+TOS-DEC-015,Learning loop,Project lessons must be evaluated for propagation into reusable TOS controls.,approved

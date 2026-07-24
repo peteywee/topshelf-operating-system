@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/agent-work-order.schema.json",
+  "title": "TOS Agent Work Order",
+  "required": [
+    "task_id",
+    "agent_function",
+    "base_sha",
+    "allowed_paths",
+    "forbidden_paths",
+    "binding_contracts",
+    "required_commands",
+    "stop_conditions"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "agent_function": {
+      "type": "string"
+    },
+    "base_sha": {
+      "type": "string"
+    },
+    "allowed_paths": {
+      "type": "array"
+    },
+    "forbidden_paths": {
+      "type": "array"
+    },
+    "binding_contracts": {
+      "type": "array"
+    },
+    "required_commands": {
+      "type": "array"
+    },
+    "stop_conditions": {
+      "type": "array"
+    }
+  }
+}

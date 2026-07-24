@@ -1,0 +1,64 @@
+contract:
+  contract_id: TOS-CTR-069
+  contract_type: Evidence
+  title: <Evidence title>
+  version: 0.1.0
+  status: draft
+  applicability: core
+  not_applicable_reason: <required when not_applicable>
+  owner_function: Release Ops
+  approver: <approval authority>
+  applies_to:
+  - <project/component/domain/task/etc.>
+  effective_date: <YYYY-MM-DD>
+  review_due: <YYYY-MM-DD or event>
+  supersedes: []
+  source_of_truth: <canonical file path or system>
+definition:
+  purpose: Defines evidence class, subject, exact version, method, result, artifact, freshness, and limitations.
+  scope: <included scope>
+  out_of_scope:
+  - <explicit exclusions>
+  terms:
+    <term>: <definition>
+  trigger: Every completed claim, task, gate, milestone, release, and promotion
+obligations:
+  inputs:
+  - <required input>
+  outputs:
+  - <required output>
+  preconditions:
+  - <must be true before execution>
+  invariants:
+  - <must always remain true>
+  postconditions:
+  - <must be true after execution>
+  permissions:
+  - <allowed action>
+  prohibitions:
+  - <forbidden action>
+  failure_behavior:
+  - <required failure behavior>
+assurance:
+  acceptance_criteria:
+  - <observable pass/fail condition>
+  validation:
+  - <command/check/review>
+  negative_controls:
+  - <deliberate violation that must be detected>
+  required_evidence:
+  - <evidence class and artifact>
+change_and_exit:
+  change_control: <decision/change record required>
+  compatibility: <compatibility rule>
+  deprecation: <deprecation procedure>
+  retirement: <retirement and archive procedure>
+contract_body:
+  evidence_class: <define evidence class>
+  subject: <define subject>
+  version: <define version>
+  method: <define method>
+  result: <define result>
+  artifact: <define artifact>
+  freshness: <define freshness>
+  limitations: <define limitations>

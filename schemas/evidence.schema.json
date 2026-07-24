@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://topshelf.local/schemas/evidence.schema.json",
+  "title": "TOS Evidence",
+  "required": [
+    "evidence_id",
+    "evidence_class",
+    "subject",
+    "version",
+    "method",
+    "result",
+    "captured_at"
+  ],
+  "properties": {
+    "evidence_id": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "enum": [
+        "automated",
+        "local_manual",
+        "deployed_delivered",
+        "external_approval"
+      ]
+    },
+    "subject": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "method": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "captured_at": {
+      "type": "string"
+    }
+  }
+}

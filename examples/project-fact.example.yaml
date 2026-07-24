@@ -1,0 +1,18 @@
+fact_id: FACT-AUTH-001
+question: Does the project implement authentication?
+observed_state: 'yes'
+target_state: 'yes'
+truth_status: verified_yes
+confidence: high
+evidence:
+- type: repository
+  path: packages/auth
+  finding: Dedicated authentication package exists
+- type: runtime
+  finding: Session establishment test passed
+  version: <sha>
+invalidated_by:
+- authentication package removal
+- session middleware removal
+- identity schema changes
+last_verified: '2026-07-23'
