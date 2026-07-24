@@ -7,6 +7,7 @@ import {
   TOS_RUNTIME_VERSION,
   TOS_SHORT_NAME,
 } from "@topshelf-os/shared";
+import { resolveCommand } from "./command.js";
 
 const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
 
@@ -59,7 +60,7 @@ async function runValidate(): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  const command = process.argv[2] ?? "status";
+  const command = resolveCommand(process.argv.slice(2));
 
   switch (command) {
     case "--help":
