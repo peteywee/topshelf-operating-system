@@ -1,0 +1,26 @@
+schema_version: 1
+modules:
+  - id: foundation-contracts
+    status: active
+    source: contracts/
+    reason: Defines the named and templated foundation contract surface.
+  - id: canonical-state
+    status: active
+    source: .tos/
+    reason: Establishes machine-readable authoritative project state.
+  - id: kernel
+    status: active
+    source: packages/kernel/
+    reason: Loads, discovers, and validates canonical TOS state.
+  - id: cli
+    status: active
+    source: packages/cli/
+    reason: Exposes the initial executable TOS command surface.
+  - id: truth-engine
+    status: planned
+    source: packages/truth-engine/
+    reason: Scheduled for TOS 0.2 after the kernel baseline is accepted.
+  - id: scheduler
+    status: planned
+    source: packages/scheduler/
+    reason: Scheduled for TOS 0.3 after truth and intake contracts stabilize.
