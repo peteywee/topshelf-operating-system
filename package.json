@@ -10,9 +10,9 @@
   },
   "scripts": {
     "build": "pnpm -r build",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "pnpm build",
     "test": "pnpm -r test",
-    "check": "pnpm typecheck && pnpm test && pnpm build",
+    "check": "pnpm build && pnpm test",
     "tos": "pnpm build --silent && node packages/cli/dist/index.js"
   },
   "devDependencies": {
