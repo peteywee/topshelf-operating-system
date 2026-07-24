@@ -1,14 +1,20 @@
 schema_version: 1
 blockers:
   - id: TOS-BLK-001
-    title: Local runtime validation pending
+    title: Exact-SHA runtime validation and lockfile pending
     status: open
     severity: medium
     owner: Patrick Craven
     opened_on: "2026-07-24"
-    reason: The Batch 1 workspace must be installed and validated in a clean local checkout before merge.
+    reason: The Batch 1 workspace must pass all commands at one exact SHA, and the generated pnpm lockfile must be committed before merge.
+    observations:
+      - Node.js 22.22.3 successfully built all packages and passed all five kernel tests at SHA 17dfc1c0472618df916320197aef585e83e9a6ec.
+      - The original root CLI wrapper incorrectly forwarded --silent to recursive TypeScript builds; the branch has been corrected and requires rerun.
     unblock_when:
-      - corepack pnpm install succeeds on Node.js 20.
+      - pnpm install succeeds on a supported Node.js 20 or 22 runtime.
+      - pnpm-lock.yaml is committed and the working tree is clean.
       - pnpm check succeeds.
-      - pnpm tos -- status succeeds.
+      - pnpm tos -- --version returns 0.1.0.
+      - pnpm tos -- status reports zero missing records.
       - pnpm tos -- validate succeeds.
+      - CI passes on Node.js 20 and 22.
