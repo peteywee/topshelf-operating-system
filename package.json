@@ -1,0 +1,23 @@
+{
+  "name": "topshelf-operating-system",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TopShelf Operating System runtime and contract foundation",
+  "type": "module",
+  "engines": {
+    "node": ">=20 <22",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "check": "pnpm typecheck && pnpm test && pnpm build",
+    "tos": "pnpm build --silent && node packages/cli/dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.0"
+  }
+}
