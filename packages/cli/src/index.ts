@@ -1,26 +1,43 @@
 #!/usr/bin/env node
 
 import process from "node:process";
+import {
+  EXPECTED_CONTRACT_COUNT,
+  getContractById,
+  loadContractCatalog,
+  validateContractCatalog,
+} from "@topshelf-os/contracts";
 import { inspectProject, validateProject } from "@topshelf-os/kernel";
 import {
   TOS_OFFICIAL_NAME,
   TOS_RUNTIME_VERSION,
   TOS_SHORT_NAME,
 } from "@topshelf-os/shared";
-import { resolveCommand } from "./command.js";
+import { stringify as stringifyYaml } from "yaml";
+import { resolveArguments } from "./command.js";
 
 const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
 
 Usage:
-  tos status       Show canonical project state
-  tos validate     Validate required .tos records
-  tos --version    Show runtime version
-  tos --help       Show this help
+  tos status                    Show canonical project state
+  tos validate                  Validate required .tos records
+  tos contract list             List registered contract templates
+  tos contract show <id>        Show one contract template
+  tos contract validate         Validate the complete contract catalog
+  tos --version                 Show runtime version
+  tos --help                    Show this help
 `;
 
 function printValidationFailure(message: string): never {
   console.error(message);
   process.exit(1);
+}
+
+function printIssues(issues: readonly { code: string; message: string; path?: string; severity: string }[]): void {
+  for (const item of issues) {
+    const location = item.path === undefined ? "" : ` [${item.path}]`;
+    console.error(`${item.severity.toUpperCase()} ${item.code}${location}: ${item.message}`);
+  }
 }
 
 async function runStatus(): Promise<void> {
@@ -48,10 +65,7 @@ async function runStatus(): Promise<void> {
 async function runValidate(): Promise<void> {
   const report = await validateProject();
   if (!report.valid) {
-    for (const issue of report.issues) {
-      const location = issue.path ? ` [${issue.path}]` : "";
-      console.error(`${issue.severity.toUpperCase()} ${issue.code}${location}: ${issue.message}`);
-    }
+    printIssues(report.issues);
     process.exitCode = 1;
     return;
   }
@@ -59,8 +73,53 @@ async function runValidate(): Promise<void> {
   console.log("OK: canonical TOS state is valid.");
 }
 
+async function runContract(commandArgs: readonly string[]): Promise<void> {
+  const subcommand = commandArgs[0] ?? "list";
+
+  switch (subcommand) {
+    case "list": {
+      const catalog = await loadContractCatalog();
+      if (catalog.issues.some((item) => item.severity === "error")) {
+        printIssues(catalog.issues);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(`Contract catalog: ${catalog.contracts.length} templates`);
+      for (const contract of catalog.contracts) {
+        console.log(`${contract.id}\t${contract.contractType}\t${contract.path}`);
+      }
+      return;
+    }
+    case "show": {
+      const contractId = commandArgs[1];
+      if (contractId === undefined) {
+        printValidationFailure("Usage: tos contract show <contract-id>");
+      }
+      const contract = await getContractById(contractId);
+      if (contract === undefined) {
+        printValidationFailure(`Contract not found: ${contractId}`);
+      }
+      console.log(stringifyYaml(contract.document).trimEnd());
+      return;
+    }
+    case "validate": {
+      const report = await validateContractCatalog();
+      if (!report.valid) {
+        printIssues(report.issues);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(`OK: contract catalog is valid (${EXPECTED_CONTRACT_COUNT} registered templates).`);
+      return;
+    }
+    default:
+      printValidationFailure(`Unknown contract command: ${subcommand}\n\n${HELP}`);
+  }
+}
+
 async function main(): Promise<void> {
-  const command = resolveCommand(process.argv.slice(2));
+  const args = resolveArguments(process.argv.slice(2));
+  const command = args[0] ?? "status";
 
   switch (command) {
     case "--help":
@@ -77,6 +136,9 @@ async function main(): Promise<void> {
       return;
     case "validate":
       await runValidate();
+      return;
+    case "contract":
+      await runContract(args.slice(1));
       return;
     default:
       printValidationFailure(`Unknown command: ${command}\n\n${HELP}`);
