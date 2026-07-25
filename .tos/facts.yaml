@@ -1,0 +1,45 @@
+schema_version: 1
+facts:
+  - id: TOS-FACT-001
+    statement: The official product name is TopShelf Operating System.
+    observed_state: yes
+    target_state: yes
+    status: verified_yes
+    confidence: high
+    evidence:
+      - type: repository
+        reference: README.md
+      - type: contract
+        reference: contracts/foundation-governance/TOS-CTR-003_naming-terminology.yaml
+    authority: Patrick Craven
+    last_verified: "2026-07-24"
+    invalidated_by:
+      - An owner-approved naming decision that supersedes TOS-FACT-001.
+  - id: TOS-FACT-002
+    statement: The repository contains 105 named foundation contract templates.
+    observed_state: yes
+    target_state: yes
+    status: verified_yes
+    confidence: high
+    evidence:
+      - type: register
+        reference: registers/contract-register.csv
+      - type: manifest
+        reference: TOS_PACKAGE_MANIFEST.json
+    authority: contract-registry-validation
+    last_verified: "2026-07-24"
+    invalidated_by:
+      - Contract registry count changes without a reconciled manifest update.
+  - id: TOS-FACT-003
+    statement: The TOS runtime is complete.
+    observed_state: no
+    target_state: yes
+    status: verified_no
+    confidence: high
+    evidence:
+      - type: roadmap
+        reference: docs/08-roadmap-and-work-breakdown.md
+    authority: Patrick Craven
+    last_verified: "2026-07-24"
+    invalidated_by:
+      - Promotion through the TOS 1.0 acceptance gate.

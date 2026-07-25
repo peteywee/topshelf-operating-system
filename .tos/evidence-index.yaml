@@ -1,0 +1,16 @@
+schema_version: 1
+evidence:
+  - id: TOS-EVD-001
+    claim: The formal TOS foundation package is committed to the authoritative repository.
+    class: automated
+    status: verified
+    commit_sha: 80684d74793eb541cd493e9d8f5a94434b096539
+    source: TOS_PACKAGE_MANIFEST.json
+    captured_on: "2026-07-24"
+  - id: TOS-EVD-002
+    claim: Batch 1 runtime checks pass in a clean local checkout.
+    class: automated
+    status: pending
+    commit_sha: pending
+    source: docs/implementation/tos-0.1-batch-1.md
+    captured_on: null

@@ -1,0 +1,29 @@
+schema_version: 1
+decisions:
+  - id: TOS-DEC-001
+    title: Official product name
+    status: approved
+    authority: Patrick Craven
+    decided_on: "2026-07-23"
+    decision: The official and exclusive product name is TopShelf Operating System, abbreviated TOS.
+    supersedes:
+      - TopShelf Op Sys
+    evidence:
+      - README.md
+      - docs/01-charter-and-governing-principles.md
+  - id: TOS-DEC-002
+    title: Separate product repository
+    status: approved
+    authority: Patrick Craven
+    decided_on: "2026-07-24"
+    decision: TOS is implemented in peteywee/topshelf-operating-system; topshelf-project-template remains a predecessor until parity is proven and then is archived rather than deleted.
+    evidence:
+      - docs/11-implementation-and-migration-plan.md
+  - id: TOS-DEC-003
+    title: Batch implementation model
+    status: approved
+    authority: Patrick Craven
+    decided_on: "2026-07-24"
+    decision: TOS implementation proceeds through bounded batches with acceptance criteria, validation, evidence, and pull-request review.
+    evidence:
+      - docs/implementation/tos-0.1-batch-1.md

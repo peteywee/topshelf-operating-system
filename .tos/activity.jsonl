@@ -1,0 +1,2 @@
+{"event_id":"TOS-ACT-001","timestamp":"2026-07-24T09:00:00Z","actor":"Patrick Craven","action":"foundation_imported","subject":"TopShelf Operating System foundation v2.0","commit_sha":"80684d74793eb541cd493e9d8f5a94434b096539"}
+{"event_id":"TOS-ACT-002","timestamp":"2026-07-24T10:00:00Z","actor":"TOS implementation","action":"batch_started","subject":"TOS 0.1 Batch 1 repository kernel","branch":"agent/tos-0-1-batch-1-kernel"}
