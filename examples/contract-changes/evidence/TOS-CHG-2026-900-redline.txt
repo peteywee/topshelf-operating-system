@@ -1,0 +1,12 @@
+SIMULATION ONLY
+
+Semantic redline for TOS-CHG-2026-900 would include changes to:
+- $.contract.title
+- $.contract.version
+- $.contract.approver
+- $.definition.scope
+- $.obligations.invariants
+- $.obligations.prohibitions
+- $.assurance.negative_controls
+
+This file exists only to exercise required evidence-class enforcement.
