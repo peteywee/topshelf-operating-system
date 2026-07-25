@@ -22,3 +22,19 @@ blockers:
     resolution: The lockfile is committed and Actions run 30173750895 passed build, typecheck, tests, canonical state, all 105 contract templates, and the Agent Role smoke lookup on Node.js 20 and 22.
     evidence:
       - TOS-EVD-003
+  - id: TOS-BLK-003
+    title: Batch 2B controlled contract change validation pending
+    status: open
+    severity: medium
+    owner: Patrick Craven
+    opened_on: "2026-07-25"
+    reason: Proposal generation, semantic diff, version classification, and impact analysis require exact-SHA validation before merge.
+    unblock_when:
+      - pnpm install --frozen-lockfile succeeds on Node.js 20 and 22.
+      - pnpm check succeeds, including version, proposal, redline, and impact negative controls.
+      - The example proposal passes tos contract change validate.
+      - tos contract propose emits a valid scaffold with auditor and owner approval pending.
+      - tos contract diff produces a non-empty deterministic redline.
+      - tos contract impact reports direct references and review candidates.
+      - CI passes at the exact reviewed SHA.
+      - TOS-EVD-004 records the validation evidence.
