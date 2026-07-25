@@ -29,9 +29,9 @@ evidence:
     source: GitHub PR 5 and Actions run 30174157507
     captured_on: "2026-07-25"
   - id: TOS-EVD-005
-    claim: Batch 2C authorization, separation-of-duty, evidence, promotion, and direct-edit controls pass on Node.js 20 and 22.
+    claim: Batch 2C authorization, separation-of-duty, evidence, promotion, real-owner rejection, and direct-edit controls pass on Node.js 20 and 22.
     class: automated
-    status: pending
-    commit_sha: pending
-    source: docs/implementation/tos-0.1-batch-2.md
-    captured_on: null
+    status: verified
+    commit_sha: fdaeaf5941482ca2607a3e724da46a1c223dc481
+    source: GitHub PR 6 and Actions run 30175022353
+    captured_on: "2026-07-25"
