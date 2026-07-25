@@ -1,6 +1,6 @@
 # TOS 0.2 — Batch 3A: Truth Steward and Canonical Facts
 
-**Status:** implementation in progress  
+**Status:** validated; pending PR #7 merge  
 **Branch:** `agent/tos-0-2-batch-3a-truth-steward`  
 **Base:** Batch 2C merge `f6da923529d9ccf3c2eb56140c05518fd52f83ed`  
 **Owner:** Patrick Craven
@@ -43,32 +43,20 @@ Each canonical fact requires:
 9. Positive freshness window and expiry date.
 10. One or more invalidation conditions.
 
-## Acceptance criteria
+## Acceptance status
 
-1. The repository fact catalog loads in stable fact-ID order.
-2. Every fact ID matches `TOS-FACT-###` and is unique.
-3. Every fact has a statement, observed state, target state, status, confidence, authority, evidence, freshness policy, and invalidation rule.
-4. Verified, declared, inferred, unknown, conflicting, and not-applicable statuses agree with their observed state.
-5. Evidence references require type and reference; supplied capture dates and commit SHAs are validated.
-6. Expired facts fail unless marked stale or reverified.
-7. Expiry cannot precede last verification.
-8. `tos fact list` reports status, confidence, expiry, and statement.
-9. `tos fact show TOS-FACT-001` returns the canonical record.
-10. `tos fact validate 2026-07-25` passes the repository facts.
-11. Invalid as-of dates fail.
-12. Node.js 20 and 22 pass frozen-lockfile installation, build, typecheck, tests, canonical-state validation, contract controls, and fact controls.
+All twelve Batch 3A acceptance criteria passed at implementation SHA `7542a8ba9da352fe08281901f3bb152cf3c30a6a` in Actions run `30175902966` on Node.js 20 and 22:
 
-## Evidence required before merge
+- Frozen-lockfile installation passed without dependency changes.
+- Strict build, typecheck, and all unit tests passed.
+- The canonical fact catalog loaded in stable ID order.
+- `tos fact list`, `show`, and `validate` passed at `2026-07-25`.
+- Duplicate, contradictory, unsupported, and stale-control unit tests passed.
+- The `2026-08-25` validation correctly rejected expired non-stale facts.
+- Canonical state, all 105 contracts, contract change controls, owner authorization controls, and direct-edit protection remained green.
 
-- Exact implementation SHA.
-- Node.js 20 and 22 workflow run.
-- Successful `pnpm check`.
-- Successful `tos fact list 2026-07-25` smoke output.
-- Successful `tos fact show TOS-FACT-001 2026-07-25` output.
-- Successful `tos fact validate 2026-07-25` output.
-- Negative-control unit-test results.
-- Canonical evidence-index and blocker updates.
+Canonical evidence is recorded as `TOS-EVD-006`; `TOS-BLK-005` is closed.
 
 ## Definition of done
 
-Batch 3A is complete only after exact-SHA CI passes on Node.js 20 and 22, evidence is recorded in `.tos/evidence-index.yaml`, its validation blocker is closed, the Truth Steward and truth-engine module are active, and the PR is merged.
+The implementation, validation, evidence, blocker closure, Truth Steward specification, and truth-engine activation are complete. Batch 3A reaches full done when PR #7 is merged to `main` and the post-merge state is confirmed.
