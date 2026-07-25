@@ -2,3 +2,4 @@
 {"event_id":"TOS-ACT-002","timestamp":"2026-07-24T10:00:00Z","actor":"TOS implementation","action":"batch_started","subject":"TOS 0.1 Batch 1 repository kernel","branch":"agent/tos-0-1-batch-1-kernel"}
 {"event_id":"TOS-ACT-003","timestamp":"2026-07-25T06:01:51Z","actor":"Patrick Craven","action":"batch_merged","subject":"TOS 0.1 Batch 1 repository kernel","commit_sha":"f6aff193699436fae59e08f6a30593ae58f94832","pull_request":1}
 {"event_id":"TOS-ACT-004","timestamp":"2026-07-25T20:45:00Z","actor":"TOS implementation","action":"batch_validated","subject":"TOS 0.1 Batch 2A contract catalog and stewardship","commit_sha":"1fdcfa80c8544dc85f66ed013dac26605779bf19","pull_request":4,"evidence":"TOS-EVD-003"}
+{"event_id":"TOS-ACT-005","timestamp":"2026-07-25T21:00:00Z","actor":"TOS implementation","action":"batch_started","subject":"TOS 0.1 Batch 2B controlled contract changes","branch":"agent/tos-0-1-batch-2b-contract-changes"}
