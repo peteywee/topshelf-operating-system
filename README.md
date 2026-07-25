@@ -17,15 +17,14 @@ Every foundation concern is named in the contract catalog. Every project must ev
 
 ## Repository layout
 
-- `.tos/` — authoritative machine-readable state and approved contract-change records.
+- `.tos/` — authoritative state and real approved contract-change records.
 - `packages/shared/` — canonical types and identifiers.
 - `packages/kernel/` — project discovery, state loading, and validation.
 - `packages/contracts/` — catalog, proposals, redlines, impact analysis, and authorization gates.
 - `packages/cli/` — executable `tos` command surface.
 - `contracts/` — agnostic templates for all named foundation concerns.
-- `agents/` — governed human-assisted role specifications; these do not imply an autonomous runtime.
-- `skills/` — reusable operating instructions for governed roles.
-- `schemas/`, `registers/`, `docs/`, `examples/`, `visuals/`, and `final/` — supporting system records and publication assets.
+- `agents/` and `skills/` — governed human-assisted roles and operating instructions; they do not imply an autonomous runtime.
+- `schemas/`, `registers/`, `docs/`, `examples/`, `visuals/`, and `final/` — supporting records and publication assets.
 
 ## Runtime quick start
 
@@ -53,7 +52,7 @@ tos contract impact TOS-CTR-085
 tos contract gate <approved-proposal-path> "Patrick Craven"
 ```
 
-Proposal, diff, and impact commands generate review material. The gate only reports authorization readiness; it does not merge or edit a contract. `pnpm contract:guard` blocks changed canonical contract files that lack a matching authorized record.
+Proposal, diff, and impact commands generate review material. The gate reports authorization readiness but does not merge or edit a contract. `pnpm contract:guard` blocks changed canonical contract files that lack a matching authorized record.
 
 ## Contract governance chain
 
@@ -72,9 +71,9 @@ For real TOS changes, only Patrick Craven may supply the owner approval required
 - Batch 1: repository kernel and canonical state — merged.
 - Batch 2A: validated 105-template catalog, Contract Steward, and Contract Auditor — merged.
 - Batch 2B: controlled proposals, versions, redlines, and impact analysis — merged.
-- Batch 2C: independent audit, evidence, owner approval, promotion gate, and direct-edit protection — in validation.
+- Batch 2C: independent audit, evidence, owner approval, promotion gate, and direct-edit protection — validated; pending PR #6 merge.
 
-The roles remain human-assisted specifications. TOS does not yet include an autonomous agent engine, scheduler, persistent agent memory, or automatic legal approval.
+The governed roles remain human-assisted specifications. TOS does not yet include an autonomous agent engine, scheduler, persistent agent memory, truth engine, or automatic legal approval.
 
 See `docs/implementation/tos-0.1-batch-2.md` and `docs/architecture/pre-engine-agent-roster.md`.
 
