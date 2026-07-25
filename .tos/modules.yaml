@@ -25,9 +25,9 @@ modules:
     source: packages/contracts/src/index.ts
     reason: Batch 2A merged with the validated 105-template catalog, registry reconciliation, CLI inventory, and negative controls.
   - id: contract-change-control
-    status: planned
+    status: active
     source: packages/contracts/src/change.ts
-    reason: Batch 2B implementation is present on its feature branch and remains planned until exact-SHA validation and merge.
+    reason: Batch 2B provides controlled proposal scaffolds, semantic-version classification, proposal validation, redlines, and impact analysis.
   - id: truth-engine
     status: planned
     source: packages/truth-engine/
