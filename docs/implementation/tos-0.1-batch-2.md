@@ -1,8 +1,8 @@
 # TOS 0.1 — Batch 2: Contract Registry and Stewardship
 
-**Status:** Batch 2A merged; Batch 2B implementation in progress  
-**Current branch:** `agent/tos-0-1-batch-2b-contract-changes`  
-**Base:** Batch 2A merge `8d7e2f7beecd0218bc4b5b9e92b0341c49d0000e` on `main`  
+**Status:** Batches 2A and 2B merged; Batch 2C implementation in progress  
+**Current branch:** `agent/tos-0-1-batch-2c-contract-authorization`  
+**Base:** Batch 2B merge `9216b698d199b2cf656199c0b5f9cb1eeb1fb071` on `main`  
 **Owner:** Patrick Craven
 
 ## Goal
@@ -20,32 +20,49 @@ Make the 105-contract foundation executable and safely changeable without buildi
 - Defines the Contract Steward and independent Contract Auditor.
 - Adds reusable skills for contract authoring and audit.
 
-### Batch 2B — Controlled change proposals — current
+Evidence: `TOS-EVD-003`. Merge: `8d7e2f7beecd0218bc4b5b9e92b0341c49d0000e`.
 
-- Add a contract change-record schema and example package.
-- Generate a controlled proposal without modifying approved contract language.
-- Validate requester, reason, versions, change class, draft path, affected contracts, review state, and evidence structure.
-- Produce deterministic semantic redlines between the current contract and a proposed draft.
-- Classify patch, minor, and major semantic-version changes and reject unchanged or downgraded versions.
-- Report direct contract references separately from same-category and same-owner review candidates.
-- Preserve Contract Steward authorship while leaving Contract Auditor and owner approval pending.
+### Batch 2B — Controlled change proposals — merged
+
+- Adds the contract change-record schema and proposal model.
+- Generates controlled proposals without modifying canonical contract language.
+- Validates requester, reason, versions, change class, draft path, affected contracts, review state, and evidence structure.
+- Produces deterministic semantic redlines.
+- Classifies semantic-version changes and rejects unchanged, downgraded, malformed, or mismatched versions.
+- Reports direct contract references separately from category and owner-function review candidates.
+
+Evidence: `TOS-EVD-004`. Merge: `9216b698d199b2cf656199c0b5f9cb1eeb1fb071`.
+
+### Batch 2C — Authorization, evidence, and promotion gates — current
+
+- Requires an approved proposal before canonical promotion.
+- Requires a passed independent Contract Auditor review.
+- Proves the Contract Steward author and Contract Auditor actor are different.
+- Requires the expected owner’s approval, decision date, and decision record.
+- Requires an authorized target contract path under `contracts/**`.
+- Requires change-record, redline, impact-report, audit, and owner-approval evidence classes.
+- Adds a branch-level guard that rejects canonical contract edits without a matching authorized record under `.tos/contract-changes/approved/`.
+- Specifies the Evidence Steward and Release & Promotion Steward before the autonomous engine exists.
+- Uses a clearly labeled fictional approval packet solely to exercise the automated gate.
 
 Commands:
 
 ```bash
-pnpm tos -- contract propose TOS-CTR-085 TOS-CHG-2026-002 "Patrick Craven" "Clarify role authority"
-pnpm tos -- contract change validate examples/contract-changes/TOS-CHG-2026-001.yaml
-pnpm tos -- contract diff TOS-CTR-085 examples/contract-changes/drafts/TOS-CHG-2026-001_TOS-CTR-085.yaml
-pnpm tos -- contract impact TOS-CTR-085
+pnpm tos -- contract gate <approved-proposal-path> "Patrick Craven"
+pnpm contract:guard
 ```
 
-### Batch 2C — Authorization and evidence — next
+## Governed role chain
 
-- Require independent Contract Auditor review and Patrick Craven’s owner approval before effectiveness.
-- Prove the author cannot approve or audit the same change.
-- Enforce change records for modifications under `contracts/**`.
-- Add evidence records, negative controls, CI enforcement, and promotion gates.
-- Reconcile the register and package manifest after approved changes.
+```text
+Contract Steward
+    → Contract Auditor
+    → Evidence Steward
+    → Release & Promotion Steward
+    → Patrick Craven owner approval
+```
+
+Each role may block promotion. None may replace Patrick’s approval for a real TOS contract change.
 
 ## Explicitly out of scope
 
@@ -55,38 +72,34 @@ pnpm tos -- contract impact TOS-CTR-085
 - Truth reconciliation outside contract metadata.
 - Legal advice or automatic legal approval.
 - Provider adapters.
+- Applying the simulated example to canonical contract language.
 
-## Batch 2A acceptance status
+## Batch 2C acceptance criteria
 
-All Batch 2A criteria passed on Node.js 20 and 22 and were recorded as `TOS-EVD-003`. PR #4 was merged to `main` as `8d7e2f7beecd0218bc4b5b9e92b0341c49d0000e`.
+1. `tos contract gate` authorizes a complete fictional test packet when invoked with its fictional expected owner.
+2. The same packet fails when evaluated against `Patrick Craven`, proving the simulation cannot impersonate real owner approval.
+3. Pending or rejected owner state fails promotion.
+4. Missing or failed Contract Auditor review fails promotion.
+5. The author auditing the same change fails promotion.
+6. Missing steward actor, auditor actor, audit date, findings, owner date, or owner decision record fails promotion.
+7. Missing required evidence classes fails promotion.
+8. Invalid, missing, or unauthorized promotion target information fails promotion.
+9. A changed canonical contract file without a matching approved change record fails the direct-edit guard.
+10. A matching authorized proposal passes the pure direct-edit authorization test.
+11. CI runs the gate and direct-edit guard on Node.js 20 and 22 with a frozen lockfile and full Git history.
+12. `.tos/contract-changes/approved/` contains no fictional YAML approval records.
+13. Evidence Steward and Release & Promotion Steward specifications and skills preserve separation of duties and owner authority.
 
-## Batch 2B acceptance criteria
+## Batch 2C evidence required before merge
 
-1. `schemas/contract-change.schema.json` defines the proposal envelope.
-2. `tos contract propose` emits a structurally valid draft with a stable contract ID and pending independent approvals.
-3. Proposal IDs use `TOS-CHG-YYYY-NNN` and contract IDs use `TOS-CTR-NNN`.
-4. A proposal requires requester, reason, current version, proposed version, change class, compatibility summary, draft path, and affected-contract list.
-5. Patch, minor, and major version increases are classified correctly.
-6. Unchanged, downgraded, or malformed versions fail validation.
-7. A declared change class that disagrees with the semantic-version change fails validation.
-8. `tos contract diff` produces deterministic field-path changes.
-9. `tos contract impact` distinguishes direct references from review candidates.
-10. The example proposal validates and its example draft produces a non-empty redline.
-11. The proposal leaves Contract Auditor and owner approval pending.
-12. CI runs the complete workflow on Node.js 20 and 22 using the frozen lockfile.
-
-## Batch 2B evidence required before merge
-
-- Exact commit SHA.
-- Node.js 20 and 22 CI run.
-- Build, typecheck, and all unit-test output.
-- Successful example proposal validation.
-- Generated proposal scaffold output.
-- Semantic redline output.
-- Impact report output.
-- Negative-control proof for invalid versions and mismatched change classes.
-- Clean working tree and unchanged lockfile unless dependency metadata legitimately changes.
+- Exact reviewed commit SHA.
+- Successful Node.js 20 and 22 CI run.
+- Unit-test proof for self-audit, missing approval, owner mismatch, missing evidence, and unauthorized direct edits.
+- Successful simulation-only authorization-gate output.
+- Successful no-contract-change branch guard output.
+- Confirmation that canonical approved-change storage contains no simulation YAML.
+- `TOS-EVD-005` updated to verified and `TOS-BLK-004` closed.
 
 ## Definition of done
 
-Batch 2 is complete only after 2A, 2B, and 2C are validated at exact SHAs, CI passes, evidence is indexed, owner approval is recorded, and all batch PRs are merged. The existence of agent files does not imply an autonomous agent engine.
+Batch 2 is complete when 2A, 2B, and 2C infrastructure is validated at exact SHAs, CI passes, evidence is indexed, validation blockers are closed, and all three batch PRs are merged. Real contract-language promotion remains impossible until Patrick Craven separately approves a specific real change packet. The existence of agent specifications does not imply an autonomous agent engine.
