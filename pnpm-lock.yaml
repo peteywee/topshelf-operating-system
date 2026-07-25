@@ -20,12 +20,30 @@ importers:
 
   packages/cli:
     dependencies:
+      '@topshelf-os/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       '@topshelf-os/kernel':
         specifier: workspace:*
         version: link:../kernel
       '@topshelf-os/shared':
         specifier: workspace:*
         version: link:../shared
+      yaml:
+        specifier: ^2.8.0
+        version: 2.9.0
+
+  packages/contracts:
+    dependencies:
+      '@topshelf-os/kernel':
+        specifier: workspace:*
+        version: link:../kernel
+      '@topshelf-os/shared':
+        specifier: workspace:*
+        version: link:../shared
+      yaml:
+        specifier: ^2.8.0
+        version: 2.9.0
 
   packages/kernel:
     dependencies:
