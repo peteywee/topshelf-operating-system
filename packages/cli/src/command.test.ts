@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveCommand } from "./command.js";
+import { resolveArguments, resolveCommand } from "./command.js";
 
 describe("resolveCommand", () => {
   it("defaults to status", () => {
@@ -12,5 +12,13 @@ describe("resolveCommand", () => {
 
   it("ignores the package-manager separator", () => {
     expect(resolveCommand(["--", "validate"])).toBe("validate");
+  });
+
+  it("preserves nested contract arguments", () => {
+    expect(resolveArguments(["--", "contract", "show", "TOS-CTR-085"])).toEqual([
+      "contract",
+      "show",
+      "TOS-CTR-085",
+    ]);
   });
 });

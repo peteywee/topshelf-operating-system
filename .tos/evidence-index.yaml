@@ -8,9 +8,16 @@ evidence:
     source: TOS_PACKAGE_MANIFEST.json
     captured_on: "2026-07-24"
   - id: TOS-EVD-002
-    claim: Batch 1 runtime checks pass in a clean local checkout.
+    claim: Batch 1 runtime checks passed at the merged PR head, with user-reported local completion and successful Node.js 20/22 CI.
+    class: mixed
+    status: verified
+    commit_sha: 9ea0bf1cb7fca7d200586818dc17be4e0ef5e769
+    source: GitHub PR 1 and Actions run 30146696958
+    captured_on: "2026-07-25"
+  - id: TOS-EVD-003
+    claim: Batch 2A contract catalog, CLI, agent specifications, skills, negative controls, and real 105-template validation pass on Node.js 20 and 22.
     class: automated
-    status: pending
-    commit_sha: pending
-    source: docs/implementation/tos-0.1-batch-1.md
-    captured_on: null
+    status: verified
+    commit_sha: 1fdcfa80c8544dc85f66ed013dac26605779bf19
+    source: GitHub PR 4 and Actions run 30173750895
+    captured_on: "2026-07-25"
