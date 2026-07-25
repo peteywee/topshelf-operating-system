@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 import { execFileSync } from "node:child_process";
-import { readdir, readFile } from "node:fs/promises";
+import { readdir } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { validateChangedContractAuthorization } from "../packages/contracts/dist/authorization.js";
-import { parse as parseYaml } from "yaml";
+import { readYamlDocument } from "../packages/contracts/dist/change.js";
 
 const root = process.cwd();
 const expectedOwner = process.env.TOS_CONTRACT_OWNER ?? "Patrick Craven";
@@ -46,9 +46,7 @@ async function findYamlFiles(directory) {
 async function approvedProposals() {
   const directory = path.join(root, ".tos", "contract-changes", "approved");
   const files = await findYamlFiles(directory);
-  return Promise.all(
-    files.map(async (filePath) => parseYaml(await readFile(filePath, "utf8"))),
-  );
+  return Promise.all(files.map((filePath) => readYamlDocument(filePath)));
 }
 
 const changed = changedPaths();
