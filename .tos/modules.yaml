@@ -16,6 +16,14 @@ modules:
     status: active
     source: packages/cli/
     reason: Exposes the initial executable TOS command surface.
+  - id: agent-governance
+    status: active
+    source: agents/ and skills/
+    reason: Defines agnostic roles, authority boundaries, separation of duties, and reusable human-assisted skills before autonomous execution exists.
+  - id: contract-registry
+    status: planned
+    source: packages/contracts/
+    reason: Batch 2A implementation exists on its feature branch but remains planned until exact-SHA validation and merge.
   - id: truth-engine
     status: planned
     source: packages/truth-engine/
