@@ -1,0 +1,9 @@
+# SIMULATION ONLY
+contractId: TOS-CTR-085
+directReferences: []
+sameCategory:
+  - TOS-CTR-086
+  - TOS-CTR-087
+sameOwnerFunction:
+  - TOS-CTR-086
+review_note: This example exists only to exercise authorization evidence requirements.
