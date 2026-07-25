@@ -13,7 +13,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@topshelf-os/contracts": "workspace:*",
     "@topshelf-os/kernel": "workspace:*",
-    "@topshelf-os/shared": "workspace:*"
+    "@topshelf-os/shared": "workspace:*",
+    "yaml": "^2.8.0"
   }
 }
