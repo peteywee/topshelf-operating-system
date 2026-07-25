@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -71,3 +73,15 @@ jobs:
           grep -q "Semantic diff: TOS-CTR-085" /tmp/tos-contract-diff.txt
           pnpm tos -- contract impact TOS-CTR-085 > /tmp/tos-contract-impact.yaml
           grep -q "contractId: TOS-CTR-085" /tmp/tos-contract-impact.yaml
+
+      - name: Exercise authorization gate
+        run: |
+          pnpm tos -- contract gate examples/contract-changes/TOS-CHG-2026-900-simulated-approved.yaml "Example Owner" > /tmp/tos-contract-gate.txt
+          grep -q "is authorized for contracts/ai-agent/TOS-CTR-085_agent-role.yaml" /tmp/tos-contract-gate.txt
+          if pnpm tos -- contract gate examples/contract-changes/TOS-CHG-2026-900-simulated-approved.yaml "Patrick Craven"; then
+            echo "Simulation packet incorrectly satisfied the real-owner gate" >&2
+            exit 1
+          fi
+
+      - name: Enforce direct-edit protection
+        run: pnpm contract:guard

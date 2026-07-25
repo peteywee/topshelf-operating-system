@@ -19,15 +19,19 @@ modules:
   - id: agent-governance
     status: active
     source: agents/ and skills/
-    reason: Defines agnostic roles, authority boundaries, separation of duties, and reusable human-assisted skills before autonomous execution exists.
+    reason: Defines the Contract Steward, Contract Auditor, Evidence Steward, Release & Promotion Steward, authority boundaries, and human-assisted skills.
   - id: contract-registry
     status: active
     source: packages/contracts/src/index.ts
-    reason: Batch 2A merged with the validated 105-template catalog, registry reconciliation, CLI inventory, and negative controls.
+    reason: Provides the validated 105-template catalog and registry reconciliation.
   - id: contract-change-control
     status: active
     source: packages/contracts/src/change.ts
-    reason: Batch 2B provides controlled proposal scaffolds, semantic-version classification, proposal validation, redlines, and impact analysis.
+    reason: Provides controlled proposals, version classification, validation, redlines, and impact analysis.
+  - id: contract-authorization-gate
+    status: active
+    source: packages/contracts/src/authorization.ts
+    reason: Provides independent-audit, owner-approval, evidence, promotion, and direct-edit enforcement validated on Node.js 20 and 22.
   - id: truth-engine
     status: planned
     source: packages/truth-engine/

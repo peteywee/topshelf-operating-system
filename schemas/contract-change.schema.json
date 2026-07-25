@@ -56,7 +56,8 @@
           "required": ["agent_id", "status"],
           "properties": {
             "agent_id": { "type": "string", "minLength": 1 },
-            "status": { "enum": ["authored", "pending"] }
+            "status": { "enum": ["authored", "pending"] },
+            "performed_by": { "type": "string", "minLength": 1 }
           }
         },
         "auditor": {
@@ -65,7 +66,10 @@
           "required": ["agent_id", "status"],
           "properties": {
             "agent_id": { "type": "string", "minLength": 1 },
-            "status": { "enum": ["pending", "passed", "failed"] }
+            "status": { "enum": ["pending", "passed", "failed"] },
+            "performed_by": { "type": "string", "minLength": 1 },
+            "reviewed_on": { "type": "string", "format": "date" },
+            "findings": { "type": "string", "minLength": 1 }
           }
         },
         "owner": {
@@ -74,14 +78,54 @@
           "required": ["name", "status"],
           "properties": {
             "name": { "type": "string", "minLength": 1 },
-            "status": { "enum": ["pending", "approved", "rejected"] }
+            "status": { "enum": ["pending", "approved", "rejected"] },
+            "decided_on": { "type": "string", "format": "date" },
+            "decision_record": { "type": "string", "minLength": 1 }
           }
         }
+      }
+    },
+    "promotion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "target_contract_path", "authorized_by", "authorized_on"],
+      "properties": {
+        "status": { "enum": ["pending", "authorized", "rejected"] },
+        "target_contract_path": {
+          "type": "string",
+          "pattern": "^contracts/.+\\.ya?ml$"
+        },
+        "authorized_by": { "type": "string", "minLength": 1 },
+        "authorized_on": { "type": "string", "format": "date" }
       }
     },
     "evidence": {
       "type": "array",
       "items": { "type": "string", "minLength": 1 }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "change": {
+            "properties": { "status": { "const": "approved" } },
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {
+        "required": ["promotion"],
+        "properties": {
+          "review": {
+            "properties": {
+              "steward": { "required": ["performed_by"] },
+              "auditor": { "required": ["performed_by", "reviewed_on", "findings"] },
+              "owner": { "required": ["decided_on", "decision_record"] }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

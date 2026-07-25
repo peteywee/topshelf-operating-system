@@ -1,0 +1,43 @@
+# SIMULATION ONLY. This is not a real Patrick Craven approval and must never be promoted.
+schema_version: 1
+change:
+  change_id: TOS-CHG-2026-900
+  contract_id: TOS-CTR-085
+  requested_by: Example Author
+  requested_on: "2026-07-25"
+  reason: Exercise the Batch 2C authorization gate with fictional actors.
+  status: approved
+  current_version: 0.1.0
+  proposed_version: 0.2.0
+  change_class: minor
+  draft_contract_path: examples/contract-changes/drafts/TOS-CHG-2026-001_TOS-CTR-085.yaml
+  compatibility_summary: Simulated backward-compatible clarification for automated gate testing.
+  affected_contracts:
+    - TOS-CTR-086
+review:
+  steward:
+    agent_id: contract-steward
+    status: authored
+    performed_by: Example Author
+  auditor:
+    agent_id: contract-auditor
+    status: passed
+    performed_by: Example Auditor
+    reviewed_on: "2026-07-25"
+    findings: examples/contract-changes/evidence/TOS-CHG-2026-900-audit.md
+  owner:
+    name: Example Owner
+    status: approved
+    decided_on: "2026-07-25"
+    decision_record: examples/contract-changes/evidence/TOS-CHG-2026-900-owner.md
+promotion:
+  status: authorized
+  target_contract_path: contracts/ai-agent/TOS-CTR-085_agent-role.yaml
+  authorized_by: Example Owner
+  authorized_on: "2026-07-25"
+evidence:
+  - change_record:examples/contract-changes/TOS-CHG-2026-900-simulated-approved.yaml
+  - redline:examples/contract-changes/evidence/TOS-CHG-2026-900-redline.txt
+  - impact_report:examples/contract-changes/evidence/TOS-CHG-2026-900-impact.yaml
+  - audit:examples/contract-changes/evidence/TOS-CHG-2026-900-audit.md
+  - owner_approval:examples/contract-changes/evidence/TOS-CHG-2026-900-owner.md
