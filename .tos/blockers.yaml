@@ -1,31 +1,24 @@
 schema_version: 1
 blockers:
   - id: TOS-BLK-001
-    title: Batch 1 evidence reconciliation pending
-    status: open
+    title: Batch 1 evidence reconciliation
+    status: closed
     severity: medium
     owner: Patrick Craven
     opened_on: "2026-07-24"
-    reason: Batch 1 was merged, but the canonical evidence index still marks exact-SHA local runtime validation pending. This inherited truth drift must be reconciled rather than silently closed.
-    observations:
-      - PR 1 merged to main on 2026-07-25.
-      - TOS-EVD-002 remains pending with no exact commit SHA recorded.
-    unblock_when:
-      - The exact validated Batch 1 SHA and command outputs are recorded.
-      - TOS-EVD-002 is updated to verified or explicitly rejected with a reason.
-      - The blocker closure references the evidence record.
+    closed_on: "2026-07-25"
+    reason: Batch 1 was merged before the canonical evidence index recorded the exact validated head and CI result.
+    resolution: TOS-EVD-002 now records the merged PR head, user-reported local completion, and successful Node.js 20/22 CI.
+    evidence:
+      - TOS-EVD-002
   - id: TOS-BLK-002
-    title: Batch 2A contract catalog validation pending
-    status: open
+    title: Batch 2A contract catalog validation
+    status: closed
     severity: medium
     owner: Patrick Craven
     opened_on: "2026-07-25"
-    reason: The contract catalog package, CLI commands, agent specifications, and skills require clean-checkout validation before Batch 2A can be accepted.
-    unblock_when:
-      - pnpm-lock.yaml includes the contracts workspace package.
-      - pnpm check succeeds on a supported Node.js runtime.
-      - pnpm tos -- contract list reports 105 templates.
-      - pnpm tos -- contract show TOS-CTR-085 returns the Agent Role contract.
-      - pnpm tos -- contract validate succeeds.
-      - Missing-file, unregistered-file, missing-section, and duplicate-ID negative controls pass.
-      - CI passes at the exact reviewed SHA.
+    closed_on: "2026-07-25"
+    reason: The contract catalog package, CLI commands, agent specifications, and skills required exact-SHA validation.
+    resolution: The lockfile is committed and Actions run 30173750895 passed build, typecheck, tests, canonical state, all 105 contract templates, and the Agent Role smoke lookup on Node.js 20 and 22.
+    evidence:
+      - TOS-EVD-003
