@@ -1,20 +1,31 @@
 schema_version: 1
 blockers:
   - id: TOS-BLK-001
-    title: Exact-SHA runtime validation and lockfile pending
+    title: Batch 1 evidence reconciliation pending
     status: open
     severity: medium
     owner: Patrick Craven
     opened_on: "2026-07-24"
-    reason: The Batch 1 workspace must pass all commands at one exact SHA, and the generated pnpm lockfile must be committed before merge.
+    reason: Batch 1 was merged, but the canonical evidence index still marks exact-SHA local runtime validation pending. This inherited truth drift must be reconciled rather than silently closed.
     observations:
-      - Node.js 22.22.3 successfully built all packages and passed all five kernel tests at SHA 17dfc1c0472618df916320197aef585e83e9a6ec.
-      - The original root CLI wrapper incorrectly forwarded --silent to recursive TypeScript builds; the branch has been corrected and requires rerun.
+      - PR 1 merged to main on 2026-07-25.
+      - TOS-EVD-002 remains pending with no exact commit SHA recorded.
     unblock_when:
-      - pnpm install succeeds on a supported Node.js 20 or 22 runtime.
-      - pnpm-lock.yaml is committed and the working tree is clean.
-      - pnpm check succeeds.
-      - pnpm tos -- --version returns 0.1.0.
-      - pnpm tos -- status reports zero missing records.
-      - pnpm tos -- validate succeeds.
-      - CI passes on Node.js 20 and 22.
+      - The exact validated Batch 1 SHA and command outputs are recorded.
+      - TOS-EVD-002 is updated to verified or explicitly rejected with a reason.
+      - The blocker closure references the evidence record.
+  - id: TOS-BLK-002
+    title: Batch 2A contract catalog validation pending
+    status: open
+    severity: medium
+    owner: Patrick Craven
+    opened_on: "2026-07-25"
+    reason: The contract catalog package, CLI commands, agent specifications, and skills require clean-checkout validation before Batch 2A can be accepted.
+    unblock_when:
+      - pnpm-lock.yaml includes the contracts workspace package.
+      - pnpm check succeeds on a supported Node.js runtime.
+      - pnpm tos -- contract list reports 105 templates.
+      - pnpm tos -- contract show TOS-CTR-085 returns the Agent Role contract.
+      - pnpm tos -- contract validate succeeds.
+      - Missing-file, unregistered-file, missing-section, and duplicate-ID negative controls pass.
+      - CI passes at the exact reviewed SHA.
