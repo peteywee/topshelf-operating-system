@@ -85,7 +85,7 @@ The Truth Steward maintains fact classification and provenance but cannot silent
 - Batch 2A: validated 105-template catalog, Contract Steward, and Contract Auditor — merged.
 - Batch 2B: controlled proposals, versions, redlines, and impact analysis — merged.
 - Batch 2C: independent audit, evidence, owner approval, promotion gate, and direct-edit protection — merged.
-- TOS 0.2 Batch 3A: Truth Steward, canonical fact validation, freshness controls, and fact CLI — implementation branch.
+- TOS 0.2 Batch 3A: Truth Steward, canonical fact validation, freshness controls, and fact CLI — merged.
 
 The governed roles remain human-assisted specifications. TOS does not yet include an autonomous agent engine, scheduler, persistent agent memory, automatic conflict resolution, or automatic legal approval.
 
