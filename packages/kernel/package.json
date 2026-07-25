@@ -1,12 +1,16 @@
 {
   "name": "@topshelf-os/kernel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./truth": {
+      "types": "./dist/truth.d.ts",
+      "import": "./dist/truth.js"
     }
   },
   "files": ["dist"],
