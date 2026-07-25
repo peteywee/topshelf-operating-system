@@ -20,7 +20,7 @@ Every foundation concern is named in the contract catalog. Every project must ev
 - `.tos/` — authoritative machine-readable state for this project.
 - `packages/shared/` — canonical types and identifiers.
 - `packages/kernel/` — project discovery, state loading, and validation.
-- `packages/contracts/` — contract-register loading and catalog validation.
+- `packages/contracts/` — contract catalog, change proposals, redlines, and impact analysis.
 - `packages/cli/` — executable `tos` command surface.
 - `contracts/` — agnostic templates for all named foundation concerns.
 - `agents/` — governed agent-role specifications; these do not imply an autonomous runtime.
@@ -41,7 +41,7 @@ Requirements:
 
 ```bash
 corepack enable
-pnpm install
+pnpm install --frozen-lockfile
 pnpm check
 pnpm tos -- status
 pnpm tos -- validate
@@ -56,15 +56,23 @@ tos validate
 tos contract list
 tos contract show TOS-CTR-085
 tos contract validate
+tos contract propose TOS-CTR-085 TOS-CHG-2026-002 "Patrick Craven" "Clarify role authority"
+tos contract change validate examples/contract-changes/TOS-CHG-2026-001.yaml
+tos contract diff TOS-CTR-085 examples/contract-changes/drafts/TOS-CHG-2026-001_TOS-CTR-085.yaml
+tos contract impact TOS-CTR-085
 tos --version
 tos --help
 ```
+
+`contract propose`, `diff`, and `impact` generate review material. They do not approve, merge, or make proposed language effective.
 
 ## Current implementation status
 
 TOS 0.1 Batch 1 established the repository kernel, canonical `.tos/` state, shared types, initial CLI, tests, and CI.
 
-TOS 0.1 Batch 2 is implementing the executable contract catalog and governed contract-change workflow. Batch 2A adds catalog loading, structural reconciliation, the pre-engine agent roster, and human-assisted Contract Steward and Contract Auditor specifications. It does **not** claim autonomous agent execution.
+TOS 0.1 Batch 2A merged the executable 105-template contract catalog, pre-engine agent roster, and human-assisted Contract Steward and Contract Auditor specifications.
+
+TOS 0.1 Batch 2B adds controlled change proposals, semantic-version classification, semantic redlines, and impact analysis. It still does **not** claim autonomous agent execution or approval authority.
 
 See:
 
@@ -81,4 +89,5 @@ See:
 - Derived local index/cache: SQLite, rebuildable from canonical records
 - Append-only activity stream: `.tos/activity.jsonl`
 - Contract IDs: `TOS-CTR-###`
+- Contract change IDs: `TOS-CHG-YYYY-NNN`
 - Versioning: Semantic Versioning
