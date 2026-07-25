@@ -1,0 +1,60 @@
+schema_version: 1
+engine_status: not_implemented
+owner: Patrick Craven
+agents:
+  - id: contract-steward
+    name: Contract Steward
+    status: specified
+    execution: human_assisted
+    earliest_batch: TOS-0.1-B2
+    specification: agents/contract-steward/agent.yaml
+    skill: skills/contract-steward/SKILL.md
+    independent_review_by: contract-auditor
+  - id: contract-auditor
+    name: Contract Auditor
+    status: specified
+    execution: human_assisted
+    earliest_batch: TOS-0.1-B2
+    specification: agents/contract-auditor/agent.yaml
+    skill: skills/contract-auditor/SKILL.md
+    may_not_audit_own_authorship: true
+  - id: truth-steward
+    name: Truth Steward
+    status: planned
+    execution: unavailable
+    earliest_batch: TOS-0.2
+  - id: requirements-steward
+    name: Requirements Steward
+    status: planned
+    execution: unavailable
+    earliest_batch: TOS-0.2
+  - id: evidence-steward
+    name: Evidence Steward
+    status: planned
+    execution: unavailable
+    earliest_batch: TOS-0.3
+  - id: security-privacy-steward
+    name: Security and Privacy Steward
+    status: planned
+    execution: unavailable
+    earliest_batch: TOS-0.3
+  - id: release-promotion-steward
+    name: Release and Promotion Steward
+    status: planned
+    execution: unavailable
+    earliest_batch: TOS-0.4
+  - id: knowledge-steward
+    name: Knowledge Steward
+    status: planned
+    execution: unavailable
+    earliest_batch: TOS-0.4
+  - id: workflow-coordinator
+    name: Workflow Coordinator
+    status: planned
+    execution: unavailable
+    earliest_batch: agent-engine
+  - id: integration-steward
+    name: Integration Steward
+    status: planned
+    execution: unavailable
+    earliest_batch: provider-adapters
