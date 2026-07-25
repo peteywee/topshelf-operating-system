@@ -21,3 +21,10 @@ evidence:
     commit_sha: 1fdcfa80c8544dc85f66ed013dac26605779bf19
     source: GitHub PR 4 and Actions run 30173750895
     captured_on: "2026-07-25"
+  - id: TOS-EVD-004
+    claim: Batch 2B controlled proposal generation, version classification, semantic redlines, and impact analysis pass at one reviewed SHA.
+    class: automated
+    status: pending
+    commit_sha: pending
+    source: docs/implementation/tos-0.1-batch-2.md
+    captured_on: null
