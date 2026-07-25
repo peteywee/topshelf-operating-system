@@ -7,6 +7,7 @@ import {
   loadContractCatalog,
   validateContractCatalog,
 } from "@topshelf-os/contracts";
+import { evaluateContractChangeAuthorization } from "@topshelf-os/contracts/authorization";
 import {
   analyzeContractImpact,
   buildContractChangeScaffold,
@@ -36,8 +37,9 @@ Usage:
   tos contract propose <id> <change-id> <requester> <reason>
                                                   Generate a controlled change scaffold
   tos contract change validate <proposal-path>    Validate a contract change proposal
-  tos contract diff <id> <draft-path>              Produce a semantic redline
-  tos contract impact <id>                         Report direct and review-candidate impacts
+  tos contract diff <id> <draft-path>             Produce a semantic redline
+  tos contract impact <id>                        Report direct and review-candidate impacts
+  tos contract gate <proposal-path> [owner]        Evaluate audit, approval, evidence, and promotion gates
   tos --version                                   Show runtime version
   tos --help                                      Show this help
 `;
@@ -195,6 +197,24 @@ async function runContract(commandArgs: readonly string[]): Promise<void> {
         return;
       }
       console.log(stringifyYaml(analyzeContractImpact(catalog, contractId)).trimEnd());
+      return;
+    }
+    case "gate": {
+      const proposalPath = commandArgs[1];
+      const expectedOwner = commandArgs.slice(2).join(" ").trim() || "Patrick Craven";
+      if (proposalPath === undefined) {
+        printValidationFailure("Usage: tos contract gate <proposal-path> [expected-owner]");
+      }
+      const proposal = await loadContractChangeProposal(proposalPath);
+      const report = evaluateContractChangeAuthorization(proposal, expectedOwner);
+      if (!report.valid) {
+        printIssues(report.issues);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(
+        `OK: ${report.changeId ?? "contract change"} is authorized for ${report.targetContractPath ?? "promotion"}.`,
+      );
       return;
     }
     default:
