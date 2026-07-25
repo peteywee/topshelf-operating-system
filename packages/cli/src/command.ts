@@ -1,4 +1,7 @@
+export function resolveArguments(args: readonly string[]): string[] {
+  return args[0] === "--" ? args.slice(1) : [...args];
+}
+
 export function resolveCommand(args: readonly string[]): string {
-  const normalizedArgs = args[0] === "--" ? args.slice(1) : args;
-  return normalizedArgs[0] ?? "status";
+  return resolveArguments(args)[0] ?? "status";
 }
