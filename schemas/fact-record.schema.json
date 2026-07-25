@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://t34ch.com/schemas/tos/fact-record.schema.json",
+  "title": "TOS Canonical Fact File",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "facts"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "facts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fact" }
+    }
+  },
+  "$defs": {
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "observed_state",
+        "target_state",
+        "status",
+        "confidence",
+        "evidence",
+        "authority",
+        "last_verified",
+        "freshness",
+        "invalidated_by"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^TOS-FACT-[0-9]{3}$"
+        },
+        "statement": { "type": "string", "minLength": 1 },
+        "observed_state": {
+          "enum": ["yes", "no", "unknown", "conflicting", "not_applicable"]
+        },
+        "target_state": {
+          "enum": ["yes", "no", "unknown", "not_applicable"]
+        },
+        "status": {
+          "enum": [
+            "verified_yes",
+            "verified_no",
+            "declared_yes",
+            "declared_no",
+            "inferred_yes",
+            "inferred_no",
+            "unknown",
+            "conflicting",
+            "stale",
+            "not_applicable"
+          ]
+        },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "reference"],
+            "properties": {
+              "type": { "type": "string", "minLength": 1 },
+              "reference": { "type": "string", "minLength": 1 },
+              "captured_on": { "$ref": "#/$defs/date" },
+              "commit_sha": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{40}$"
+              }
+            }
+          }
+        },
+        "authority": { "type": "string", "minLength": 1 },
+        "last_verified": { "$ref": "#/$defs/date" },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_age_days", "expires_on"],
+          "properties": {
+            "max_age_days": { "type": "integer", "minimum": 1 },
+            "expires_on": { "$ref": "#/$defs/date" }
+          }
+        },
+        "invalidated_by": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

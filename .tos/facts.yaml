@@ -9,12 +9,19 @@ facts:
     evidence:
       - type: repository
         reference: README.md
+        captured_on: "2026-07-25"
+        commit_sha: f6da923529d9ccf3c2eb56140c05518fd52f83ed
       - type: contract
         reference: contracts/foundation-governance/TOS-CTR-003_naming-terminology.yaml
+        captured_on: "2026-07-25"
+        commit_sha: f6da923529d9ccf3c2eb56140c05518fd52f83ed
     authority: Patrick Craven
-    last_verified: "2026-07-24"
+    last_verified: "2026-07-25"
+    freshness:
+      max_age_days: 365
+      expires_on: "2027-07-25"
     invalidated_by:
-      - An owner-approved naming decision that supersedes TOS-FACT-001.
+      - An owner-approved naming decision supersedes TOS-FACT-001.
   - id: TOS-FACT-002
     statement: The repository contains 105 named foundation contract templates.
     observed_state: yes
@@ -24,12 +31,19 @@ facts:
     evidence:
       - type: register
         reference: registers/contract-register.csv
-      - type: manifest
-        reference: TOS_PACKAGE_MANIFEST.json
+        captured_on: "2026-07-25"
+        commit_sha: f6da923529d9ccf3c2eb56140c05518fd52f83ed
+      - type: automated-validation
+        reference: TOS-EVD-003
+        captured_on: "2026-07-25"
+        commit_sha: 1fdcfa80c8544dc85f66ed013dac26605779bf19
     authority: contract-registry-validation
-    last_verified: "2026-07-24"
+    last_verified: "2026-07-25"
+    freshness:
+      max_age_days: 30
+      expires_on: "2026-08-24"
     invalidated_by:
-      - Contract registry count changes without a reconciled manifest update.
+      - Contract registry count changes without a reconciled register and validation result.
   - id: TOS-FACT-003
     statement: The TOS runtime is complete.
     observed_state: no
@@ -39,7 +53,16 @@ facts:
     evidence:
       - type: roadmap
         reference: docs/08-roadmap-and-work-breakdown.md
+        captured_on: "2026-07-25"
+        commit_sha: f6da923529d9ccf3c2eb56140c05518fd52f83ed
+      - type: module-state
+        reference: .tos/modules.yaml
+        captured_on: "2026-07-25"
+        commit_sha: f6da923529d9ccf3c2eb56140c05518fd52f83ed
     authority: Patrick Craven
-    last_verified: "2026-07-24"
+    last_verified: "2026-07-25"
+    freshness:
+      max_age_days: 30
+      expires_on: "2026-08-24"
     invalidated_by:
       - Promotion through the TOS 1.0 acceptance gate.

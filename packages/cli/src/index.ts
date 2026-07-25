@@ -1,30 +1,15 @@
 #!/usr/bin/env node
 
 import process from "node:process";
-import {
-  EXPECTED_CONTRACT_COUNT,
-  getContractById,
-  loadContractCatalog,
-  validateContractCatalog,
-} from "@topshelf-os/contracts";
-import { evaluateContractChangeAuthorization } from "@topshelf-os/contracts/authorization";
-import {
-  analyzeContractImpact,
-  buildContractChangeScaffold,
-  loadContractChangeProposal,
-  readYamlDocument,
-  renderContractChangeProposal,
-  semanticDiff,
-  validateContractChangeProposal,
-} from "@topshelf-os/contracts/change";
 import { inspectProject, validateProject } from "@topshelf-os/kernel";
 import {
   TOS_OFFICIAL_NAME,
   TOS_RUNTIME_VERSION,
   TOS_SHORT_NAME,
 } from "@topshelf-os/shared";
-import { stringify as stringifyYaml } from "yaml";
 import { resolveArguments } from "./command.js";
+import { runContract } from "./contract.js";
+import { runFact } from "./fact.js";
 
 const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
 
@@ -35,11 +20,14 @@ Usage:
   tos contract show <id>                          Show one contract template
   tos contract validate                           Validate the complete contract catalog
   tos contract propose <id> <change-id> <requester> <reason>
-                                                  Generate a controlled change scaffold
+                                                   Generate a controlled change scaffold
   tos contract change validate <proposal-path>    Validate a contract change proposal
   tos contract diff <id> <draft-path>             Produce a semantic redline
   tos contract impact <id>                        Report direct and review-candidate impacts
   tos contract gate <proposal-path> [owner]        Evaluate audit, approval, evidence, and promotion gates
+  tos fact list [as-of-date]                      List canonical facts and freshness
+  tos fact show <id> [as-of-date]                 Show one canonical fact
+  tos fact validate [as-of-date]                  Validate provenance, state, and freshness
   tos --version                                   Show runtime version
   tos --help                                      Show this help
 `;
@@ -71,10 +59,8 @@ async function runStatus(): Promise<void> {
   console.log(`Planned modules: ${plannedModules.length}`);
   console.log(`Missing records: ${snapshot.missingRecords.length}`);
 
-  if (snapshot.missingRecords.length > 0) {
-    for (const missingRecord of snapshot.missingRecords) {
-      console.log(`  - ${missingRecord}`);
-    }
+  for (const missingRecord of snapshot.missingRecords) {
+    console.log(`  - ${missingRecord}`);
   }
 }
 
@@ -85,141 +71,7 @@ async function runValidate(): Promise<void> {
     process.exitCode = 1;
     return;
   }
-
   console.log("OK: canonical TOS state is valid.");
-}
-
-async function runContract(commandArgs: readonly string[]): Promise<void> {
-  const subcommand = commandArgs[0] ?? "list";
-
-  switch (subcommand) {
-    case "list": {
-      const catalog = await loadContractCatalog();
-      if (catalog.issues.some((item) => item.severity === "error")) {
-        printIssues(catalog.issues);
-        process.exitCode = 1;
-        return;
-      }
-      console.log(`Contract catalog: ${catalog.contracts.length} templates`);
-      for (const contract of catalog.contracts) {
-        console.log(`${contract.id}\t${contract.contractType}\t${contract.path}`);
-      }
-      return;
-    }
-    case "show": {
-      const contractId = commandArgs[1];
-      if (contractId === undefined) {
-        printValidationFailure("Usage: tos contract show <contract-id>");
-      }
-      const contract = await getContractById(contractId);
-      if (contract === undefined) {
-        printValidationFailure(`Contract not found: ${contractId}`);
-      }
-      console.log(stringifyYaml(contract.document).trimEnd());
-      return;
-    }
-    case "validate": {
-      const report = await validateContractCatalog();
-      if (!report.valid) {
-        printIssues(report.issues);
-        process.exitCode = 1;
-        return;
-      }
-      console.log(`OK: contract catalog is valid (${EXPECTED_CONTRACT_COUNT} registered templates).`);
-      return;
-    }
-    case "propose": {
-      const contractId = commandArgs[1];
-      const changeId = commandArgs[2];
-      const requestedBy = commandArgs[3];
-      const reason = commandArgs.slice(4).join(" ").trim();
-      if (contractId === undefined || changeId === undefined || requestedBy === undefined || reason.length === 0) {
-        printValidationFailure(
-          "Usage: tos contract propose <contract-id> <change-id> <requested-by> <reason>",
-        );
-      }
-      const contract = await getContractById(contractId);
-      if (contract === undefined) {
-        printValidationFailure(`Contract not found: ${contractId}`);
-      }
-      const proposal = buildContractChangeScaffold(contract, changeId, requestedBy, reason);
-      console.log(renderContractChangeProposal(proposal));
-      return;
-    }
-    case "change": {
-      const changeCommand = commandArgs[1];
-      if (changeCommand !== "validate") {
-        printValidationFailure("Usage: tos contract change validate <proposal-path>");
-      }
-      const proposalPath = commandArgs[2];
-      if (proposalPath === undefined) {
-        printValidationFailure("Usage: tos contract change validate <proposal-path>");
-      }
-      const document = await loadContractChangeProposal(proposalPath);
-      const report = validateContractChangeProposal(document);
-      if (!report.valid) {
-        printIssues(report.issues);
-        process.exitCode = 1;
-        return;
-      }
-      console.log(`OK: contract change proposal is structurally valid (${proposalPath}).`);
-      return;
-    }
-    case "diff": {
-      const contractId = commandArgs[1];
-      const draftPath = commandArgs[2];
-      if (contractId === undefined || draftPath === undefined) {
-        printValidationFailure("Usage: tos contract diff <contract-id> <draft-path>");
-      }
-      const contract = await getContractById(contractId);
-      if (contract === undefined) {
-        printValidationFailure(`Contract not found: ${contractId}`);
-      }
-      const draft = await readYamlDocument(draftPath);
-      const diff = semanticDiff(contract.document, draft);
-      console.log(`Semantic diff: ${contractId} (${diff.length} changes)`);
-      for (const entry of diff) {
-        console.log(`${entry.kind.toUpperCase()}\t${entry.path}`);
-        if (entry.before !== undefined) console.log(`  before: ${JSON.stringify(entry.before)}`);
-        if (entry.after !== undefined) console.log(`  after:  ${JSON.stringify(entry.after)}`);
-      }
-      return;
-    }
-    case "impact": {
-      const contractId = commandArgs[1];
-      if (contractId === undefined) {
-        printValidationFailure("Usage: tos contract impact <contract-id>");
-      }
-      const catalog = await loadContractCatalog();
-      if (catalog.issues.some((item) => item.severity === "error")) {
-        printIssues(catalog.issues);
-        process.exitCode = 1;
-        return;
-      }
-      console.log(stringifyYaml(analyzeContractImpact(catalog, contractId)).trimEnd());
-      return;
-    }
-    case "gate": {
-      const proposalPath = commandArgs[1];
-      const expectedOwner = commandArgs.slice(2).join(" ").trim() || "Patrick Craven";
-      if (proposalPath === undefined) {
-        printValidationFailure("Usage: tos contract gate <proposal-path> [expected-owner]");
-      }
-      const proposal = await loadContractChangeProposal(proposalPath);
-      const report = evaluateContractChangeAuthorization(proposal, expectedOwner);
-      if (!report.valid) {
-        printIssues(report.issues);
-        process.exitCode = 1;
-        return;
-      }
-      console.log(
-        `OK: ${report.changeId ?? "contract change"} is authorized for ${report.targetContractPath ?? "promotion"}.`,
-      );
-      return;
-    }
-    default:
-      printValidationFailure(`Unknown contract command: ${subcommand}\n\n${HELP}`);
-  }
 }
 
 async function main(): Promise<void> {
@@ -244,6 +96,9 @@ async function main(): Promise<void> {
       return;
     case "contract":
       await runContract(args.slice(1));
+      return;
+    case "fact":
+      await runFact(args.slice(1));
       return;
     default:
       printValidationFailure(`Unknown command: ${command}\n\n${HELP}`);

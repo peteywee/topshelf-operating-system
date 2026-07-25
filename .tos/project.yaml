@@ -10,4 +10,4 @@ project:
   status: active
 state:
   authoritative_path: .tos
-  last_reconciled: "2026-07-24"
+  last_reconciled: "2026-07-25"
