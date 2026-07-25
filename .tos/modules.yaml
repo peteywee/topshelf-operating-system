@@ -15,19 +15,23 @@ modules:
   - id: cli
     status: active
     source: packages/cli/
-    reason: Exposes the initial executable TOS command surface.
+    reason: Exposes the executable TOS command surface.
   - id: agent-governance
     status: active
     source: agents/ and skills/
     reason: Defines agnostic roles, authority boundaries, separation of duties, and reusable human-assisted skills before autonomous execution exists.
   - id: contract-registry
+    status: active
+    source: packages/contracts/src/index.ts
+    reason: Batch 2A merged with the validated 105-template catalog, registry reconciliation, CLI inventory, and negative controls.
+  - id: contract-change-control
     status: planned
-    source: packages/contracts/
-    reason: Batch 2A implementation exists on its feature branch but remains planned until exact-SHA validation and merge.
+    source: packages/contracts/src/change.ts
+    reason: Batch 2B implementation is present on its feature branch and remains planned until exact-SHA validation and merge.
   - id: truth-engine
     status: planned
     source: packages/truth-engine/
-    reason: Scheduled for TOS 0.2 after the kernel baseline is accepted.
+    reason: Scheduled for TOS 0.2 after the contract-control baseline is accepted.
   - id: scheduler
     status: planned
     source: packages/scheduler/
