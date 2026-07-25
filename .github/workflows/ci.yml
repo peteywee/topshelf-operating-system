@@ -48,3 +48,13 @@ jobs:
 
       - name: Report project status
         run: pnpm tos -- status
+
+      - name: Validate contract catalog
+        run: pnpm tos -- contract validate
+
+      - name: Smoke contract inventory
+        run: |
+          pnpm tos -- contract list > /tmp/tos-contract-list.txt
+          grep -q "Contract catalog: 105 templates" /tmp/tos-contract-list.txt
+          pnpm tos -- contract show TOS-CTR-085 > /tmp/tos-contract-085.yaml
+          grep -q "contract_type: Agent Role" /tmp/tos-contract-085.yaml
