@@ -8,7 +8,7 @@ blockers:
     opened_on: "2026-07-24"
     closed_on: "2026-07-25"
     reason: Batch 1 was merged before the canonical evidence index recorded the exact validated head and CI result.
-    resolution: TOS-EVD-002 now records the merged PR head, user-reported local completion, and successful Node.js 20/22 CI.
+    resolution: TOS-EVD-002 records the merged PR head and successful Node.js 20/22 CI.
     evidence:
       - TOS-EVD-002
   - id: TOS-BLK-002
@@ -34,18 +34,13 @@ blockers:
     evidence:
       - TOS-EVD-004
   - id: TOS-BLK-004
-    title: Batch 2C contract authorization validation pending
-    status: open
+    title: Batch 2C contract authorization validation
+    status: closed
     severity: high
     owner: Patrick Craven
     opened_on: "2026-07-25"
-    reason: Authorization, separation-of-duty, evidence, promotion, and direct-edit controls must pass exact-SHA validation before merge.
-    unblock_when:
-      - pnpm install --frozen-lockfile succeeds on Node.js 20 and 22.
-      - pnpm check passes authorization positive and negative controls.
-      - The simulation-only approved packet passes only with Example Owner.
-      - The simulation-only approved packet fails when Patrick Craven is expected.
-      - Self-audit, pending owner approval, wrong owner, and missing evidence fail.
-      - A canonical contract edit without a matching approved record fails the pure guard test.
-      - The branch-level direct-edit guard passes because Batch 2C changes no canonical contract YAML.
-      - TOS-EVD-005 records the exact validated SHA and CI run.
+    closed_on: "2026-07-25"
+    reason: Authorization, separation-of-duty, evidence, promotion, and direct-edit controls required exact-SHA validation before merge.
+    resolution: Actions run 30175022353 passed all positive and negative authorization paths, including simulation-only approval, real-owner rejection, and the branch-level direct-edit guard on Node.js 20 and 22.
+    evidence:
+      - TOS-EVD-005
