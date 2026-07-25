@@ -19,7 +19,7 @@ modules:
   - id: agent-governance
     status: active
     source: agents/ and skills/
-    reason: Defines the Contract Steward, Contract Auditor, Evidence Steward, Release & Promotion Steward, authority boundaries, and human-assisted skills.
+    reason: Defines the Contract Steward, Contract Auditor, Evidence Steward, Release & Promotion Steward, Truth Steward, authority boundaries, and human-assisted skills.
   - id: contract-registry
     status: active
     source: packages/contracts/src/index.ts
@@ -33,9 +33,9 @@ modules:
     source: packages/contracts/src/authorization.ts
     reason: Provides independent-audit, owner-approval, evidence, promotion, and direct-edit enforcement validated on Node.js 20 and 22.
   - id: truth-engine
-    status: planned
-    source: packages/truth-engine/
-    reason: Scheduled for TOS 0.2 after the contract-control baseline is accepted.
+    status: active
+    source: packages/kernel/src/truth.ts
+    reason: TOS 0.2 Batch 3A validates canonical fact identity, state, provenance, confidence, freshness, and invalidation rules.
   - id: scheduler
     status: planned
     source: packages/scheduler/
