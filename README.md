@@ -17,42 +17,32 @@ Every foundation concern is named in the contract catalog. Every project must ev
 
 ## Repository layout
 
-- `.tos/` — authoritative machine-readable state for this project.
+- `.tos/` — authoritative machine-readable state and approved contract-change records.
 - `packages/shared/` — canonical types and identifiers.
 - `packages/kernel/` — project discovery, state loading, and validation.
-- `packages/contracts/` — contract catalog, change proposals, redlines, and impact analysis.
+- `packages/contracts/` — catalog, proposals, redlines, impact analysis, and authorization gates.
 - `packages/cli/` — executable `tos` command surface.
 - `contracts/` — agnostic templates for all named foundation concerns.
-- `agents/` — governed agent-role specifications; these do not imply an autonomous runtime.
-- `skills/` — reusable human-assisted operating instructions for agent roles.
-- `schemas/` — machine-readable schemas for core TOS records.
-- `registers/` — contract, terminology, decision, and requirement registers.
-- `docs/` — formal decisions, operating specifications, and implementation batches.
-- `examples/` — filled examples of core records.
-- `visuals/` — Mermaid architecture and lifecycle sources.
-- `final/` — publication DOCX and PDF.
+- `agents/` — governed human-assisted role specifications; these do not imply an autonomous runtime.
+- `skills/` — reusable operating instructions for governed roles.
+- `schemas/`, `registers/`, `docs/`, `examples/`, `visuals/`, and `final/` — supporting system records and publication assets.
 
 ## Runtime quick start
 
-Requirements:
-
-- Node.js 20 or 22
-- pnpm 10.33.3 through Corepack
+Requirements: Node.js 20 or 22 and pnpm 10.33.3 through Corepack.
 
 ```bash
 corepack enable
 pnpm install --frozen-lockfile
 pnpm check
-pnpm tos -- status
 pnpm tos -- validate
 pnpm tos -- contract validate
+pnpm contract:guard
 ```
 
-Command surface:
+## Contract command surface
 
 ```bash
-tos status
-tos validate
 tos contract list
 tos contract show TOS-CTR-085
 tos contract validate
@@ -60,25 +50,33 @@ tos contract propose TOS-CTR-085 TOS-CHG-2026-002 "Patrick Craven" "Clarify role
 tos contract change validate examples/contract-changes/TOS-CHG-2026-001.yaml
 tos contract diff TOS-CTR-085 examples/contract-changes/drafts/TOS-CHG-2026-001_TOS-CTR-085.yaml
 tos contract impact TOS-CTR-085
-tos --version
-tos --help
+tos contract gate <approved-proposal-path> "Patrick Craven"
 ```
 
-`contract propose`, `diff`, and `impact` generate review material. They do not approve, merge, or make proposed language effective.
+Proposal, diff, and impact commands generate review material. The gate only reports authorization readiness; it does not merge or edit a contract. `pnpm contract:guard` blocks changed canonical contract files that lack a matching authorized record.
+
+## Contract governance chain
+
+```text
+Contract Steward
+    → Contract Auditor
+    → Evidence Steward
+    → Release & Promotion Steward
+    → Patrick Craven owner approval
+```
+
+For real TOS changes, only Patrick Craven may supply the owner approval required by the gate. Simulation fixtures under `examples/contract-changes/` are explicitly non-authoritative and cannot be stored as real approvals.
 
 ## Current implementation status
 
-TOS 0.1 Batch 1 established the repository kernel, canonical `.tos/` state, shared types, initial CLI, tests, and CI.
+- Batch 1: repository kernel and canonical state — merged.
+- Batch 2A: validated 105-template catalog, Contract Steward, and Contract Auditor — merged.
+- Batch 2B: controlled proposals, versions, redlines, and impact analysis — merged.
+- Batch 2C: independent audit, evidence, owner approval, promotion gate, and direct-edit protection — in validation.
 
-TOS 0.1 Batch 2A merged the executable 105-template contract catalog, pre-engine agent roster, and human-assisted Contract Steward and Contract Auditor specifications.
+The roles remain human-assisted specifications. TOS does not yet include an autonomous agent engine, scheduler, persistent agent memory, or automatic legal approval.
 
-TOS 0.1 Batch 2B adds controlled change proposals, semantic-version classification, semantic redlines, and impact analysis. It still does **not** claim autonomous agent execution or approval authority.
-
-See:
-
-- `docs/implementation/tos-0.1-batch-1.md`
-- `docs/implementation/tos-0.1-batch-2.md`
-- `docs/architecture/pre-engine-agent-roster.md`
+See `docs/implementation/tos-0.1-batch-2.md` and `docs/architecture/pre-engine-agent-roster.md`.
 
 ## Core implementation defaults
 
@@ -86,7 +84,6 @@ See:
 - CLI command: `tos`
 - Runtime: TypeScript on Node.js 20 or 22, managed with pnpm 10.33.3
 - Canonical project state: human-readable YAML under `.tos/`
-- Derived local index/cache: SQLite, rebuildable from canonical records
 - Append-only activity stream: `.tos/activity.jsonl`
 - Contract IDs: `TOS-CTR-###`
 - Contract change IDs: `TOS-CHG-YYYY-NNN`
