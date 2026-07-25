@@ -35,3 +35,10 @@ evidence:
     commit_sha: fdaeaf5941482ca2607a3e724da46a1c223dc481
     source: GitHub PR 6 and Actions run 30175022353
     captured_on: "2026-07-25"
+  - id: TOS-EVD-006
+    claim: TOS 0.2 Batch 3A canonical fact identity, provenance, confidence, freshness, invalidation, CLI, and negative controls pass on Node.js 20 and 22 without regressing contract controls.
+    class: automated
+    status: verified
+    commit_sha: 7542a8ba9da352fe08281901f3bb152cf3c30a6a
+    source: GitHub PR 7 and Actions run 30175902966
+    captured_on: "2026-07-25"
