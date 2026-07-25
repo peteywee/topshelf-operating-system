@@ -46,9 +46,12 @@ blockers:
       - TOS-EVD-005
   - id: TOS-BLK-005
     title: Batch 3A canonical truth validation
-    status: open
+    status: closed
     severity: high
     owner: Patrick Craven
     opened_on: "2026-07-25"
-    reason: The truth kernel, canonical fact schema, freshness behavior, CLI, and negative controls require exact-SHA validation on Node.js 20 and 22 before merge.
-    evidence: []
+    closed_on: "2026-07-25"
+    reason: The truth kernel, canonical fact schema, freshness behavior, CLI, and negative controls required exact-SHA validation on Node.js 20 and 22 before merge.
+    resolution: Actions run 30175902966 passed frozen-lockfile installation, strict build/typecheck/tests, fact list/show/validate, expired-fact rejection, all existing contract controls, and the direct-edit guard on Node.js 20 and 22.
+    evidence:
+      - TOS-EVD-006
