@@ -1,8 +1,10 @@
 # TOS 0.2 — Batch 3A: Truth Steward and Canonical Facts
 
-**Status:** validated; pending PR #7 merge  
-**Branch:** `agent/tos-0-2-batch-3a-truth-steward`  
+**Status:** merged  
+**Implementation branch:** `agent/tos-0-2-batch-3a-truth-steward`  
 **Base:** Batch 2C merge `f6da923529d9ccf3c2eb56140c05518fd52f83ed`  
+**Merged commit:** `886720d0011fa0521244330ca9693510014308c2`  
+**Pull request:** #7  
 **Owner:** Patrick Craven
 
 ## Goal
@@ -55,8 +57,8 @@ All twelve Batch 3A acceptance criteria passed at implementation SHA `7542a8ba9d
 - The `2026-08-25` validation correctly rejected expired non-stale facts.
 - Canonical state, all 105 contracts, contract change controls, owner authorization controls, and direct-edit protection remained green.
 
-Canonical evidence is recorded as `TOS-EVD-006`; `TOS-BLK-005` is closed.
+The final pre-merge state head `2b14ae209a686f1de830a41e9c155dd5240ea2f2` passed Actions run `30176038248` on Node.js 20 and 22. Canonical evidence is recorded as `TOS-EVD-006`; `TOS-BLK-005` is closed.
 
 ## Definition of done
 
-The implementation, validation, evidence, blocker closure, Truth Steward specification, and truth-engine activation are complete. Batch 3A reaches full done when PR #7 is merged to `main` and the post-merge state is confirmed.
+Complete. The implementation, validation, evidence, blocker closure, Truth Steward specification, truth-engine activation, PR #7 merge, and post-merge closeout record are present.
