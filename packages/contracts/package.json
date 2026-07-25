@@ -11,6 +11,10 @@
     "./change": {
       "types": "./dist/change.d.ts",
       "import": "./dist/change.js"
+    },
+    "./authorization": {
+      "types": "./dist/authorization.d.ts",
+      "import": "./dist/authorization.js"
     }
   },
   "files": ["dist"],
