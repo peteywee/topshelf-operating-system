@@ -22,3 +22,14 @@ blockers:
     resolution: The lockfile is committed and Actions run 30173750895 passed build, typecheck, tests, canonical state, all 105 contract templates, and the Agent Role smoke lookup on Node.js 20 and 22.
     evidence:
       - TOS-EVD-003
+  - id: TOS-BLK-003
+    title: Batch 2B controlled contract change validation
+    status: closed
+    severity: medium
+    owner: Patrick Craven
+    opened_on: "2026-07-25"
+    closed_on: "2026-07-25"
+    reason: Proposal generation, semantic diff, version classification, and impact analysis required exact-SHA validation before merge.
+    resolution: Actions run 30174157507 passed frozen-lockfile installation, build, typecheck, tests, proposal validation, scaffold generation, semantic redline, and impact reporting on Node.js 20 and 22.
+    evidence:
+      - TOS-EVD-004

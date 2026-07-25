@@ -35,7 +35,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build, typecheck, and test
         run: pnpm check
@@ -58,3 +58,16 @@ jobs:
           grep -q "Contract catalog: 105 templates" /tmp/tos-contract-list.txt
           pnpm tos -- contract show TOS-CTR-085 > /tmp/tos-contract-085.yaml
           grep -q "contract_type: Agent Role" /tmp/tos-contract-085.yaml
+
+      - name: Validate contract change proposal
+        run: |
+          pnpm tos -- contract change validate examples/contract-changes/TOS-CHG-2026-001.yaml
+          pnpm tos -- contract propose TOS-CTR-085 TOS-CHG-2026-002 "Patrick Craven" "Clarify role authority" > /tmp/tos-change-scaffold.yaml
+          grep -q "change_id: TOS-CHG-2026-002" /tmp/tos-change-scaffold.yaml
+
+      - name: Smoke semantic redline and impact report
+        run: |
+          pnpm tos -- contract diff TOS-CTR-085 examples/contract-changes/drafts/TOS-CHG-2026-001_TOS-CTR-085.yaml > /tmp/tos-contract-diff.txt
+          grep -q "Semantic diff: TOS-CTR-085" /tmp/tos-contract-diff.txt
+          pnpm tos -- contract impact TOS-CTR-085 > /tmp/tos-contract-impact.yaml
+          grep -q "contractId: TOS-CTR-085" /tmp/tos-contract-impact.yaml

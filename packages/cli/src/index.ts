@@ -7,6 +7,15 @@ import {
   loadContractCatalog,
   validateContractCatalog,
 } from "@topshelf-os/contracts";
+import {
+  analyzeContractImpact,
+  buildContractChangeScaffold,
+  loadContractChangeProposal,
+  readYamlDocument,
+  renderContractChangeProposal,
+  semanticDiff,
+  validateContractChangeProposal,
+} from "@topshelf-os/contracts/change";
 import { inspectProject, validateProject } from "@topshelf-os/kernel";
 import {
   TOS_OFFICIAL_NAME,
@@ -19,13 +28,18 @@ import { resolveArguments } from "./command.js";
 const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
 
 Usage:
-  tos status                    Show canonical project state
-  tos validate                  Validate required .tos records
-  tos contract list             List registered contract templates
-  tos contract show <id>        Show one contract template
-  tos contract validate         Validate the complete contract catalog
-  tos --version                 Show runtime version
-  tos --help                    Show this help
+  tos status                                      Show canonical project state
+  tos validate                                    Validate required .tos records
+  tos contract list                               List registered contract templates
+  tos contract show <id>                          Show one contract template
+  tos contract validate                           Validate the complete contract catalog
+  tos contract propose <id> <change-id> <requester> <reason>
+                                                  Generate a controlled change scaffold
+  tos contract change validate <proposal-path>    Validate a contract change proposal
+  tos contract diff <id> <draft-path>              Produce a semantic redline
+  tos contract impact <id>                         Report direct and review-candidate impacts
+  tos --version                                   Show runtime version
+  tos --help                                      Show this help
 `;
 
 function printValidationFailure(message: string): never {
@@ -110,6 +124,77 @@ async function runContract(commandArgs: readonly string[]): Promise<void> {
         return;
       }
       console.log(`OK: contract catalog is valid (${EXPECTED_CONTRACT_COUNT} registered templates).`);
+      return;
+    }
+    case "propose": {
+      const contractId = commandArgs[1];
+      const changeId = commandArgs[2];
+      const requestedBy = commandArgs[3];
+      const reason = commandArgs.slice(4).join(" ").trim();
+      if (contractId === undefined || changeId === undefined || requestedBy === undefined || reason.length === 0) {
+        printValidationFailure(
+          "Usage: tos contract propose <contract-id> <change-id> <requested-by> <reason>",
+        );
+      }
+      const contract = await getContractById(contractId);
+      if (contract === undefined) {
+        printValidationFailure(`Contract not found: ${contractId}`);
+      }
+      const proposal = buildContractChangeScaffold(contract, changeId, requestedBy, reason);
+      console.log(renderContractChangeProposal(proposal));
+      return;
+    }
+    case "change": {
+      const changeCommand = commandArgs[1];
+      if (changeCommand !== "validate") {
+        printValidationFailure("Usage: tos contract change validate <proposal-path>");
+      }
+      const proposalPath = commandArgs[2];
+      if (proposalPath === undefined) {
+        printValidationFailure("Usage: tos contract change validate <proposal-path>");
+      }
+      const document = await loadContractChangeProposal(proposalPath);
+      const report = validateContractChangeProposal(document);
+      if (!report.valid) {
+        printIssues(report.issues);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(`OK: contract change proposal is structurally valid (${proposalPath}).`);
+      return;
+    }
+    case "diff": {
+      const contractId = commandArgs[1];
+      const draftPath = commandArgs[2];
+      if (contractId === undefined || draftPath === undefined) {
+        printValidationFailure("Usage: tos contract diff <contract-id> <draft-path>");
+      }
+      const contract = await getContractById(contractId);
+      if (contract === undefined) {
+        printValidationFailure(`Contract not found: ${contractId}`);
+      }
+      const draft = await readYamlDocument(draftPath);
+      const diff = semanticDiff(contract.document, draft);
+      console.log(`Semantic diff: ${contractId} (${diff.length} changes)`);
+      for (const entry of diff) {
+        console.log(`${entry.kind.toUpperCase()}\t${entry.path}`);
+        if (entry.before !== undefined) console.log(`  before: ${JSON.stringify(entry.before)}`);
+        if (entry.after !== undefined) console.log(`  after:  ${JSON.stringify(entry.after)}`);
+      }
+      return;
+    }
+    case "impact": {
+      const contractId = commandArgs[1];
+      if (contractId === undefined) {
+        printValidationFailure("Usage: tos contract impact <contract-id>");
+      }
+      const catalog = await loadContractCatalog();
+      if (catalog.issues.some((item) => item.severity === "error")) {
+        printIssues(catalog.issues);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(stringifyYaml(analyzeContractImpact(catalog, contractId)).trimEnd());
       return;
     }
     default:

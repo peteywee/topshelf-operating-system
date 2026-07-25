@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://t34ch.com/schemas/tos/contract-change.schema.json",
+  "title": "TOS Contract Change Proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "change", "review", "evidence"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "change_id",
+        "contract_id",
+        "requested_by",
+        "requested_on",
+        "reason",
+        "status",
+        "current_version",
+        "proposed_version",
+        "change_class",
+        "draft_contract_path",
+        "compatibility_summary",
+        "affected_contracts"
+      ],
+      "properties": {
+        "change_id": { "type": "string", "pattern": "^TOS-CHG-[0-9]{4}-[0-9]{3}$" },
+        "contract_id": { "type": "string", "pattern": "^TOS-CTR-[0-9]{3}$" },
+        "requested_by": { "type": "string", "minLength": 1 },
+        "requested_on": { "type": "string", "format": "date" },
+        "reason": { "type": "string", "minLength": 1 },
+        "status": {
+          "enum": ["draft", "proposed", "under_review", "approved", "rejected"]
+        },
+        "current_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "proposed_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "change_class": { "enum": ["patch", "minor", "major"] },
+        "draft_contract_path": { "type": "string", "minLength": 1 },
+        "compatibility_summary": { "type": "string", "minLength": 1 },
+        "affected_contracts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^TOS-CTR-[0-9]{3}$" }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steward", "auditor", "owner"],
+      "properties": {
+        "steward": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["agent_id", "status"],
+          "properties": {
+            "agent_id": { "type": "string", "minLength": 1 },
+            "status": { "enum": ["authored", "pending"] }
+          }
+        },
+        "auditor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["agent_id", "status"],
+          "properties": {
+            "agent_id": { "type": "string", "minLength": 1 },
+            "status": { "enum": ["pending", "passed", "failed"] }
+          }
+        },
+        "owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "status"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "status": { "enum": ["pending", "approved", "rejected"] }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

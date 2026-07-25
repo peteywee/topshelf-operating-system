@@ -21,3 +21,10 @@ evidence:
     commit_sha: 1fdcfa80c8544dc85f66ed013dac26605779bf19
     source: GitHub PR 4 and Actions run 30173750895
     captured_on: "2026-07-25"
+  - id: TOS-EVD-004
+    claim: Batch 2B controlled proposal generation, semantic-version classification, proposal validation, semantic redlines, and contract impact analysis pass on Node.js 20 and 22.
+    class: automated
+    status: verified
+    commit_sha: 3ac21ec0a05456a2657de5f5645498a9fa9db8ef
+    source: GitHub PR 5 and Actions run 30174157507
+    captured_on: "2026-07-25"
