@@ -10,11 +10,13 @@ const REQUIRED_EVIDENCE_PREFIXES = [
   "owner_approval:",
 ] as const;
 
-export interface ContractAuthorizationResult extends ValidationReport {
-  changeId?: string;
-  contractId?: string;
-  targetContractPath?: string;
+interface ProposalIdentity {
+  changeId: string | undefined;
+  contractId: string | undefined;
+  targetContractPath: string | undefined;
 }
+
+export interface ContractAuthorizationResult extends ValidationReport, ProposalIdentity {}
 
 export interface ChangedContractAuthorizationOptions {
   expectedOwner: string;
@@ -39,12 +41,10 @@ function childRecord(parent: Record<string, unknown>, key: string): Record<strin
   return isRecord(value) ? value : undefined;
 }
 
-function readProposalIdentity(document: unknown): {
-  changeId?: string;
-  contractId?: string;
-  targetContractPath?: string;
-} {
-  if (!isRecord(document)) return {};
+function readProposalIdentity(document: unknown): ProposalIdentity {
+  if (!isRecord(document)) {
+    return { changeId: undefined, contractId: undefined, targetContractPath: undefined };
+  }
   const change = childRecord(document, "change");
   const promotion = childRecord(document, "promotion");
   return {
@@ -142,7 +142,7 @@ export function evaluateContractChangeAuthorization(
   if (
     stewardActor !== undefined &&
     auditorActor !== undefined &&
-    stewardActor.toLocaleLowerCase() === auditorActor.toLocaleLowerCase()
+    stewardActor.toLowerCase() === auditorActor.toLowerCase()
   ) {
     issues.push(
       issue(
