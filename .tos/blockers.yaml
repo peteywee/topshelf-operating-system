@@ -19,7 +19,7 @@ blockers:
     opened_on: "2026-07-25"
     closed_on: "2026-07-25"
     reason: The contract catalog package, CLI commands, agent specifications, and skills required exact-SHA validation.
-    resolution: The lockfile is committed and Actions run 30173750895 passed build, typecheck, tests, canonical state, all 105 contract templates, and the Agent Role smoke lookup on Node.js 20 and 22.
+    resolution: Actions run 30173750895 passed the complete catalog workflow on Node.js 20 and 22.
     evidence:
       - TOS-EVD-003
   - id: TOS-BLK-003
@@ -30,6 +30,22 @@ blockers:
     opened_on: "2026-07-25"
     closed_on: "2026-07-25"
     reason: Proposal generation, semantic diff, version classification, and impact analysis required exact-SHA validation before merge.
-    resolution: Actions run 30174157507 passed frozen-lockfile installation, build, typecheck, tests, proposal validation, scaffold generation, semantic redline, and impact reporting on Node.js 20 and 22.
+    resolution: Actions run 30174157507 passed the complete controlled-change workflow on Node.js 20 and 22.
     evidence:
       - TOS-EVD-004
+  - id: TOS-BLK-004
+    title: Batch 2C contract authorization validation pending
+    status: open
+    severity: high
+    owner: Patrick Craven
+    opened_on: "2026-07-25"
+    reason: Authorization, separation-of-duty, evidence, promotion, and direct-edit controls must pass exact-SHA validation before merge.
+    unblock_when:
+      - pnpm install --frozen-lockfile succeeds on Node.js 20 and 22.
+      - pnpm check passes authorization positive and negative controls.
+      - The simulation-only approved packet passes only with Example Owner.
+      - The simulation-only approved packet fails when Patrick Craven is expected.
+      - Self-audit, pending owner approval, wrong owner, and missing evidence fail.
+      - A canonical contract edit without a matching approved record fails the pure guard test.
+      - The branch-level direct-edit guard passes because Batch 2C changes no canonical contract YAML.
+      - TOS-EVD-005 records the exact validated SHA and CI run.
