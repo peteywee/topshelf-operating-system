@@ -11,3 +11,4 @@
 {"event_id":"TOS-ACT-011","timestamp":"2026-07-25T22:20:00Z","actor":"TOS implementation","action":"batch_started","subject":"TOS 0.2 Batch 3A Truth Steward and canonical facts","branch":"agent/tos-0-2-batch-3a-truth-steward"}
 {"event_id":"TOS-ACT-012","timestamp":"2026-07-25T22:45:00Z","actor":"TOS implementation","action":"batch_validated","subject":"TOS 0.2 Batch 3A Truth Steward and canonical facts","commit_sha":"7542a8ba9da352fe08281901f3bb152cf3c30a6a","pull_request":7,"evidence":"TOS-EVD-006"}
 {"event_id":"TOS-ACT-013","timestamp":"2026-07-25T22:50:00Z","actor":"TOS implementation","action":"batch_merged","subject":"TOS 0.2 Batch 3A Truth Steward and canonical facts","commit_sha":"886720d0011fa0521244330ca9693510014308c2","pull_request":7}
+{"event_id":"TOS-ACT-014","timestamp":"2026-07-30T18:53:00Z","actor":"TOS implementation","action":"batch_started","subject":"TOS 0.2 Batch 3B Decision-Ready Truth","branch":"agent/tos-0-2-batch-3b-decision-ready-truth"}
