@@ -70,7 +70,6 @@ export function reconcileFacts(facts: readonly TosFactRecord[], asOfDate: string
         explanation: "The same normalized claim is recorded with both yes and no observed states.",
         requires_human_resolution: true,
       });
-      continue;
     }
 
     if (states.size === 1 && authorities.size === 1 && classifications.size === 1) {
