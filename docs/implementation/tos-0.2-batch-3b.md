@@ -1,7 +1,9 @@
 # TOS 0.2 — Batch 3B: Decision-Ready Truth
 
-**Status:** validated; pending PR #9 merge  
-**Branch:** `agent/tos-0-2-batch-3b-decision-ready-truth`  
+**Status:** merged  
+**Implementation branch:** `agent/tos-0-2-batch-3b-decision-ready-truth`  
+**Merged commit:** `26f22db879f7c904b5d0fd78e1ce0c4a33e9bb68`  
+**Pull request:** #9  
 **Owner:** Patrick Craven
 
 ## Goal
@@ -50,7 +52,7 @@ All nine acceptance criteria passed at implementation SHA `309c029bf5c7cde150d8b
 8. Every Batch 1–3A and contract control remained green.
 9. Frozen-lockfile installation, strict build, typecheck, tests, and CLI smoke paths passed on both runtimes.
 
-Canonical evidence is `TOS-EVD-007`; `TOS-BLK-006` is closed.
+The final pre-merge canonical-state head `8321a20d6d997f310dbd1bc8b2914b13ae115181` passed Actions run `30573605449` on Node.js 20 and 22. Canonical evidence is `TOS-EVD-007`; `TOS-BLK-006` is closed.
 
 ## Autonomous-agent boundary
 
@@ -58,4 +60,4 @@ This batch does not execute agents. It produces decision-ready inputs for the fu
 
 ## Definition of done
 
-The implementation, exact-SHA validation, evidence, and blocker closure are complete. Batch 3B reaches full done when PR #9 merges and post-merge state is reconciled.
+Complete. The implementation, validation, evidence, blocker closure, PR #9 merge, and post-merge closeout record are present.
