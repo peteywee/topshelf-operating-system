@@ -44,7 +44,9 @@ async function createStateFixture(): Promise<string> {
 
   for (const file of [
     "facts.yaml",
+    "requirements.yaml",
     "modules.yaml",
+    "boot.yaml",
     "decisions.yaml",
     "blockers.yaml",
     "evidence-index.yaml",

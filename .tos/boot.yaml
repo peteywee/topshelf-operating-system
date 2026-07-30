@@ -1,0 +1,45 @@
+schema_version: 1
+as_of_date: "2026-07-30"
+references:
+  project: .tos/project.yaml
+  facts: .tos/facts.yaml
+  requirements: .tos/requirements.yaml
+  modules: .tos/modules.yaml
+  contracts: registers/contract-register.csv
+module_decisions:
+  - id: agent-workflow
+    decision: required
+    reason: The repository contains governed agent roles and skills that require bounded authority and evidence.
+  - id: brand-governance
+    decision: conditional
+    reason: No public-facing UI was proven by repository inspection; external branding remains an intake question.
+  - id: client-contracts
+    decision: conditional
+    reason: Repository inspection cannot determine whether this work is governed by a paid client agreement or SOW.
+  - id: payments
+    decision: conditional
+    reason: No payment dependency was detected, but money movement outside the repository remains unresolved.
+  - id: pilot-readiness
+    decision: conditional
+    reason: Real-user pilot and observation requirements cannot be inferred from code alone.
+  - id: saas-production
+    decision: required
+    reason: GitHub Actions provides a production-relevant build and validation pipeline that requires release controls.
+  - id: security-privacy
+    decision: conditional
+    reason: Authentication and application data storage were not proven, so data classification remains unresolved.
+  - id: software-engineering
+    decision: required
+    reason: The repository is a pnpm TypeScript monorepo with executable packages and strict CI.
+authority:
+  owner: Patrick Craven
+  reserved_actions:
+    - contract_approval
+    - external_spend
+    - merge
+    - production_promotion
+agent_roles:
+  planner: human_assisted
+  worker: human_assisted
+  verifier: human_assisted
+  promoter: human_assisted

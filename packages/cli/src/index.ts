@@ -7,9 +7,11 @@ import {
   TOS_RUNTIME_VERSION,
   TOS_SHORT_NAME,
 } from "@topshelf-os/shared";
+import { runBoot } from "./boot.js";
 import { resolveArguments } from "./command.js";
 import { runContract } from "./contract.js";
 import { runFact } from "./fact.js";
+import { runInspect, runIntake } from "./inspection.js";
 import { runRequirement } from "./requirement.js";
 
 const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
@@ -17,6 +19,10 @@ const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
 Usage:
   tos status                                      Show canonical project state
   tos validate                                    Validate required .tos records
+  tos inspect [as-of-date]                        Inspect repository signals and module applicability
+  tos intake [as-of-date]                         List only unresolved inspection questions
+  tos boot show [as-of-date]                      Show the reference-based agent boot packet
+  tos boot validate [as-of-date]                  Validate boot authority and planning readiness
   tos contract list                               List registered contract templates
   tos contract show <id>                          Show one contract template
   tos contract validate                           Validate the complete contract catalog
@@ -25,7 +31,7 @@ Usage:
   tos contract change validate <proposal-path>    Validate a contract change proposal
   tos contract diff <id> <draft-path>             Produce a semantic redline
   tos contract impact <id>                        Report direct and review-candidate impacts
-  tos contract gate <proposal-path> [owner]        Evaluate audit, approval, evidence, and promotion gates
+  tos contract gate <proposal-path> [owner]       Evaluate audit, approval, evidence, and promotion gates
   tos fact list [as-of-date]                      List canonical facts and freshness
   tos fact show <id> [as-of-date]                 Show one canonical fact
   tos fact validate [as-of-date]                  Validate provenance, state, and freshness
@@ -99,6 +105,15 @@ async function main(): Promise<void> {
       return;
     case "validate":
       await runValidate();
+      return;
+    case "inspect":
+      await runInspect(args.slice(1));
+      return;
+    case "intake":
+      await runIntake(args.slice(1));
+      return;
+    case "boot":
+      await runBoot(args.slice(1));
       return;
     case "contract":
       await runContract(args.slice(1));

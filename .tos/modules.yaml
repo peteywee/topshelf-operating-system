@@ -44,6 +44,10 @@ modules:
     status: active
     source: packages/kernel/src/requirements.ts
     reason: Links facts and contracts to owned requirements, acceptance criteria, and required evidence.
+  - id: inspect-boot
+    status: active
+    source: packages/kernel/src/inspect.ts and packages/kernel/src/boot.ts
+    reason: Derives repository signals, unresolved intake, module applicability, and validates the owner-authorized agent boot packet.
   - id: scheduler
     status: planned
     source: packages/scheduler/

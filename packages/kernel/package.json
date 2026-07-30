@@ -19,6 +19,14 @@
     "./requirements": {
       "types": "./dist/requirements.d.ts",
       "import": "./dist/requirements.js"
+    },
+    "./inspect": {
+      "types": "./dist/inspect.d.ts",
+      "import": "./dist/inspect.js"
+    },
+    "./boot": {
+      "types": "./dist/boot.d.ts",
+      "import": "./dist/boot.js"
     }
   },
   "files": ["dist"],

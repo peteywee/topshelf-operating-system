@@ -59,6 +59,7 @@ jobs:
           grep -q "OK: fact catalog is valid (3 records, 0 stale, as of 2026-07-25)." /tmp/tos-fact-validation.txt
           pnpm tos -- fact list 2026-07-25 > /tmp/tos-fact-list.txt
           grep -q "Fact catalog: 3 records (as of 2026-07-25)" /tmp/tos-fact-list.txt
+          grep -q "TOS-FACT-003" /tmp/tos-fact-list.txt
           pnpm tos -- fact show TOS-FACT-001 2026-07-25 > /tmp/tos-fact-001.yaml
           grep -q "status: verified_yes" /tmp/tos-fact-001.yaml
           if pnpm tos -- fact validate 2026-08-25; then
@@ -79,6 +80,24 @@ jobs:
           pnpm tos -- requirement trace TOS-REQ-001 2026-07-25 > /tmp/tos-requirement-trace.yaml
           grep -q "TOS-FACT-003" /tmp/tos-requirement-trace.yaml
           pnpm tos -- requirement gaps 2026-07-25
+
+      - name: Inspect repository and validate boot
+        run: |
+          pnpm tos -- inspect 2026-07-30 > /tmp/tos-inspection.yaml
+          grep -q "value: pnpm" /tmp/tos-inspection.yaml
+          grep -q "id: software-engineering" /tmp/tos-inspection.yaml
+          grep -q "decision: required" /tmp/tos-inspection.yaml
+          pnpm tos -- intake 2026-07-30 > /tmp/tos-intake.txt
+          grep -q "TOS-INTAKE-003" /tmp/tos-intake.txt
+          pnpm tos -- boot validate 2026-07-30 > /tmp/tos-boot-validation.txt
+          grep -q "OK: boot packet is valid and ready" /tmp/tos-boot-validation.txt
+          pnpm tos -- boot show 2026-07-30 > /tmp/tos-boot.yaml
+          grep -q "ready: true" /tmp/tos-boot.yaml
+          grep -q "planner: human_assisted" /tmp/tos-boot.yaml
+          if grep -q "planner: autonomous" /tmp/tos-boot.yaml; then
+            echo "Boot packet incorrectly enabled autonomous planning" >&2
+            exit 1
+          fi
 
       - name: Validate contract catalog
         run: pnpm tos -- contract validate

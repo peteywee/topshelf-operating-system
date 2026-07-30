@@ -15,9 +15,9 @@ Every concern is named, every fact separates observed state from target state, a
 
 ## Repository layout
 
-- `.tos/` — authoritative project state, facts, requirements, evidence, decisions, blockers, and activity.
+- `.tos/` — authoritative project state, facts, requirements, boot authority, evidence, decisions, blockers, and activity.
 - `packages/shared/` — canonical types and runtime identifiers.
-- `packages/kernel/` — state, truth, reconciliation, and requirements validation.
+- `packages/kernel/` — state, truth, reconciliation, requirements, repository inspection, and boot validation.
 - `packages/contracts/` — contract catalog and change authorization.
 - `packages/cli/` — executable `tos` command surface.
 - `contracts/` — agnostic templates for named foundation concerns.
@@ -35,6 +35,8 @@ pnpm tos -- validate
 pnpm tos -- fact validate 2026-07-25
 pnpm tos -- fact reconcile 2026-07-25
 pnpm tos -- requirement validate 2026-07-25
+pnpm tos -- inspect 2026-07-30
+pnpm tos -- boot validate 2026-07-30
 pnpm tos -- contract validate
 pnpm contract:guard
 ```
@@ -55,6 +57,17 @@ tos requirement gaps [as-of-date]
 ```
 
 Reconciliation detects duplicate claims, opposite observed states, authority disagreement, and verified-versus-declared disagreement. Requirements based on stale, unknown, conflicting, or materially disputed facts fail validation.
+
+## Inspect and boot commands
+
+```bash
+tos inspect [as-of-date]
+tos intake [as-of-date]
+tos boot show [as-of-date]
+tos boot validate [as-of-date]
+```
+
+Inspection derives repository evidence and unresolved questions. `.tos/boot.yaml` records Patrick-approved module decisions, reserved actions, and role modes by reference; it does not copy canonical facts or requirements. Boot validation rejects premature autonomous modes.
 
 ## Contract commands
 
@@ -81,6 +94,7 @@ The future Planner may compile work only from requirements whose governing facts
 - Batch 2A–2C: contract catalog, controlled changes, authorization, and direct-edit protection — merged.
 - TOS 0.2 Batch 3A: canonical fact validation and freshness controls — merged.
 - TOS 0.2 Batch 3B: decision-ready truth reconciliation and requirement traceability — merged.
+- TOS 0.2 Batch 3C: lean repository inspection and owner-authorized boot packet — validated; pending PR #11 merge.
 
 TOS does not yet include autonomous execution, a scheduler, persistent agent memory, automatic conflict resolution, or automatic legal approval.
 
