@@ -1,0 +1,29 @@
+gantt
+    title TOS 0.3 Bounded Autonomous Execution - Proposed Baseline
+    dateFormat  YYYY-MM-DD
+    axisFormat  %b %d
+
+    section Initiation
+    Charter and stakeholder authorization       :crit, i1, 2026-08-03, 5d
+
+    section Planning
+    Scope schedule cost RAID RACI baseline       :crit, p1, 2026-08-10, 5d
+    Execution policy and risk classification     :p2, 2026-08-10, 5d
+
+    section Build
+    Policy validator and kill switch             :crit, b1, 2026-08-17, 5d
+    Work-order schema and eligibility             :crit, b2, 2026-08-17, 5d
+    Work-order CLI                                :b3, after b2, 5d
+    Claims and Git isolation                      :b4, 2026-08-24, 10d
+    Scope enforcement and resume                  :crit, b5, 2026-08-31, 5d
+
+    section Verification
+    Submission and independent verifier           :crit, v1, 2026-08-31, 10d
+    Bounded repair and promotion gate             :crit, v2, 2026-09-07, 5d
+
+    section Pilot
+    Low-risk merge and rollback                   :crit, l1, 2026-09-14, 5d
+    Controlled autonomous pilot                   :crit, l2, 2026-09-21, 5d
+
+    section Closeout
+    Acceptance handoff archive and lessons        :crit, c1, 2026-09-28, 5d
