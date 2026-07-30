@@ -15,30 +15,37 @@ evidence:
     source: GitHub PR 1 and Actions run 30146696958
     captured_on: "2026-07-25"
   - id: TOS-EVD-003
-    claim: Batch 2A contract catalog, CLI, agent specifications, skills, negative controls, and real 105-template validation pass on Node.js 20 and 22.
+    claim: Batch 2A contract catalog and stewardship pass on Node.js 20 and 22.
     class: automated
     status: verified
     commit_sha: 1fdcfa80c8544dc85f66ed013dac26605779bf19
     source: GitHub PR 4 and Actions run 30173750895
     captured_on: "2026-07-25"
   - id: TOS-EVD-004
-    claim: Batch 2B controlled proposal generation, semantic-version classification, proposal validation, semantic redlines, and contract impact analysis pass on Node.js 20 and 22.
+    claim: Batch 2B controlled contract changes pass on Node.js 20 and 22.
     class: automated
     status: verified
     commit_sha: 3ac21ec0a05456a2657de5f5645498a9fa9db8ef
     source: GitHub PR 5 and Actions run 30174157507
     captured_on: "2026-07-25"
   - id: TOS-EVD-005
-    claim: Batch 2C authorization, separation-of-duty, evidence, promotion, real-owner rejection, and direct-edit controls pass on Node.js 20 and 22.
+    claim: Batch 2C contract authorization controls pass on Node.js 20 and 22.
     class: automated
     status: verified
     commit_sha: fdaeaf5941482ca2607a3e724da46a1c223dc481
     source: GitHub PR 6 and Actions run 30175022353
     captured_on: "2026-07-25"
   - id: TOS-EVD-006
-    claim: TOS 0.2 Batch 3A canonical fact identity, provenance, confidence, freshness, invalidation, CLI, and negative controls pass on Node.js 20 and 22 without regressing contract controls.
+    claim: Batch 3A canonical truth controls pass on Node.js 20 and 22 without regressing contract controls.
     class: automated
     status: verified
     commit_sha: 7542a8ba9da352fe08281901f3bb152cf3c30a6a
     source: GitHub PR 7 and Actions run 30175902966
     captured_on: "2026-07-25"
+  - id: TOS-EVD-007
+    claim: Batch 3B decision-ready truth reconciliation and requirement traceability pass on Node.js 20 and 22.
+    class: automated
+    status: pending
+    commit_sha: pending
+    source: pending GitHub PR and Actions run
+    captured_on: "2026-07-30"
