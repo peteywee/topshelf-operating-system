@@ -9,8 +9,7 @@ blockers:
     closed_on: "2026-07-25"
     reason: Batch 1 was merged before the canonical evidence index recorded the exact validated head and CI result.
     resolution: TOS-EVD-002 records the merged PR head and successful Node.js 20/22 CI.
-    evidence:
-      - TOS-EVD-002
+    evidence: [TOS-EVD-002]
   - id: TOS-BLK-002
     title: Batch 2A contract catalog validation
     status: closed
@@ -18,10 +17,9 @@ blockers:
     owner: Patrick Craven
     opened_on: "2026-07-25"
     closed_on: "2026-07-25"
-    reason: The contract catalog package, CLI commands, agent specifications, and skills required exact-SHA validation.
-    resolution: Actions run 30173750895 passed the complete catalog workflow on Node.js 20 and 22.
-    evidence:
-      - TOS-EVD-003
+    reason: The contract catalog required exact-SHA validation.
+    resolution: Actions run 30173750895 passed on Node.js 20 and 22.
+    evidence: [TOS-EVD-003]
   - id: TOS-BLK-003
     title: Batch 2B controlled contract change validation
     status: closed
@@ -29,10 +27,9 @@ blockers:
     owner: Patrick Craven
     opened_on: "2026-07-25"
     closed_on: "2026-07-25"
-    reason: Proposal generation, semantic diff, version classification, and impact analysis required exact-SHA validation before merge.
-    resolution: Actions run 30174157507 passed the complete controlled-change workflow on Node.js 20 and 22.
-    evidence:
-      - TOS-EVD-004
+    reason: Controlled contract changes required exact-SHA validation.
+    resolution: Actions run 30174157507 passed on Node.js 20 and 22.
+    evidence: [TOS-EVD-004]
   - id: TOS-BLK-004
     title: Batch 2C contract authorization validation
     status: closed
@@ -40,10 +37,9 @@ blockers:
     owner: Patrick Craven
     opened_on: "2026-07-25"
     closed_on: "2026-07-25"
-    reason: Authorization, separation-of-duty, evidence, promotion, and direct-edit controls required exact-SHA validation before merge.
-    resolution: Actions run 30175022353 passed all positive and negative authorization paths, including simulation-only approval, real-owner rejection, and the branch-level direct-edit guard on Node.js 20 and 22.
-    evidence:
-      - TOS-EVD-005
+    reason: Contract authorization controls required exact-SHA validation.
+    resolution: Actions run 30175022353 passed on Node.js 20 and 22.
+    evidence: [TOS-EVD-005]
   - id: TOS-BLK-005
     title: Batch 3A canonical truth validation
     status: closed
@@ -51,7 +47,15 @@ blockers:
     owner: Patrick Craven
     opened_on: "2026-07-25"
     closed_on: "2026-07-25"
-    reason: The truth kernel, canonical fact schema, freshness behavior, CLI, and negative controls required exact-SHA validation on Node.js 20 and 22 before merge.
-    resolution: Actions run 30175902966 passed frozen-lockfile installation, strict build/typecheck/tests, fact list/show/validate, expired-fact rejection, all existing contract controls, and the direct-edit guard on Node.js 20 and 22.
-    evidence:
-      - TOS-EVD-006
+    reason: Canonical truth controls required exact-SHA validation.
+    resolution: Actions run 30175902966 passed on Node.js 20 and 22.
+    evidence: [TOS-EVD-006]
+  - id: TOS-BLK-006
+    title: Batch 3B decision-ready truth validation
+    status: open
+    severity: high
+    owner: Patrick Craven
+    opened_on: "2026-07-30"
+    reason: Truth reconciliation and requirement traceability must pass exact-SHA positive and negative controls before merge.
+    resolution: pending
+    evidence: [TOS-EVD-007]
