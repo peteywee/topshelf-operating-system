@@ -52,10 +52,11 @@ blockers:
     evidence: [TOS-EVD-006]
   - id: TOS-BLK-006
     title: Batch 3B decision-ready truth validation
-    status: open
+    status: closed
     severity: high
     owner: Patrick Craven
     opened_on: "2026-07-30"
-    reason: Truth reconciliation and requirement traceability must pass exact-SHA positive and negative controls before merge.
-    resolution: pending
+    closed_on: "2026-07-30"
+    reason: Truth reconciliation and requirement traceability required exact-SHA positive and negative controls before merge.
+    resolution: Actions run 30573149502 passed frozen-lockfile installation, strict build/typecheck/tests, fact reconciliation, requirement validation and traceability, all existing contract controls, authorization, and direct-edit protection on Node.js 20 and 22.
     evidence: [TOS-EVD-007]
