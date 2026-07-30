@@ -1,0 +1,40 @@
+schema_version: 1
+requirements:
+  - id: TOS-REQ-001
+    title: Reconcile canonical facts before executable work is compiled.
+    owner: Patrick Craven
+    status: active
+    fact_ids:
+      - TOS-FACT-001
+      - TOS-FACT-003
+    contract_ids:
+      - TOS-CTR-005
+    acceptance_criteria:
+      - id: TOS-AC-001
+        statement: Duplicate and contradictory claims are reported without silently selecting a winner.
+        evidence:
+          - Unit tests for duplicate and opposite-state claims.
+          - Node.js 20 and 22 CLI reconciliation output.
+      - id: TOS-AC-002
+        statement: Material conflicts require named human resolution before dependent work can proceed.
+        evidence:
+          - Requirement validation negative control using a conflicting fact.
+  - id: TOS-REQ-002
+    title: Every executable requirement traces to facts, contracts, acceptance criteria, and evidence.
+    owner: Patrick Craven
+    status: active
+    fact_ids:
+      - TOS-FACT-002
+      - TOS-FACT-003
+    contract_ids:
+      - TOS-CTR-005
+      - TOS-CTR-085
+    acceptance_criteria:
+      - id: TOS-AC-003
+        statement: Requirements without owners, governing facts, contracts, criteria, or evidence fail validation.
+        evidence:
+          - Requirements validator negative-control tests.
+      - id: TOS-AC-004
+        statement: The CLI can list, show, validate, trace, and report gaps for canonical requirements.
+        evidence:
+          - Node.js 20 and 22 CI command smoke tests.
