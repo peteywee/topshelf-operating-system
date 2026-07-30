@@ -1,0 +1,37 @@
+flowchart TD
+    A[Proposed work order or material action] --> K{Kill switch active?}
+    K -->|Yes| STOP[Stop and record escalation]
+    K -->|No| Q{Requirement valid,<br/>owned, fresh, and undisputed?}
+    Q -->|No| STOP
+    Q -->|Yes| S{Within approved files,<br/>tools, limits, and purpose?}
+    S -->|No| STOP
+    S -->|Yes| R{Risk and protected-action classification}
+
+    R -->|Trivial or low risk<br/>not protected| AUTO[Autonomous path]
+    R -->|Medium or high risk| OWNER[Owner review required]
+    R -->|Contract / legal| OWNER
+    R -->|External spend| OWNER
+    R -->|Secrets or security policy| OWNER
+    R -->|Destructive data change| OWNER
+    R -->|Production promotion| OWNER
+    R -->|Execution-policy authority expansion| OWNER
+
+    AUTO --> V{Independent verification,<br/>exact-head CI, clean scope,<br/>evidence, rollback all pass?}
+    V -->|No and repair available| REPAIR[Return to Worker<br/>within retry budget]
+    REPAIR --> V
+    V -->|No: unsafe or exhausted| STOP
+    V -->|Yes| MERGE[Promoter may merge]
+
+    OWNER --> D{Patrick Craven decision}
+    D -->|Approve with valid conditions| V
+    D -->|Revise| REPAIR
+    D -->|Hold / reject| STOP
+
+    classDef decision fill:#FEF3C7,stroke:#D97706,color:#0F172A,stroke-width:2px;
+    classDef auto fill:#DCFCE7,stroke:#16A34A,color:#0F172A,stroke-width:2px;
+    classDef owner fill:#DBEAFE,stroke:#1D4ED8,color:#0F172A,stroke-width:2px;
+    classDef stop fill:#FEE2E2,stroke:#DC2626,color:#0F172A,stroke-width:2px;
+    class K,Q,S,R,V,D decision;
+    class AUTO,MERGE auto;
+    class OWNER owner;
+    class STOP stop;
