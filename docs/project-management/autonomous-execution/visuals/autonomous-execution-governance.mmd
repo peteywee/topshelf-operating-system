@@ -1,0 +1,28 @@
+flowchart TD
+    T[Canonical truth<br/>facts, requirements, boot, contracts] --> P[Planner<br/>compile bounded work order]
+    P --> E{Execution policy<br/>eligible and authorized?}
+    E -->|No| X[Stop and escalate<br/>record reason and authority needed]
+    E -->|Yes| W[Worker<br/>claim and execute in Git isolation]
+    W --> S[Submission<br/>diff, commands, evidence, exact SHA]
+    S --> V[Independent Verifier<br/>re-run and inspect]
+    V -->|Fail within retry budget| W
+    V -->|Fail: exhausted or unsafe| X
+    V -->|Pass| R{Promotion gate}
+    R -->|Trivial or low risk<br/>all controls satisfied| M[Promoter<br/>automatic merge]
+    R -->|Reserved, protected,<br/>medium or high risk| O[Patrick Craven<br/>owner decision]
+    O -->|Approve| M
+    O -->|Revise / reject / hold| X
+    M --> U[Update canonical state<br/>and append execution record]
+    U --> T
+
+    K[.tos/AUTONOMY_DISABLED<br/>kill switch] -. checked before claim,<br/>push, merge, promotion .-> E
+    K -. active .-> X
+
+    classDef control fill:#FEF3C7,stroke:#D97706,color:#0F172A,stroke-width:2px;
+    classDef role fill:#DBEAFE,stroke:#1D4ED8,color:#0F172A,stroke-width:2px;
+    classDef stop fill:#FEE2E2,stroke:#DC2626,color:#0F172A,stroke-width:2px;
+    classDef success fill:#DCFCE7,stroke:#16A34A,color:#0F172A,stroke-width:2px;
+    class P,W,V role;
+    class E,R,K control;
+    class X stop;
+    class M,U success;
