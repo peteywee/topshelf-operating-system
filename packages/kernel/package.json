@@ -11,6 +11,14 @@
     "./truth": {
       "types": "./dist/truth.d.ts",
       "import": "./dist/truth.js"
+    },
+    "./reconcile": {
+      "types": "./dist/reconcile.d.ts",
+      "import": "./dist/reconcile.js"
+    },
+    "./requirements": {
+      "types": "./dist/requirements.d.ts",
+      "import": "./dist/requirements.js"
     }
   },
   "files": ["dist"],
