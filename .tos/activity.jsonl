@@ -14,3 +14,4 @@
 {"event_id":"TOS-ACT-014","timestamp":"2026-07-30T18:53:00Z","actor":"TOS implementation","action":"batch_started","subject":"TOS 0.2 Batch 3B Decision-Ready Truth","branch":"agent/tos-0-2-batch-3b-decision-ready-truth"}
 {"event_id":"TOS-ACT-015","timestamp":"2026-07-30T19:15:00Z","actor":"TOS implementation","action":"batch_validated","subject":"TOS 0.2 Batch 3B Decision-Ready Truth","commit_sha":"309c029bf5c7cde150d8bae2c40a6184f8e2c17c","pull_request":9,"evidence":"TOS-EVD-007"}
 {"event_id":"TOS-ACT-016","timestamp":"2026-07-30T19:20:00Z","actor":"TOS implementation","action":"batch_merged","subject":"TOS 0.2 Batch 3B Decision-Ready Truth","commit_sha":"26f22db879f7c904b5d0fd78e1ce0c4a33e9bb68","pull_request":9}
+{"event_id":"TOS-ACT-017","timestamp":"2026-07-30T19:31:00Z","actor":"TOS implementation","action":"batch_started","subject":"TOS 0.2 Batch 3C Inspect and Boot","branch":"agent/tos-0-2-batch-3c-inspect-boot"}
