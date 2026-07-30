@@ -10,6 +10,7 @@ import {
 import { resolveArguments } from "./command.js";
 import { runContract } from "./contract.js";
 import { runFact } from "./fact.js";
+import { runRequirement } from "./requirement.js";
 
 const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
 
@@ -28,6 +29,13 @@ Usage:
   tos fact list [as-of-date]                      List canonical facts and freshness
   tos fact show <id> [as-of-date]                 Show one canonical fact
   tos fact validate [as-of-date]                  Validate provenance, state, and freshness
+  tos fact reconcile [as-of-date]                 Detect duplicate and contradictory claims
+  tos fact conflicts [as-of-date]                 List unresolved fact conflicts
+  tos requirement list [as-of-date]               List canonical requirements
+  tos requirement show <id> [as-of-date]          Show one requirement
+  tos requirement validate [as-of-date]           Validate fact-to-acceptance traceability
+  tos requirement trace <id> [as-of-date]         Show requirement and governing facts
+  tos requirement gaps [as-of-date]               Report traceability gaps
   tos --version                                   Show runtime version
   tos --help                                      Show this help
 `;
@@ -59,9 +67,7 @@ async function runStatus(): Promise<void> {
   console.log(`Planned modules: ${plannedModules.length}`);
   console.log(`Missing records: ${snapshot.missingRecords.length}`);
 
-  for (const missingRecord of snapshot.missingRecords) {
-    console.log(`  - ${missingRecord}`);
-  }
+  for (const missingRecord of snapshot.missingRecords) console.log(`  - ${missingRecord}`);
 }
 
 async function runValidate(): Promise<void> {
@@ -99,6 +105,9 @@ async function main(): Promise<void> {
       return;
     case "fact":
       await runFact(args.slice(1));
+      return;
+    case "requirement":
+      await runRequirement(args.slice(1));
       return;
     default:
       printValidationFailure(`Unknown command: ${command}\n\n${HELP}`);

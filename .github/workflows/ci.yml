@@ -59,13 +59,26 @@ jobs:
           grep -q "OK: fact catalog is valid (3 records, 0 stale, as of 2026-07-25)." /tmp/tos-fact-validation.txt
           pnpm tos -- fact list 2026-07-25 > /tmp/tos-fact-list.txt
           grep -q "Fact catalog: 3 records (as of 2026-07-25)" /tmp/tos-fact-list.txt
-          grep -q "TOS-FACT-003" /tmp/tos-fact-list.txt
           pnpm tos -- fact show TOS-FACT-001 2026-07-25 > /tmp/tos-fact-001.yaml
           grep -q "status: verified_yes" /tmp/tos-fact-001.yaml
           if pnpm tos -- fact validate 2026-08-25; then
             echo "Expired facts incorrectly passed freshness validation" >&2
             exit 1
           fi
+
+      - name: Reconcile truth and validate requirements
+        run: |
+          pnpm tos -- fact reconcile 2026-07-25 > /tmp/tos-fact-reconcile.yaml
+          grep -q "conflicts: \[\]" /tmp/tos-fact-reconcile.yaml
+          pnpm tos -- fact conflicts 2026-07-25 > /tmp/tos-fact-conflicts.txt
+          grep -q "OK: no fact conflicts found" /tmp/tos-fact-conflicts.txt
+          pnpm tos -- requirement validate 2026-07-25 > /tmp/tos-requirement-validation.txt
+          grep -q "OK: requirement catalog is valid (2 records" /tmp/tos-requirement-validation.txt
+          pnpm tos -- requirement list 2026-07-25 > /tmp/tos-requirement-list.txt
+          grep -q "TOS-REQ-002" /tmp/tos-requirement-list.txt
+          pnpm tos -- requirement trace TOS-REQ-001 2026-07-25 > /tmp/tos-requirement-trace.yaml
+          grep -q "TOS-FACT-003" /tmp/tos-requirement-trace.yaml
+          pnpm tos -- requirement gaps 2026-07-25
 
       - name: Validate contract catalog
         run: pnpm tos -- contract validate
