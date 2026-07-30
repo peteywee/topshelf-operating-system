@@ -62,10 +62,11 @@ blockers:
     evidence: [TOS-EVD-007]
   - id: TOS-BLK-007
     title: Batch 3C inspect and boot validation
-    status: open
+    status: closed
     severity: high
     owner: Patrick Craven
     opened_on: "2026-07-30"
-    reason: Repository inspection, owner-reviewed module decisions, boot authority, required-state enforcement, and premature-autonomy rejection require exact-SHA validation on Node.js 20 and 22.
-    resolution: Pending exact-head CI and canonical evidence.
+    closed_on: "2026-07-30"
+    reason: Repository inspection, owner-reviewed module decisions, boot authority, required-state enforcement, and premature-autonomy rejection required exact-SHA validation on Node.js 20 and 22.
+    resolution: Actions run 30576212673 passed frozen-lockfile installation, strict build/typecheck/tests, canonical state, truth, requirements, repository inspection, boot readiness, premature-autonomy rejection, all contract controls, authorization, and direct-edit protection on Node.js 20 and 22.
     evidence: [TOS-EVD-008]
