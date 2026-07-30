@@ -1,6 +1,6 @@
 # TOS 0.2 — Batch 3C: Inspect and Boot
 
-**Status:** implementation branch  
+**Status:** validated; pending PR #11 merge  
 **Branch:** `agent/tos-0-2-batch-3c-inspect-boot`  
 **Base:** Batch 3B closeout `d0fd9c2c038d6f330cebf1d12cdc32db736a0b51`  
 **Owner:** Patrick Craven
@@ -40,20 +40,24 @@ The boot validator rejects:
 
 Nonblocking intake questions remain visible and may constrain later work orders, but they do not force the entire repository into an unusable state.
 
-## Acceptance criteria
+## Acceptance status
 
-1. Inspection derives package manager, runtime, workspace, TypeScript, CI, contract, canonical-state, agent, UI, auth, data, payment, and hosting signals from repository evidence.
-2. Inspection asks only questions that repository evidence did not resolve.
-3. Module recommendations are deterministic and evidence-backed.
-4. `.tos/boot.yaml` contains references rather than copied canonical payloads.
-5. Every inspection recommendation has an owner-reviewed module decision.
-6. Inspection-required modules cannot be downgraded.
-7. Boot owner must match `.tos/project.yaml`.
-8. Merge, production promotion, external spend, and contract approval remain reserved.
-9. Agent roles remain human-assisted until an execution kernel is implemented.
-10. Invalid requirements, material fact conflicts, or blocking intake prevent boot readiness.
-11. `.tos/requirements.yaml` and `.tos/boot.yaml` are required canonical state records.
-12. Node.js 20 and 22 pass the complete existing and new CI workflow.
+All twelve acceptance criteria passed at implementation SHA `31225678ad8d7d829c5d662d27db20250ad7706b` in Actions run `30576212673` on Node.js 20 and 22:
+
+1. Repository evidence was inspected for package manager, runtime, workspace, TypeScript, CI, contract, canonical-state, agent, UI, auth, data, payment, and hosting signals.
+2. Unresolved intake questions were emitted only for concerns not proven by repository evidence.
+3. Module recommendations were deterministic and evidence-backed.
+4. `.tos/boot.yaml` remained reference-based and did not copy facts or requirements.
+5. Every inspection recommendation had an owner-reviewed module decision.
+6. Required-module downgrade, owner drift, and premature-autonomy negative controls passed.
+7. Merge, production promotion, external spend, and contract approval remained reserved.
+8. Invalid requirements, material truth conflicts, and blocking intake were enforced as boot blockers.
+9. `.tos/requirements.yaml` and `.tos/boot.yaml` were enforced as required canonical records.
+10. Planner, Worker, Verifier, and Promoter remained human-assisted.
+11. Frozen-lockfile installation and strict build, typecheck, and tests passed.
+12. Every prior truth, requirement, contract, authorization, and direct-edit control remained green.
+
+Canonical evidence is `TOS-EVD-008`; `TOS-BLK-007` is closed and `inspect-boot` is active.
 
 ## Explicitly out of scope
 
@@ -67,4 +71,4 @@ Nonblocking intake questions remain visible and may constrain later work orders,
 
 ## Definition of done
 
-Batch 3C is complete only when the exact PR head passes the full Node.js 20/22 workflow, canonical evidence is verified, `TOS-BLK-007` is closed, the `inspect-boot` runtime module is active, and post-merge state is reconciled.
+The implementation, exact-SHA validation, canonical evidence, blocker closure, and module activation are complete. Batch 3C reaches full done when PR #11 merges and post-merge state is reconciled.
