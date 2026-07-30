@@ -1,6 +1,6 @@
 # TOS 0.2 — Batch 3B: Decision-Ready Truth
 
-**Status:** implementation in progress  
+**Status:** validated; pending PR #9 merge  
 **Branch:** `agent/tos-0-2-batch-3b-decision-ready-truth`  
 **Owner:** Patrick Craven
 
@@ -36,17 +36,21 @@ tos requirement trace <id> [as-of-date]
 tos requirement gaps [as-of-date]
 ```
 
-## Acceptance criteria
+## Acceptance status
+
+All nine acceptance criteria passed at implementation SHA `309c029bf5c7cde150d8bae2c40a6184f8e2c17c` in Actions run `30573149502` on Node.js 20 and 22:
 
 1. Same-claim yes/no contradictions fail reconciliation.
-2. Equivalent duplicate claims are reported without making the catalog invalid.
-3. Authority and verification-class disagreement is explicit.
+2. Equivalent duplicate claims are warnings rather than invalidating errors.
+3. Authority and verification-class disagreements are reported independently.
 4. Material conflicts require human resolution; no winner is selected automatically.
-5. Requirements require stable IDs, owners, governing facts, contracts, acceptance criteria, and evidence requirements.
-6. Unknown, stale, conflicting, or materially disputed facts cannot support executable requirements.
-7. Requirement trace output includes the requirement and its governing facts.
-8. Existing Batch 1–3A and contract controls remain green.
-9. Node.js 20 and 22 pass frozen-lockfile build, typecheck, tests, and CLI smoke paths.
+5. Requirements require IDs, owners, facts, contracts, acceptance criteria, and evidence.
+6. Unsafe or materially disputed facts cannot support executable requirements.
+7. Requirement trace output includes each requirement and its governing facts.
+8. Every Batch 1–3A and contract control remained green.
+9. Frozen-lockfile installation, strict build, typecheck, tests, and CLI smoke paths passed on both runtimes.
+
+Canonical evidence is `TOS-EVD-007`; `TOS-BLK-006` is closed.
 
 ## Autonomous-agent boundary
 
@@ -54,4 +58,4 @@ This batch does not execute agents. It produces decision-ready inputs for the fu
 
 ## Definition of done
 
-Complete only after exact-SHA Node.js 20/22 CI passes, evidence is recorded, the validation blocker is closed, the PR merges, and post-merge state is reconciled.
+The implementation, exact-SHA validation, evidence, and blocker closure are complete. Batch 3B reaches full done when PR #9 merges and post-merge state is reconciled.
