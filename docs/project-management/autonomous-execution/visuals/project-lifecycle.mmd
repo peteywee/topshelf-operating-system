@@ -1,0 +1,15 @@
+flowchart LR
+    I[Initiation<br/>Aug 3-7] -->|Gate 1<br/>Charter authorization| P[Detailed Planning<br/>Aug 10-14]
+    P -->|Gate 2<br/>Integrated baseline| B[Kernel Build<br/>Aug 17-28]
+    B -->|Gate 3<br/>Feature complete| V[Verification<br/>Aug 31-Sep 11]
+    V -->|Gate 4<br/>Pilot authorization| L[Pilot and Hardening<br/>Sep 14-25]
+    L -->|Gate 5<br/>Acceptance decision| C[Closeout<br/>Sep 28-Oct 2]
+
+    I -. revise / hold .-> I
+    P -. revise / hold .-> P
+    B -. repair .-> B
+    V -. return defects .-> B
+    L -. revise and repeat .-> L
+
+    classDef phase fill:#DBEAFE,stroke:#1D4ED8,color:#0F172A,stroke-width:2px;
+    class I,P,B,V,L,C phase;
