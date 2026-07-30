@@ -1,8 +1,10 @@
 # TOS 0.2 — Batch 3C: Inspect and Boot
 
-**Status:** validated; pending PR #11 merge  
+**Status:** merged  
 **Branch:** `agent/tos-0-2-batch-3c-inspect-boot`  
 **Base:** Batch 3B closeout `d0fd9c2c038d6f330cebf1d12cdc32db736a0b51`  
+**Merged commit:** `73875b0110b17e5ad3c5a94f796d486be28690f9`  
+**Pull request:** #11  
 **Owner:** Patrick Craven
 
 ## Goal
@@ -57,7 +59,7 @@ All twelve acceptance criteria passed at implementation SHA `31225678ad8d7d829c5
 11. Frozen-lockfile installation and strict build, typecheck, and tests passed.
 12. Every prior truth, requirement, contract, authorization, and direct-edit control remained green.
 
-Canonical evidence is `TOS-EVD-008`; `TOS-BLK-007` is closed and `inspect-boot` is active.
+The final pre-merge state head `589a8f5d90b0d4ed73b7a13a1eed66cc5a4d73d8` passed Actions run `30576680590` on Node.js 20 and 22. Canonical evidence is `TOS-EVD-008`; `TOS-BLK-007` is closed and `inspect-boot` is active.
 
 ## Explicitly out of scope
 
@@ -71,4 +73,4 @@ Canonical evidence is `TOS-EVD-008`; `TOS-BLK-007` is closed and `inspect-boot` 
 
 ## Definition of done
 
-The implementation, exact-SHA validation, canonical evidence, blocker closure, and module activation are complete. Batch 3C reaches full done when PR #11 merges and post-merge state is reconciled.
+Complete. The implementation, exact-SHA validation, canonical evidence, blocker closure, module activation, PR #11 merge, and post-merge closeout record are present.
