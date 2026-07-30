@@ -49,3 +49,10 @@ evidence:
     commit_sha: 309c029bf5c7cde150d8bae2c40a6184f8e2c17c
     source: GitHub PR 9 and Actions run 30573149502
     captured_on: "2026-07-30"
+  - id: TOS-EVD-008
+    claim: Batch 3C repository inspection, unresolved intake, owner-approved boot decisions, required-state enforcement, and premature-autonomy rejection pass without adding runtime infrastructure.
+    class: automated
+    status: pending
+    commit_sha: pending
+    source: Pending GitHub PR and Actions run
+    captured_on: "2026-07-30"
