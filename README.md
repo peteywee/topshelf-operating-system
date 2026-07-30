@@ -80,7 +80,7 @@ The future Planner may compile work only from requirements whose governing facts
 - Batch 1: repository kernel and canonical state — merged.
 - Batch 2A–2C: contract catalog, controlled changes, authorization, and direct-edit protection — merged.
 - TOS 0.2 Batch 3A: canonical fact validation and freshness controls — merged.
-- TOS 0.2 Batch 3B: decision-ready truth reconciliation and requirement traceability — implementation branch.
+- TOS 0.2 Batch 3B: decision-ready truth reconciliation and requirement traceability — merged.
 
 TOS does not yet include autonomous execution, a scheduler, persistent agent memory, automatic conflict resolution, or automatic legal approval.
 
