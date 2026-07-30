@@ -52,7 +52,7 @@ evidence:
   - id: TOS-EVD-008
     claim: Batch 3C repository inspection, unresolved intake, owner-approved boot decisions, required-state enforcement, and premature-autonomy rejection pass without adding runtime infrastructure.
     class: automated
-    status: pending
-    commit_sha: pending
-    source: Pending GitHub PR and Actions run
+    status: verified
+    commit_sha: 31225678ad8d7d829c5d662d27db20250ad7706b
+    source: GitHub PR 11 and Actions run 30576212673
     captured_on: "2026-07-30"
