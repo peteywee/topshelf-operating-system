@@ -11,7 +11,9 @@ import type {
 export const REQUIRED_STATE_RECORDS = [
   ".tos/project.yaml",
   ".tos/facts.yaml",
+  ".tos/requirements.yaml",
   ".tos/modules.yaml",
+  ".tos/boot.yaml",
   ".tos/decisions.yaml",
   ".tos/blockers.yaml",
   ".tos/evidence-index.yaml",
