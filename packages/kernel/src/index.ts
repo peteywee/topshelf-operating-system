@@ -18,6 +18,9 @@ export const REQUIRED_STATE_RECORDS = [
   ".tos/blockers.yaml",
   ".tos/evidence-index.yaml",
   ".tos/activity.jsonl",
+  "standards/intake/questions.json",
+  "standards/intake/module-rules.json",
+  "standards/intake/tailoring.json",
 ] as const;
 
 export interface TosProjectSnapshot {
@@ -181,7 +184,7 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
     const snapshot = await inspectProject(startDirectory);
     const issues: ValidationIssue[] = snapshot.missingRecords.map((missingPath) => ({
       code: "TOS_STATE_MISSING_RECORD",
-      message: `Missing required canonical state record: ${missingPath}`,
+      message: `Missing required TOS record: ${missingPath}`,
       path: missingPath,
       severity: "error",
     }));
