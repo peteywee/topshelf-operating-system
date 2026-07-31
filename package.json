@@ -1,6 +1,6 @@
 {
   "name": "topshelf-operating-system",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "TopShelf Operating System runtime and contract foundation",
   "type": "module",
