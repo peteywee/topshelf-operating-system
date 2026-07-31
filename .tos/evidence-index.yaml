@@ -56,3 +56,10 @@ evidence:
     commit_sha: 31225678ad8d7d829c5d662d27db20250ad7706b
     source: GitHub PR 11 and Actions run 30576212673
     captured_on: "2026-07-30"
+  - id: TOS-EVD-009
+    claim: TOS 0.2.1 canonical intake terminology, answer validation, work classification, project tiering, artifact tailoring, module selection, authorization blockers, and CLI commands pass on Node.js 20 and 22 without regressing prior controls.
+    class: automated
+    status: verified
+    commit_sha: 7c5b71d0f7d3cb16519c7336f35cdf3cb035f65b
+    source: GitHub PR 14 and Actions run 30614718767
+    captured_on: "2026-07-31"
