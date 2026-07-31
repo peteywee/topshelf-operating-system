@@ -1,6 +1,6 @@
 {
   "name": "@topshelf-os/kernel",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "exports": {
@@ -23,6 +23,10 @@
     "./inspect": {
       "types": "./dist/inspect.d.ts",
       "import": "./dist/inspect.js"
+    },
+    "./intake": {
+      "types": "./dist/intake.d.ts",
+      "import": "./dist/intake.js"
     },
     "./boot": {
       "types": "./dist/boot.d.ts",
