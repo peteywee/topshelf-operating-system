@@ -45,7 +45,7 @@ jobs:
       - name: Report runtime version
         run: |
           pnpm tos -- --version > /tmp/tos-version.txt
-          grep -q "0.2.0" /tmp/tos-version.txt
+          grep -q "0.2.1" /tmp/tos-version.txt
 
       - name: Validate canonical state
         run: pnpm tos -- validate
@@ -96,6 +96,29 @@ jobs:
           grep -q "planner: human_assisted" /tmp/tos-boot.yaml
           if grep -q "planner: autonomous" /tmp/tos-boot.yaml; then
             echo "Boot packet incorrectly enabled autonomous planning" >&2
+            exit 1
+          fi
+
+      - name: Validate canonical intake standards
+        run: |
+          pnpm tos -- intake questions > /tmp/tos-intake-questions.yaml
+          grep -q "question_count: 33" /tmp/tos-intake-questions.yaml
+          grep -q "id: needs_autonomous_agents" /tmp/tos-intake-questions.yaml
+          pnpm tos -- intake explain needs_autonomous_agents > /tmp/tos-intake-explain.yaml
+          grep -q "material actions without case-by-case human approval" /tmp/tos-intake-explain.yaml
+          pnpm tos -- intake validate examples/intake/controlled-autonomy.answers.json > /tmp/tos-intake-validation.txt
+          grep -q "OK: intake answers are valid (33 questions)." /tmp/tos-intake-validation.txt
+          grep -q "Tier: controlled" /tmp/tos-intake-validation.txt
+          grep -q "Authorization ready: true" /tmp/tos-intake-validation.txt
+          pnpm tos -- intake evaluate examples/intake/controlled-autonomy.answers.json > /tmp/tos-intake-evaluation.yaml
+          grep -q "work_classification: project" /tmp/tos-intake-evaluation.yaml
+          grep -q "project_tier: controlled" /tmp/tos-intake-evaluation.yaml
+          grep -q "needs_autonomous_agents=yes" /tmp/tos-intake-evaluation.yaml
+          grep -q "approval-authority-matrix" /tmp/tos-intake-evaluation.yaml
+          grep -q "agent-workflow" /tmp/tos-intake-evaluation.yaml
+          node -e 'const fs=require("fs");const p=JSON.parse(fs.readFileSync("examples/intake/controlled-autonomy.answers.json","utf8"));p.client_facing="maybe";fs.writeFileSync("/tmp/tos-invalid-intake.json",JSON.stringify(p));'
+          if pnpm tos -- intake validate /tmp/tos-invalid-intake.json; then
+            echo "Unsupported intake answer incorrectly passed validation" >&2
             exit 1
           fi
 

@@ -20,7 +20,12 @@ Usage:
   tos status                                      Show canonical project state
   tos validate                                    Validate required .tos records
   tos inspect [as-of-date]                        Inspect repository signals and module applicability
-  tos intake [as-of-date]                         List only unresolved inspection questions
+  tos intake [as-of-date]                         List unresolved repository intake questions
+  tos intake unresolved [as-of-date]              List unresolved repository intake questions
+  tos intake questions                            Show every governed term, question, and example
+  tos intake explain <question-id>                Explain one term with valid and invalid examples
+  tos intake validate <answers.json>              Validate a completed intake answer file
+  tos intake evaluate <answers.json>              Classify work, tier, artifacts, modules, and blockers
   tos boot show [as-of-date]                      Show the reference-based agent boot packet
   tos boot validate [as-of-date]                  Validate boot authority and planning readiness
   tos contract list                               List registered contract templates

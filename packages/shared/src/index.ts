@@ -1,6 +1,6 @@
 export const TOS_OFFICIAL_NAME = "TopShelf Operating System" as const;
 export const TOS_SHORT_NAME = "TOS" as const;
-export const TOS_RUNTIME_VERSION = "0.2.0" as const;
+export const TOS_RUNTIME_VERSION = "0.2.1" as const;
 
 export type LifecycleState =
   | "idea"

@@ -48,6 +48,10 @@ modules:
     status: active
     source: packages/kernel/src/inspect.ts and packages/kernel/src/boot.ts
     reason: Derives repository signals, unresolved intake, module applicability, and validates the owner-authorized agent boot packet.
+  - id: intake-standards
+    status: active
+    source: standards/intake/ and packages/kernel/src/intake.ts
+    reason: Owns TopShelf terminology, answer validity, project and operation classification, project tiering, artifact tailoring, and module selection.
   - id: scheduler
     status: planned
     source: packages/scheduler/

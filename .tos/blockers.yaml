@@ -70,3 +70,13 @@ blockers:
     reason: Repository inspection, owner-reviewed module decisions, boot authority, required-state enforcement, and premature-autonomy rejection required exact-SHA validation on Node.js 20 and 22.
     resolution: Actions run 30576212673 passed frozen-lockfile installation, strict build/typecheck/tests, canonical state, truth, requirements, repository inspection, boot readiness, premature-autonomy rejection, all contract controls, authorization, and direct-edit protection on Node.js 20 and 22.
     evidence: [TOS-EVD-008]
+  - id: TOS-BLK-008
+    title: Canonical TopShelf intake authority correction
+    status: closed
+    severity: high
+    owner: Patrick Craven
+    opened_on: "2026-07-31"
+    closed_on: "2026-07-31"
+    reason: TopShelf intake terminology and project-tailoring decisions were first implemented in the downstream project-template repository instead of the authoritative operating-system runtime.
+    resolution: TOS 0.2.1 now owns the standards, validation engine, CLI commands, project and operation classification, tiering, artifact tailoring, and module decisions; Actions run 30614718767 passed on Node.js 20 and 22.
+    evidence: [TOS-EVD-009]

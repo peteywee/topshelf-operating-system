@@ -54,6 +54,12 @@ async function createStateFixture(): Promise<string> {
     await writeFile(path.join(stateRoot, file), "schema_version: 1\nmodules: []\n");
   }
   await writeFile(path.join(stateRoot, "activity.jsonl"), "");
+
+  const standardsRoot = path.join(root, "standards", "intake");
+  await mkdir(standardsRoot, { recursive: true });
+  for (const file of ["questions.json", "module-rules.json", "tailoring.json"]) {
+    await writeFile(path.join(standardsRoot, file), "{}\n");
+  }
   return root;
 }
 
@@ -93,5 +99,13 @@ describe("canonical state inspection", () => {
     expect(
       report.issues.some((issue) => issue.path === ".tos/evidence-index.yaml"),
     ).toBe(true);
+  });
+
+  it("fails when a canonical intake standard is removed", async () => {
+    const root = await createStateFixture();
+    await rm(path.join(root, "standards", "intake", "questions.json"));
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues.some((issue) => issue.path === "standards/intake/questions.json")).toBe(true);
   });
 });
