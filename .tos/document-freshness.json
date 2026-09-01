@@ -9,7 +9,7 @@
       "path": "docs/governed/session-bootstrap-and-document-freshness.md",
       "class": "governance",
       "claims_truth_state": "verified",
-      "verified_at_commit": "97513d8ed54bd5fa5786de62fb704edc5dc74cb7",
+      "verified_at_commit": "c47eb86f60698dc8d12898e054407d97ea9acff6",
       "depends_on": [
         "scripts/check-doc-freshness.mjs",
         "scripts/check-doc-freshness.test.mjs",
