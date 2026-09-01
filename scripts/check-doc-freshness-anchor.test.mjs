@@ -136,6 +136,52 @@ test("short flag token cannot be consumed as a ref value", () => {
   assert.equal(json.errors[0].code, "ARGUMENT_INVALID");
 });
 
+test("newline-containing governed Markdown cannot evade registry coverage", () => {
+  const root = mkdtempSync(join(tmpdir(), "tos-doc-newline-coverage-"));
+  try {
+    git(root, "init", "-b", "main");
+    write(root, "docs/governed/control.md", "# Control\n");
+    write(root, "docs/governed/line\nbreak.md", "# Hidden-looking file\n");
+    write(root, "src/control.txt", "v1\n");
+    const anchor = commitAll(root, "newline coverage baseline");
+    writeRegistry(root, {
+      ...baseEntry(),
+      verified_at_commit: anchor,
+    });
+    commitAll(root, "register only control doc");
+    const { result, json } = check(root);
+    assert.equal(result.status, 2);
+    assert.ok(json.errors.some((entry) => entry.code === "DOC_UNREGISTERED" && entry.message.includes("line\nbreak.md")));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("newline-containing dependency is reported exactly when it changes", () => {
+  const root = mkdtempSync(join(tmpdir(), "tos-doc-newline-dependency-"));
+  const dependency = "src/line\nbreak.txt";
+  try {
+    git(root, "init", "-b", "main");
+    write(root, "docs/governed/control.md", "# Control\n");
+    write(root, dependency, "v1\n");
+    const anchor = commitAll(root, "newline dependency baseline");
+    writeRegistry(root, {
+      ...baseEntry(),
+      verified_at_commit: anchor,
+      depends_on: [dependency],
+    });
+    commitAll(root, "register newline dependency");
+    write(root, dependency, "v2\n");
+    commitAll(root, "change newline dependency");
+    const { result, json } = check(root);
+    assert.equal(result.status, 1);
+    assert.equal(json.status, "stale");
+    assert.deepEqual(json.documents[0].changed_paths, [dependency]);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 for (const cliPath of ["package.json", "scripts/run-tos.mjs"]) {
   test(`effective CLI dependency ${cliPath} makes an audit stale when changed`, () => {
     const root = mkdtempSync(join(tmpdir(), "tos-doc-cli-dependency-"));
