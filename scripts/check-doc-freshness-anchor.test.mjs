@@ -171,6 +171,33 @@ test("environment failure keeps top-level JSON status inside the documented cont
   }
 });
 
+test("checker resolves repository-root semantics when invoked from a subdirectory", () => {
+  const root = makeRepo();
+  try {
+    const anchor = git(root, "rev-parse", "HEAD");
+    writeRegistry(root, {
+      ...baseEntry(),
+      verified_at_commit: anchor,
+    });
+    commitAll(root, "register control from root");
+    write(root, "src/control.txt", "v2\n");
+    commitAll(root, "change root-relative dependency");
+    const nested = join(root, "nested", "deeper");
+    mkdirSync(nested, { recursive: true });
+    const result = run(
+      process.execPath,
+      [checker, "--registry", ".tos/document-freshness.json", "--ref", "HEAD", "--json"],
+      nested,
+    );
+    assert.equal(result.status, 1);
+    const json = JSON.parse(result.stdout);
+    assert.equal(json.status, "stale");
+    assert.deepEqual(json.documents[0].changed_paths, ["src/control.txt"]);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("newline-containing governed Markdown cannot evade registry coverage", () => {
   const root = mkdtempSync(join(tmpdir(), "tos-doc-newline-coverage-"));
   try {
