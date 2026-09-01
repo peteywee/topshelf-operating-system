@@ -128,6 +128,14 @@ test("multiple trailing slashes in a dependency fail closed", () => {
   }
 });
 
+test("short flag token cannot be consumed as a ref value", () => {
+  const result = run(process.execPath, [checker, "--ref", "-h", "--json"], process.cwd());
+  assert.equal(result.status, 2);
+  const json = JSON.parse(result.stdout);
+  assert.equal(json.status, "invalid");
+  assert.equal(json.errors[0].code, "ARGUMENT_INVALID");
+});
+
 for (const cliPath of ["package.json", "scripts/run-tos.mjs"]) {
   test(`effective CLI dependency ${cliPath} makes an audit stale when changed`, () => {
     const root = mkdtempSync(join(tmpdir(), "tos-doc-cli-dependency-"));
