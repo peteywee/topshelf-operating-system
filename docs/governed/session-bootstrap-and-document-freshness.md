@@ -106,10 +106,12 @@ Per-document status values are:
 
 Normal exit codes are:
 
-- `0` — current, or explicit `--report-only` mode;
-- `1` — stale verified documentation;
+- `0` — current, or stale when explicit `--report-only` mode is used;
+- `1` — stale verified documentation in enforcing mode;
 - `2` — malformed, uncovered, or unresolvable governance data;
 - `3` — Git repository/environment failure.
+
+`--report-only` suppresses only the stale enforcement exit (`1` to `0`) so callers can inspect a stale report without failing the process. It does not suppress invalid governance data or Git/environment failures; those remain fail-closed at exit codes `2` and `3` respectively.
 
 JSON mode emits structured output for both success and failure paths.
 
