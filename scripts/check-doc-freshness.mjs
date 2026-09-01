@@ -16,6 +16,7 @@ const ALLOWED_CLASSES = new Set([
   "status",
 ]);
 const FULL_SHA = /^[0-9a-f]{40}$/;
+let gitCwd = process.cwd();
 
 function parseArgs(argv) {
   const parsed = {
@@ -54,7 +55,7 @@ function parseArgs(argv) {
   return { value: parsed };
 }
 
-function runGit(args, cwd = process.cwd()) {
+function runGit(args, cwd = gitCwd) {
   const result = spawnSync("git", args, {
     cwd,
     encoding: "utf8",
@@ -164,6 +165,16 @@ if (repoCheck.status !== 0 || repoCheck.stdout !== "true") {
     EXIT.environment,
   );
 }
+
+const repoRootCheck = runGit(["rev-parse", "--show-toplevel"]);
+if (repoRootCheck.status !== 0 || repoRootCheck.stdout.length === 0) {
+  outputAndExit(
+    { schema_version: 1, status: "invalid", errors: [{ code: "GIT_TOPLEVEL_UNRESOLVABLE", message: "Unable to resolve the Git repository top-level directory." }], documents: [] },
+    args,
+    EXIT.environment,
+  );
+}
+gitCwd = repoRootCheck.stdout;
 
 const resolved = runGit(["rev-parse", "--verify", `${args.ref}^{commit}`]);
 if (resolved.status !== 0 || !FULL_SHA.test(resolved.stdout)) {
