@@ -128,6 +128,27 @@ test("multiple trailing slashes in a dependency fail closed", () => {
   }
 });
 
+test("single trailing slash dependency is normalized before drift evaluation", () => {
+  const root = makeRepo();
+  try {
+    const anchor = git(root, "rev-parse", "HEAD");
+    writeRegistry(root, {
+      ...baseEntry(),
+      verified_at_commit: anchor,
+      depends_on: ["src/control.txt/"],
+    });
+    commitAll(root, "register trailing slash dependency");
+    write(root, "src/control.txt", "v2\n");
+    commitAll(root, "change trailing slash dependency target");
+    const { result, json } = check(root);
+    assert.equal(result.status, 1);
+    assert.equal(json.status, "stale");
+    assert.deepEqual(json.documents[0].changed_paths, ["src/control.txt"]);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("short flag token cannot be consumed as a ref value", () => {
   const result = run(process.execPath, [checker, "--ref", "-h", "--json"], process.cwd());
   assert.equal(result.status, 2);
