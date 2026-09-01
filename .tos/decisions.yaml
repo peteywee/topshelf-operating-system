@@ -34,12 +34,12 @@ decisions:
     status: approved
     authority: Patrick Craven
     decided_on: "2026-09-01"
-    decision: TopShelf Operating System is canonical in top-shelf-service/topshelf-operating-system. The former topshelf-project-template is retired and deleted as a separate architectural authority; reusable predecessor logic may be integrated into TOS through controlled change.
+    decision: TopShelf Operating System is canonical in peteywee/topshelf-operating-system. The former topshelf-project-template is retired and deleted as a separate architectural authority; reusable predecessor logic may be integrated into TOS through controlled change.
     supersedes:
       - TOS-DEC-002
     evidence:
       - README.md
-      - https://github.com/top-shelf-service/topshelf-operating-system/issues/17
+      - https://github.com/peteywee/topshelf-operating-system/issues/17
   - id: TOS-DEC-005
     title: Technology-agnostic governance kernel
     status: approved
@@ -48,7 +48,7 @@ decisions:
     decision: TOS governance and control-plane contracts must be technology-agnostic. TypeScript, Node.js, and pnpm may remain implementation choices for the TOS repository but must not constrain governed projects to that ecosystem.
     evidence:
       - README.md
-      - https://github.com/top-shelf-service/topshelf-operating-system/issues/17
+      - https://github.com/peteywee/topshelf-operating-system/issues/17
   - id: TOS-DEC-006
     title: JSON-first machine-readable interfaces and state direction
     status: approved
@@ -58,7 +58,7 @@ decisions:
     evidence:
       - README.md
       - schemas/
-      - https://github.com/top-shelf-service/topshelf-operating-system/issues/17
+      - https://github.com/peteywee/topshelf-operating-system/issues/17
   - id: TOS-DEC-007
     title: Primary real-world proving workloads and workflows
     status: approved
@@ -67,7 +67,7 @@ decisions:
     decision: TOS will be grounded against three primary proving workloads/workflows: Teach for SaaS and production governance, xqueue for operational automation and external side effects, and bounded autonomous execution centered on tos execute next for the TOS execution model itself.
     evidence:
       - README.md
-      - https://github.com/top-shelf-service/topshelf-operating-system/issues/17
+      - https://github.com/peteywee/topshelf-operating-system/issues/17
   - id: TOS-DEC-008
     title: GitHub as durable project-management record
     status: approved
@@ -75,5 +75,5 @@ decisions:
     decided_on: "2026-09-01"
     decision: GitHub milestones and issues are durable TOS project-management records. Material bounded work should have a GitHub issue before implementation unless an explicit exception applies, and milestone/issue status must be updated with evidence and closeout rather than relying on conversation history.
     evidence:
-      - https://github.com/top-shelf-service/topshelf-operating-system/issues/16
-      - https://github.com/top-shelf-service/topshelf-operating-system/issues/17
+      - https://github.com/peteywee/topshelf-operating-system/issues/16
+      - https://github.com/peteywee/topshelf-operating-system/issues/17
