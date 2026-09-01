@@ -25,7 +25,15 @@
       "verified_at_commit": "468b83a7d3a1f88d488961d762407c78dc8dcfa5",
       "depends_on": [
         "README.md",
-        ".tos/",
+        ".tos/activity.jsonl",
+        ".tos/blockers.yaml",
+        ".tos/boot.yaml",
+        ".tos/decisions.yaml",
+        ".tos/evidence-index.yaml",
+        ".tos/facts.yaml",
+        ".tos/modules.yaml",
+        ".tos/project.yaml",
+        ".tos/requirements.yaml",
         ".github/workflows/",
         "packages/",
         "schemas/"
