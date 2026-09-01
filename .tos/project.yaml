@@ -5,9 +5,9 @@ project:
   name: TopShelf Operating System
   owner: Patrick Craven
   company: Top Shelf Service LLC
-  repository: peteywee/topshelf-operating-system
+  repository: top-shelf-service/topshelf-operating-system
   lifecycle: prototype
   status: active
 state:
   authoritative_path: .tos
-  last_reconciled: "2026-07-25"
+  last_reconciled: "2026-09-01"
