@@ -60,10 +60,14 @@ function runGit(args, cwd = process.cwd()) {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
   });
+  const rawStdout = result.stdout ?? "";
+  const rawStderr = result.stderr ?? "";
   return {
     status: result.status,
-    stdout: (result.stdout ?? "").trim(),
-    stderr: (result.stderr ?? "").trim(),
+    stdout: rawStdout.trim(),
+    stderr: rawStderr.trim(),
+    rawStdout,
+    rawStderr,
     error: result.error,
   };
 }
@@ -88,18 +92,21 @@ function gitObjectExists(commit, repoPath) {
   return runGit(["cat-file", "-e", `${commit}:${normalized}`]).status === 0;
 }
 
+function splitNulPaths(rawOutput) {
+  return rawOutput.split("\0").filter((entry) => entry.length > 0);
+}
+
 function listMarkdownAtRef(ref, root) {
   const normalized = root.endsWith("/") ? root.slice(0, -1) : root;
-  const result = runGit(["--literal-pathspecs", "ls-tree", "-r", "--name-only", ref, "--", normalized]);
+  const result = runGit(["--literal-pathspecs", "ls-tree", "-r", "-z", "--name-only", ref, "--", normalized]);
   if (result.status !== 0) throw new Error(result.stderr || `Unable to enumerate ${root}.`);
-  if (result.stdout === "") return [];
-  return result.stdout.split("\n").filter((entry) => entry.endsWith(".md"));
+  return splitNulPaths(result.rawStdout).filter((entry) => entry.endsWith(".md"));
 }
 
 function changedPaths(anchor, head, paths) {
-  const result = runGit(["--literal-pathspecs", "diff", "--name-only", `${anchor}..${head}`, "--", ...paths]);
+  const result = runGit(["--literal-pathspecs", "diff", "--name-only", "-z", `${anchor}..${head}`, "--", ...paths]);
   if (result.status !== 0) throw new Error(result.stderr || "git diff failed");
-  return result.stdout === "" ? [] : result.stdout.split("\n");
+  return splitNulPaths(result.rawStdout);
 }
 
 function outputAndExit(report, args, code) {
@@ -179,7 +186,7 @@ if (registryRead.status !== 0) {
 
 let registry;
 try {
-  registry = JSON.parse(registryRead.stdout);
+  registry = JSON.parse(registryRead.rawStdout);
 } catch (error) {
   outputAndExit(
     { schema_version: 1, status: "invalid", head_sha: headSha, registry: args.registry, errors: [{ code: "REGISTRY_JSON_INVALID", message: `Registry is not valid JSON: ${error.message}` }], documents: [] },
