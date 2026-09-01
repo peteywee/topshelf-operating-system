@@ -15,7 +15,7 @@ TOS is the canonical authority for TopShelf terminology, intake answer validity,
 
 The former `topshelf-project-template` is retired and deleted as a separate architectural authority. Reusable predecessor logic may be integrated into TOS through controlled changes, but it must not be resurrected as a competing source of truth.
 
-The canonical repository is `top-shelf-service/topshelf-operating-system`.
+The canonical repository is `peteywee/topshelf-operating-system`.
 
 ## Governing rules
 
@@ -177,7 +177,7 @@ The approved direction is therefore not "replace every YAML file immediately." I
 
 ## Core defaults
 
-- Canonical repository: `top-shelf-service/topshelf-operating-system`
+- Canonical repository: `peteywee/topshelf-operating-system`
 - CLI command: `tos`
 - Current TOS repository implementation: TypeScript on Node.js 20 or 22, pnpm 10.33.3
 - Governance architecture: technology-agnostic kernel with technology/provider-specific adapters or modules where justified
