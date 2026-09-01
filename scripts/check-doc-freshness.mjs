@@ -340,7 +340,11 @@ if (errors.length === 0) {
       });
       continue;
     }
-    const changed = changedPaths(entry.verified_at_commit, headSha, [entry.path, ...entry.depends_on]);
+    const diffPaths = [
+      entry.path,
+      ...entry.depends_on.map((dependency) => (dependency.endsWith("/") ? dependency.slice(0, -1) : dependency)),
+    ];
+    const changed = changedPaths(entry.verified_at_commit, headSha, diffPaths);
     const status = changed.length === 0 ? "current" : "stale";
     documents.push({
       doc_id: entry.doc_id,
