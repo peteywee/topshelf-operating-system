@@ -132,7 +132,7 @@ eligible work
 → bounded implementation and repair
 → submission
 → independent verification
-→ exact-head evidence
+→ exact-candidate evidence
 → policy-controlled promotion
 ```
 
