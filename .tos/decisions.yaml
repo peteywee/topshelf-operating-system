@@ -19,8 +19,6 @@ decisions:
     decision: TOS is implemented in peteywee/topshelf-operating-system; topshelf-project-template remains a predecessor until parity is proven and then is archived rather than deleted.
     evidence:
       - docs/11-implementation-and-migration-plan.md
-    superseded_by:
-      - TOS-DEC-004
   - id: TOS-DEC-003
     title: Batch implementation model
     status: approved
