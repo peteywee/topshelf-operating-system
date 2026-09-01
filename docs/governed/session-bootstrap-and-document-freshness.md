@@ -90,12 +90,19 @@ For each `verified` document, `scripts/check-doc-freshness.mjs` verifies that:
 7. the governed document itself has not changed since the anchor;
 8. none of its declared dependencies have changed since the anchor.
 
-Outcomes:
+Top-level report status values are:
+
+- `current` — all checked verified documents are current and registry validation succeeded;
+- `stale` — at least one verified document or declared dependency changed after its verification anchor;
+- `invalid` — registry, coverage, anchor, path, or resolution rules fail.
+
+Per-document status values are:
 
 - `current` — verified prose and dependencies are unchanged since the verification anchor;
 - `stale` — the verified document or a declared dependency changed;
-- `not_checked` — document is governed but truth state is not `verified`;
-- `invalid` — registry, coverage, anchor, path, or resolution rules fail.
+- `not_checked` — the document is governed but its truth state is not `verified`.
+
+`not_checked` is never a top-level report status. It is only emitted for individual governed documents that are intentionally outside verified-freshness evaluation.
 
 Normal exit codes are:
 
