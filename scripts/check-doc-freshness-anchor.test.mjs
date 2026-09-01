@@ -157,6 +157,20 @@ test("short flag token cannot be consumed as a ref value", () => {
   assert.equal(json.errors[0].code, "ARGUMENT_INVALID");
 });
 
+test("environment failure keeps top-level JSON status inside the documented contract", () => {
+  const root = mkdtempSync(join(tmpdir(), "tos-doc-not-a-repo-"));
+  try {
+    const result = run(process.execPath, [checker, "--json"], root);
+    assert.equal(result.status, 3);
+    const json = JSON.parse(result.stdout);
+    assert.equal(json.status, "invalid");
+    assert.equal(json.exit_code, 3);
+    assert.equal(json.errors[0].code, "GIT_REPOSITORY_REQUIRED");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("newline-containing governed Markdown cannot evade registry coverage", () => {
   const root = mkdtempSync(join(tmpdir(), "tos-doc-newline-coverage-"));
   try {
