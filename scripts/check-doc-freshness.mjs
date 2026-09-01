@@ -159,7 +159,7 @@ if (!safeRepoPath(args.registry)) {
 const repoCheck = runGit(["rev-parse", "--is-inside-work-tree"]);
 if (repoCheck.status !== 0 || repoCheck.stdout !== "true") {
   outputAndExit(
-    { schema_version: 1, status: "environment_error", errors: [{ code: "GIT_REPOSITORY_REQUIRED", message: "Run from inside a Git work tree." }], documents: [] },
+    { schema_version: 1, status: "invalid", errors: [{ code: "GIT_REPOSITORY_REQUIRED", message: "Run from inside a Git work tree." }], documents: [] },
     args,
     EXIT.environment,
   );
