@@ -73,7 +73,10 @@ function safeRepoPath(value, { allowTrailingSlash = false } = {}) {
   if (value.includes("\0") || value.includes("\\")) return false;
   if (value.startsWith("/") || value.startsWith(":")) return false;
   if (/[?*\[\]]/.test(value)) return false;
-  const candidate = allowTrailingSlash && value.endsWith("/") ? value.slice(0, -1) : value;
+  const hasTrailingSlash = value.endsWith("/");
+  if (hasTrailingSlash && !allowTrailingSlash) return false;
+  if (hasTrailingSlash && value.endsWith("//")) return false;
+  const candidate = hasTrailingSlash ? value.slice(0, -1) : value;
   if (candidate.length === 0) return false;
   if (candidate === "." || candidate.startsWith("../") || candidate.includes("/../")) return false;
   if (candidate === ".git" || candidate.startsWith(".git/")) return false;
