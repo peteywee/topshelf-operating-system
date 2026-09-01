@@ -111,7 +111,7 @@ function changedPaths(anchor, head, paths) {
 }
 
 function outputAndExit(report, args, code) {
-  const actualCode = args.reportOnly ? EXIT.ok : code;
+  const actualCode = args.reportOnly && code === EXIT.stale ? EXIT.ok : code;
   report.exit_code = actualCode;
   if (args.json) {
     console.log(JSON.stringify(report, null, 2));
@@ -145,7 +145,7 @@ if (parsed.error) {
 
 const args = parsed.value;
 if (args.help) {
-  console.log(`Usage: node scripts/check-doc-freshness.mjs [--registry <path>] [--ref <commit>] [--json] [--report-only]\n\nExit codes:\n  0 current / report-only\n  1 stale verified documentation\n  2 malformed, uncovered, or unresolvable governance data\n  3 git repository/environment failure`);
+  console.log(`Usage: node scripts/check-doc-freshness.mjs [--registry <path>] [--ref <commit>] [--json] [--report-only]\n\nExit codes:\n  0 current, or stale in --report-only mode\n  1 stale verified documentation\n  2 malformed, uncovered, or unresolvable governance data\n  3 git repository/environment failure\n\n--report-only suppresses only the stale exit code; invalid governance and environment failures remain non-zero.`);
   process.exit(EXIT.ok);
 }
 
