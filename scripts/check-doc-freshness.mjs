@@ -29,7 +29,7 @@ function parseArgs(argv) {
     const token = argv[i];
     if (valueFlags.has(token)) {
       const value = argv[i + 1];
-      if (value === undefined || value.startsWith("--")) {
+      if (value === undefined || value.startsWith("-")) {
         return { error: `Missing value for ${token}.` };
       }
       if (token === "--registry") parsed.registry = value;
