@@ -171,6 +171,65 @@ test("environment failure keeps top-level JSON status inside the documented cont
   }
 });
 
+test("report-only suppresses stale but preserves stale report status", () => {
+  const root = makeRepo();
+  try {
+    const anchor = git(root, "rev-parse", "HEAD");
+    writeRegistry(root, {
+      ...baseEntry(),
+      verified_at_commit: anchor,
+    });
+    commitAll(root, "register report-only stale fixture");
+    write(root, "src/control.txt", "v2\n");
+    commitAll(root, "make report-only fixture stale");
+    const result = run(
+      process.execPath,
+      [checker, "--registry", ".tos/document-freshness.json", "--ref", "HEAD", "--json", "--report-only"],
+      root,
+    );
+    assert.equal(result.status, 0);
+    const json = JSON.parse(result.stdout);
+    assert.equal(json.status, "stale");
+    assert.equal(json.exit_code, 0);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("report-only does not suppress invalid governance failure", () => {
+  const root = makeRepo();
+  try {
+    writeRegistry(root, baseEntry());
+    commitAll(root, "register invalid report-only fixture");
+    const result = run(
+      process.execPath,
+      [checker, "--registry", ".tos/document-freshness.json", "--ref", "HEAD", "--json", "--report-only"],
+      root,
+    );
+    assert.equal(result.status, 2);
+    const json = JSON.parse(result.stdout);
+    assert.equal(json.status, "invalid");
+    assert.equal(json.exit_code, 2);
+    assert.ok(json.errors.some((entry) => entry.code === "DOC_ANCHOR_INVALID"));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("report-only does not suppress environment failure", () => {
+  const root = mkdtempSync(join(tmpdir(), "tos-doc-report-only-not-a-repo-"));
+  try {
+    const result = run(process.execPath, [checker, "--json", "--report-only"], root);
+    assert.equal(result.status, 3);
+    const json = JSON.parse(result.stdout);
+    assert.equal(json.status, "invalid");
+    assert.equal(json.exit_code, 3);
+    assert.equal(json.errors[0].code, "GIT_REPOSITORY_REQUIRED");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("checker resolves repository-root semantics when invoked from a subdirectory", () => {
   const root = makeRepo();
   try {
