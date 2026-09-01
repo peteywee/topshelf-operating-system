@@ -109,3 +109,51 @@ test("full-length nonexistent anchor fails closed", () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("multiple trailing slashes in a dependency fail closed", () => {
+  const root = makeRepo();
+  try {
+    const anchor = git(root, "rev-parse", "HEAD");
+    writeRegistry(root, {
+      ...baseEntry(),
+      verified_at_commit: anchor,
+      depends_on: ["src/control.txt//"],
+    });
+    commitAll(root, "register ambiguous dependency");
+    const { result, json } = check(root);
+    assert.equal(result.status, 2);
+    assert.ok(json.errors.some((entry) => entry.code === "DOC_DEPENDENCY_PATH_INVALID"));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+for (const cliPath of ["package.json", "scripts/run-tos.mjs"]) {
+  test(`effective CLI dependency ${cliPath} makes an audit stale when changed`, () => {
+    const root = mkdtempSync(join(tmpdir(), "tos-doc-cli-dependency-"));
+    try {
+      git(root, "init", "-b", "main");
+      write(root, "docs/governed/audit.md", "# Audit\n\nVerified CLI claim.\n");
+      write(root, "package.json", "{\"scripts\":{\"tos\":\"node scripts/run-tos.mjs\"}}\n");
+      write(root, "scripts/run-tos.mjs", "console.log('v1');\n");
+      const anchor = commitAll(root, "audit baseline");
+      writeRegistry(root, {
+        doc_id: "TOS-DOC-AUDIT-CLI",
+        path: "docs/governed/audit.md",
+        class: "audit",
+        claims_truth_state: "verified",
+        verified_at_commit: anchor,
+        depends_on: ["package.json", "scripts/run-tos.mjs"],
+      });
+      commitAll(root, "register audit");
+      write(root, cliPath, cliPath === "package.json" ? "{\"scripts\":{\"tos\":\"node scripts/run-tos.mjs --changed\"}}\n" : "console.log('v2');\n");
+      commitAll(root, `change ${cliPath}`);
+      const { result, json } = check(root);
+      assert.equal(result.status, 1);
+      assert.equal(json.status, "stale");
+      assert.ok(json.documents[0].changed_paths.includes(cliPath));
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+}
