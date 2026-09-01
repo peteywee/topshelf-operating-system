@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "governed_roots": [
+    "docs/governed"
+  ],
+  "documents": [
+    {
+      "doc_id": "TOS-DOC-GOV-0001",
+      "path": "docs/governed/session-bootstrap-and-document-freshness.md",
+      "class": "governance",
+      "claims_truth_state": "verified",
+      "verified_at_commit": "468b83a7d3a1f88d488961d762407c78dc8dcfa5",
+      "depends_on": [
+        "scripts/check-doc-freshness.mjs",
+        "scripts/check-doc-freshness.test.mjs",
+        ".github/workflows/ci.yml",
+        "package.json"
+      ]
+    },
+    {
+      "doc_id": "TOS-DOC-AUDIT-0001-REVIEW",
+      "path": "docs/governed/claude-2026-09-01-audit-disposition.md",
+      "class": "audit",
+      "claims_truth_state": "verified",
+      "verified_at_commit": "468b83a7d3a1f88d488961d762407c78dc8dcfa5",
+      "depends_on": [
+        "README.md",
+        ".tos/",
+        ".github/workflows/",
+        "packages/",
+        "schemas/"
+      ]
+    }
+  ]
+}
