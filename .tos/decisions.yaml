@@ -27,7 +27,7 @@ decisions:
     decision: TOS implementation proceeds through bounded batches with acceptance criteria, validation, evidence, and pull-request review.
     evidence:
       - docs/implementation/tos-0.1-batch-1.md
-  - id: TOS-DEC-004
+  - id: TOS-DEC-016
     title: TOS canonical repository and predecessor retirement
     status: approved
     authority: Patrick Craven
@@ -38,7 +38,7 @@ decisions:
     evidence:
       - README.md
       - https://github.com/peteywee/topshelf-operating-system/issues/17
-  - id: TOS-DEC-005
+  - id: TOS-DEC-017
     title: Technology-agnostic governance kernel
     status: approved
     authority: Patrick Craven
@@ -47,7 +47,7 @@ decisions:
     evidence:
       - README.md
       - https://github.com/peteywee/topshelf-operating-system/issues/17
-  - id: TOS-DEC-006
+  - id: TOS-DEC-018
     title: JSON-first machine-readable interfaces and state direction
     status: approved
     authority: Patrick Craven
@@ -57,7 +57,7 @@ decisions:
       - README.md
       - schemas/
       - https://github.com/peteywee/topshelf-operating-system/issues/17
-  - id: TOS-DEC-007
+  - id: TOS-DEC-019
     title: Primary real-world proving workloads and workflows
     status: approved
     authority: Patrick Craven
@@ -66,7 +66,7 @@ decisions:
     evidence:
       - README.md
       - https://github.com/peteywee/topshelf-operating-system/issues/17
-  - id: TOS-DEC-008
+  - id: TOS-DEC-020
     title: GitHub as durable project-management record
     status: approved
     authority: Patrick Craven
