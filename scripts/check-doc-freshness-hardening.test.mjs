@@ -153,3 +153,11 @@ test("human output escapes newline-containing error messages onto one line", () 
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("human argument errors escape embedded newlines", () => {
+  const token = "bad\narg";
+  const result = run(process.execPath, [checker, token], process.cwd());
+  assert.equal(result.status, 2);
+  assert.equal(result.stderr.trim(), JSON.stringify(`Unknown argument: ${token}`));
+  assert.ok(!result.stderr.includes(`Unknown argument: ${token}`));
+});
