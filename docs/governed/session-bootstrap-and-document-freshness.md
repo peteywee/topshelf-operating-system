@@ -113,13 +113,13 @@ Normal exit codes are:
 
 `--report-only` suppresses only the stale enforcement exit (`1` to `0`) so callers can inspect a stale report without failing the process. It does not suppress invalid governance data or Git/environment failures; those remain fail-closed at exit codes `2` and `3` respectively.
 
-JSON mode emits structured output for both success and failure paths.
+JSON mode emits structured output for both success and failure paths. Human-readable mode escapes repository paths and error messages before printing them so legal control characters such as embedded newlines cannot create ambiguous or forged log records.
 
 ## Path safety
 
-Dependency entries are literal repository paths, not arbitrary Git pathspec expressions. Absolute paths, parent traversal, `.git` paths, backslashes, pathspec magic, and wildcard syntax are rejected before Git evaluation. Git commands use literal-pathspec mode where applicable.
+Dependency entries are literal repository paths, not arbitrary Git pathspec expressions. Absolute paths, parent traversal, `.git` paths, backslashes, colons, pathspec magic, and wildcard syntax are rejected before Git evaluation. Colons are forbidden anywhere in governed repository paths because Git object expressions use the `<commit>:<path>` form and must remain unambiguous. Git commands use literal-pathspec mode where applicable.
 
-This prevents a document from declaring an exclusion or other pathspec trick that causes material changes to disappear from freshness evaluation.
+This prevents a document from declaring an exclusion, object-expression ambiguity, or other pathspec trick that causes material changes to disappear from freshness evaluation.
 
 ## Branch drift doctrine
 
@@ -153,10 +153,11 @@ The freshness implementation must prove rejection of at least:
 - invalid classes;
 - short or malformed anchors;
 - non-ancestor anchors;
-- unsafe dependency pathspecs;
+- unsafe dependency pathspecs, including colon-containing repository paths;
 - missing governed documents;
 - missing registries;
-- malformed CLI value arguments.
+- malformed CLI value arguments;
+- ambiguous human-readable output from newline-containing paths or error messages.
 
 A passing happy-path fixture without these failures is insufficient evidence for adoption.
 
