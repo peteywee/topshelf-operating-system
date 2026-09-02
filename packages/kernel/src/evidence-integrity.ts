@@ -98,11 +98,31 @@ export async function validateFactEvidenceReferences(
     const factId = typeof fact.id === "string" ? fact.id : `facts[${factIndex}]`;
 
     for (const [evidenceIndex, evidence] of fact.evidence.entries()) {
-      const evidencePath = `facts[${factIndex}].evidence[${evidenceIndex}].reference`;
-      if (!isRecord(evidence)) continue;
+      const evidenceBasePath = `facts[${factIndex}].evidence[${evidenceIndex}]`;
+      const evidencePath = `${evidenceBasePath}.reference`;
+      if (!isRecord(evidence)) {
+        issues.push(
+          issue(
+            "FACT_EVIDENCE_REFERENCE_INVALID",
+            `Evidence entry for ${factId} must be an object with non-empty type and reference fields.`,
+            evidenceBasePath,
+          ),
+        );
+        continue;
+      }
+
       const type = typeof evidence.type === "string" ? evidence.type.trim() : "";
       const reference = typeof evidence.reference === "string" ? evidence.reference.trim() : "";
-      if (reference.length === 0) continue;
+      if (reference.length === 0) {
+        issues.push(
+          issue(
+            "FACT_EVIDENCE_REFERENCE_INVALID",
+            `Evidence reference for ${factId} must be a non-empty string.`,
+            evidencePath,
+          ),
+        );
+        continue;
+      }
 
       if (REPOSITORY_BACKED_FACT_TYPES.has(type)) {
         issues.push(
@@ -143,7 +163,7 @@ export async function validateFactEvidenceReferences(
         issue(
           "FACT_EVIDENCE_TYPE_UNSUPPORTED",
           `Evidence type '${type || "<empty>"}' is not supported for semantic resolution.`,
-          `facts[${factIndex}].evidence[${evidenceIndex}].type`,
+          `${evidenceBasePath}.type`,
         ),
       );
     }
@@ -165,7 +185,16 @@ export async function validateDecisionEvidenceReferences(
 
     for (const [evidenceIndex, rawReference] of decision.evidence.entries()) {
       const evidencePath = `decisions[${decisionIndex}].evidence[${evidenceIndex}]`;
-      if (typeof rawReference !== "string" || rawReference.trim().length === 0) continue;
+      if (typeof rawReference !== "string" || rawReference.trim().length === 0) {
+        issues.push(
+          issue(
+            "DECISION_EVIDENCE_REFERENCE_INVALID",
+            `Evidence reference for ${decisionId} must be a non-empty string.`,
+            evidencePath,
+          ),
+        );
+        continue;
+      }
       const reference = rawReference.trim();
 
       if (reference.startsWith("https://")) {
