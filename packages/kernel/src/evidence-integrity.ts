@@ -106,7 +106,26 @@ export async function validateFactEvidenceReferences(
   const knownEvidenceIds = evidenceIds(evidenceIndexInput);
 
   for (const [factIndex, fact] of factInput.facts.entries()) {
-    if (!isRecord(fact) || !Array.isArray(fact.evidence)) continue;
+    if (!isRecord(fact)) {
+      issues.push(
+        issue(
+          "FACT_EVIDENCE_REFERENCE_INVALID",
+          `Fact entry at facts[${factIndex}] must be an object with an evidence array.`,
+          `facts[${factIndex}]`,
+        ),
+      );
+      continue;
+    }
+    if (!Array.isArray(fact.evidence)) {
+      issues.push(
+        issue(
+          "FACT_EVIDENCE_REFERENCE_INVALID",
+          `Fact evidence for ${typeof fact.id === "string" ? fact.id : `facts[${factIndex}]`} must be an array.`,
+          `facts[${factIndex}].evidence`,
+        ),
+      );
+      continue;
+    }
     const factId = typeof fact.id === "string" ? fact.id : `facts[${factIndex}]`;
 
     for (const [evidenceIndex, evidence] of fact.evidence.entries()) {
@@ -200,7 +219,28 @@ export async function validateDecisionEvidenceReferences(
   }
 
   for (const [decisionIndex, decision] of decisionInput.decisions.entries()) {
-    if (!isRecord(decision) || !Array.isArray(decision.evidence)) continue;
+    if (!isRecord(decision)) {
+      issues.push(
+        issue(
+          "DECISION_EVIDENCE_REFERENCE_INVALID",
+          `Decision entry at decisions[${decisionIndex}] must be an object with an evidence array.`,
+          `decisions[${decisionIndex}]`,
+        ),
+      );
+      continue;
+    }
+    if (!Array.isArray(decision.evidence)) {
+      issues.push(
+        issue(
+          "DECISION_EVIDENCE_REFERENCE_INVALID",
+          `Decision evidence for ${
+            typeof decision.id === "string" ? decision.id : `decisions[${decisionIndex}]`
+          } must be an array.`,
+          `decisions[${decisionIndex}].evidence`,
+        ),
+      );
+      continue;
+    }
     const decisionId = typeof decision.id === "string" ? decision.id : `decisions[${decisionIndex}]`;
 
     for (const [evidenceIndex, rawReference] of decision.evidence.entries()) {
