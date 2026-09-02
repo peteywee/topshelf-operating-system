@@ -211,4 +211,23 @@ describe("canonical state inspection", () => {
       ]),
     );
   });
+
+  it("attributes malformed non-evidence YAML to the failing canonical record", async () => {
+    const root = await createStateFixture();
+    await writeFile(
+      path.join(root, ".tos", "modules.yaml"),
+      "schema_version: 1\nmodules:\n  - id: broken\n    status: [\n",
+    );
+
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "TOS_STATE_LOAD_FAILED",
+          message: expect.stringContaining(".tos/modules.yaml"),
+        }),
+      ]),
+    );
+  });
 });
