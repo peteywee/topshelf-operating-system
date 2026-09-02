@@ -81,6 +81,34 @@ describe("canonical evidence integrity fail-closed behavior", () => {
     );
   });
 
+  it("rejects missing and blank fact evidence types explicitly", async () => {
+    const issues = await validateFactEvidenceReferences(
+      process.cwd(),
+      {
+        facts: [
+          {
+            id: "TOS-FACT-903",
+            evidence: [
+              { reference: "README.md" },
+              { type: "   ", reference: "README.md" },
+            ],
+          },
+        ],
+      },
+      { evidence: [] },
+    );
+
+    expect(
+      issues.filter((entry) => entry.code === "FACT_EVIDENCE_TYPE_INVALID"),
+    ).toHaveLength(2);
+    expect(issues.map((entry) => entry.path)).toEqual(
+      expect.arrayContaining([
+        "facts[0].evidence[0].type",
+        "facts[0].evidence[1].type",
+      ]),
+    );
+  });
+
   it("rejects null and blank decision evidence references", async () => {
     const issues = await validateDecisionEvidenceReferences(process.cwd(), {
       decisions: [
