@@ -20,6 +20,10 @@ function issue(code: string, message: string, issuePath: string): ValidationIssu
   return { code, message, path: issuePath, severity: "error" };
 }
 
+function withTrailingSeparator(value: string): string {
+  return value.endsWith(path.sep) ? value : `${value}${path.sep}`;
+}
+
 function evidenceIds(input: unknown): Set<string> {
   if (!isRecord(input) || !Array.isArray(input.evidence)) return new Set();
   return new Set(
@@ -59,16 +63,16 @@ async function validateRepositoryPath(
   label: string,
 ): Promise<ValidationIssue[]> {
   const resolvedRoot = path.resolve(root);
-  const rootPrefix = `${resolvedRoot}${path.sep}`;
+  const rootPrefix = withTrailingSeparator(resolvedRoot);
   const realRoot = await realpath(resolvedRoot).catch(() => resolvedRoot);
-  const realRootPrefix = `${realRoot}${path.sep}`;
+  const realRootPrefix = withTrailingSeparator(realRoot);
   const normalized = normalizeRepositoryPath(reference);
   if (normalized === undefined) {
     return [issue(malformedCode, `${label} '${reference}' is not a safe canonical repository path.`, issuePath)];
   }
 
   const absolute = path.resolve(root, ...normalized.split("/"));
-  if (!absolute.startsWith(rootPrefix)) {
+  if (absolute !== resolvedRoot && !absolute.startsWith(rootPrefix)) {
     return [issue(malformedCode, `${label} '${reference}' resolves outside the project root.`, issuePath)];
   }
 
@@ -90,7 +94,15 @@ export async function validateFactEvidenceReferences(
   evidenceIndexInput: unknown,
 ): Promise<ValidationIssue[]> {
   const issues: ValidationIssue[] = [];
-  if (!isRecord(factInput) || !Array.isArray(factInput.facts)) return issues;
+  if (!isRecord(factInput) || !Array.isArray(factInput.facts)) {
+    return [
+      issue(
+        "FACT_EVIDENCE_SHAPE_INVALID",
+        ".tos/facts.yaml must contain a top-level facts array before evidence integrity can be validated.",
+        "facts",
+      ),
+    ];
+  }
   const knownEvidenceIds = evidenceIds(evidenceIndexInput);
 
   for (const [factIndex, fact] of factInput.facts.entries()) {
@@ -177,7 +189,15 @@ export async function validateDecisionEvidenceReferences(
   decisionInput: unknown,
 ): Promise<ValidationIssue[]> {
   const issues: ValidationIssue[] = [];
-  if (!isRecord(decisionInput) || !Array.isArray(decisionInput.decisions)) return issues;
+  if (!isRecord(decisionInput) || !Array.isArray(decisionInput.decisions)) {
+    return [
+      issue(
+        "DECISION_EVIDENCE_SHAPE_INVALID",
+        ".tos/decisions.yaml must contain a top-level decisions array before evidence integrity can be validated.",
+        "decisions",
+      ),
+    ];
+  }
 
   for (const [decisionIndex, decision] of decisionInput.decisions.entries()) {
     if (!isRecord(decision) || !Array.isArray(decision.evidence)) continue;
