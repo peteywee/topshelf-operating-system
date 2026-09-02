@@ -143,7 +143,7 @@ if (parsed.error) {
   const wantsJson = process.argv.includes("--json");
   const report = { schema_version: 1, status: "invalid", errors: [{ code: "ARGUMENT_INVALID", message: parsed.error }] };
   if (wantsJson) console.log(JSON.stringify({ ...report, exit_code: EXIT.invalid }, null, 2));
-  else console.error(parsed.error);
+  else console.error(humanValue(parsed.error));
   process.exit(EXIT.invalid);
 }
 
