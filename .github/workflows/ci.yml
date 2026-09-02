@@ -74,7 +74,7 @@ jobs:
           CURRENT_DATE="$(date -u +%F)"
           echo "Current UTC liveness date: ${CURRENT_DATE}"
           pnpm tos -- fact validate "${CURRENT_DATE}" > /tmp/tos-current-facts.txt
-          grep -q "0 stale" /tmp/tos-current-facts.txt
+          grep -Eq "^OK: fact catalog is valid \([0-9]+ records, 0 stale, as of ${CURRENT_DATE}\)\.$" /tmp/tos-current-facts.txt
           pnpm tos -- requirement validate "${CURRENT_DATE}" > /tmp/tos-current-requirements.txt
           grep -q "OK: requirement catalog is valid" /tmp/tos-current-requirements.txt
           pnpm tos -- boot validate "${CURRENT_DATE}" > /tmp/tos-current-boot.txt

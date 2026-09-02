@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -143,5 +143,34 @@ describe("canonical state inspection", () => {
     const report = await validateProject(root);
     expect(report.valid).toBe(false);
     expect(report.issues.some((entry) => entry.code === "DECISION_EVIDENCE_REFERENCE_UNSUPPORTED")).toBe(true);
+  });
+
+  it("rejects repository evidence symlinked outside the project root", async () => {
+    const root = await createStateFixture();
+    const outsideRoot = await mkdtemp(path.join(os.tmpdir(), "tos-kernel-outside-"));
+    await writeFile(path.join(outsideRoot, "outside.md"), "outside\n");
+    await symlink(path.join(outsideRoot, "outside.md"), path.join(root, "outside-link.md"));
+
+    await writeFile(
+      path.join(root, ".tos", "facts.yaml"),
+      [
+        "schema_version: 1",
+        "facts:",
+        "  - id: TOS-FACT-900",
+        "    statement: symlink traversal attempt",
+        "    owner: owner",
+        "    source_type: synthesis",
+        "    evidence:",
+        "      - type: repository",
+        "        reference: outside-link.md",
+        "",
+      ].join("\n"),
+    );
+    await writeFile(path.join(root, ".tos", "decisions.yaml"), "schema_version: 1\ndecisions: []\n");
+    await writeFile(path.join(root, ".tos", "evidence-index.yaml"), "schema_version: 1\nevidence: []\n");
+
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues.some((entry) => entry.code === "FACT_EVIDENCE_REFERENCE_INVALID")).toBe(true);
   });
 });

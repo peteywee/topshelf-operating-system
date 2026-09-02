@@ -1,4 +1,4 @@
-import { access } from "node:fs/promises";
+import { access, realpath } from "node:fs/promises";
 import path from "node:path";
 import type { ValidationIssue } from "@topshelf-os/shared";
 
@@ -58,19 +58,26 @@ async function validateRepositoryPath(
   issuePath: string,
   label: string,
 ): Promise<ValidationIssue[]> {
+  const resolvedRoot = path.resolve(root);
+  const rootPrefix = `${resolvedRoot}${path.sep}`;
+  const realRoot = await realpath(resolvedRoot).catch(() => resolvedRoot);
+  const realRootPrefix = `${realRoot}${path.sep}`;
   const normalized = normalizeRepositoryPath(reference);
   if (normalized === undefined) {
     return [issue(malformedCode, `${label} '${reference}' is not a safe canonical repository path.`, issuePath)];
   }
 
   const absolute = path.resolve(root, ...normalized.split("/"));
-  const rootPrefix = `${path.resolve(root)}${path.sep}`;
   if (!absolute.startsWith(rootPrefix)) {
     return [issue(malformedCode, `${label} '${reference}' resolves outside the project root.`, issuePath)];
   }
 
   try {
     await access(absolute);
+    const realAbsolute = await realpath(absolute);
+    if (realAbsolute !== realRoot && !realAbsolute.startsWith(realRootPrefix)) {
+      return [issue(malformedCode, `${label} '${reference}' resolves outside the project root.`, issuePath)];
+    }
     return [];
   } catch {
     return [issue(missingCode, `${label} '${reference}' does not resolve in the repository.`, issuePath)];
