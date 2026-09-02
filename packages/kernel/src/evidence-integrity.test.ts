@@ -149,4 +149,30 @@ describe("canonical evidence integrity fail-closed behavior", () => {
       expect.arrayContaining(["decisions[0]", "decisions[1].evidence"]),
     );
   });
+
+  it("classifies non-canonical URL schemes as unsupported decision evidence", async () => {
+    const issues = await validateDecisionEvidenceReferences(process.cwd(), {
+      decisions: [
+        {
+          id: "TOS-DEC-902",
+          evidence: [
+            "http://github.com/example/repo/issues/1",
+            "ftp://example.com/evidence",
+            "mailto:owner@example.com",
+          ],
+        },
+      ],
+    });
+
+    expect(
+      issues.filter((entry) => entry.code === "DECISION_EVIDENCE_REFERENCE_UNSUPPORTED"),
+    ).toHaveLength(3);
+    expect(issues.map((entry) => entry.path)).toEqual(
+      expect.arrayContaining([
+        "decisions[0].evidence[0]",
+        "decisions[0].evidence[1]",
+        "decisions[0].evidence[2]",
+      ]),
+    );
+  });
 });
