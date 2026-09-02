@@ -144,30 +144,35 @@ describe("canonical state inspection", () => {
   it("rejects repository evidence symlinked outside the project root", async () => {
     const root = await createStateFixture();
     const outsideRoot = await mkdtemp(path.join(os.tmpdir(), "tos-kernel-outside-"));
-    await writeFile(path.join(outsideRoot, "outside.md"), "outside\n");
-    await symlink(path.join(outsideRoot, "outside.md"), path.join(root, "outside-link.md"));
 
-    await writeFile(
-      path.join(root, ".tos", "facts.yaml"),
-      [
-        "schema_version: 1",
-        "facts:",
-        "  - id: TOS-FACT-900",
-        "    statement: symlink traversal attempt",
-        "    owner: owner",
-        "    source_type: synthesis",
-        "    evidence:",
-        "      - type: repository",
-        "        reference: outside-link.md",
-        "",
-      ].join("\n"),
-    );
-    await writeFile(path.join(root, ".tos", "decisions.yaml"), "schema_version: 1\ndecisions: []\n");
-    await writeFile(path.join(root, ".tos", "evidence-index.yaml"), "schema_version: 1\nevidence: []\n");
+    try {
+      await writeFile(path.join(outsideRoot, "outside.md"), "outside\n");
+      await symlink(path.join(outsideRoot, "outside.md"), path.join(root, "outside-link.md"));
 
-    const report = await validateProject(root);
-    expect(report.valid).toBe(false);
-    expect(report.issues.some((entry) => entry.code === "FACT_EVIDENCE_REFERENCE_INVALID")).toBe(true);
+      await writeFile(
+        path.join(root, ".tos", "facts.yaml"),
+        [
+          "schema_version: 1",
+          "facts:",
+          "  - id: TOS-FACT-900",
+          "    statement: symlink traversal attempt",
+          "    owner: owner",
+          "    source_type: synthesis",
+          "    evidence:",
+          "      - type: repository",
+          "        reference: outside-link.md",
+          "",
+        ].join("\n"),
+      );
+      await writeFile(path.join(root, ".tos", "decisions.yaml"), "schema_version: 1\ndecisions: []\n");
+      await writeFile(path.join(root, ".tos", "evidence-index.yaml"), "schema_version: 1\nevidence: []\n");
+
+      const report = await validateProject(root);
+      expect(report.valid).toBe(false);
+      expect(report.issues.some((entry) => entry.code === "FACT_EVIDENCE_REFERENCE_INVALID")).toBe(true);
+    } finally {
+      await rm(outsideRoot, { recursive: true, force: true });
+    }
   });
 
   it("rejects canonical fact state without a facts array", async () => {
@@ -186,5 +191,24 @@ describe("canonical state inspection", () => {
     const report = await validateProject(root);
     expect(report.valid).toBe(false);
     expect(report.issues.some((entry) => entry.code === "DECISION_EVIDENCE_SHAPE_INVALID")).toBe(true);
+  });
+
+  it("attributes malformed evidence YAML to the failing canonical record", async () => {
+    const root = await createStateFixture();
+    await writeFile(
+      path.join(root, ".tos", "decisions.yaml"),
+      "schema_version: 1\ndecisions:\n  - id: TOS-DEC-999\n    evidence: [\n",
+    );
+
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "TOS_STATE_LOAD_FAILED",
+          message: expect.stringContaining(".tos/decisions.yaml"),
+        }),
+      ]),
+    );
   });
 });
