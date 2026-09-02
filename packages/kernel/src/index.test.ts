@@ -230,4 +230,28 @@ describe("canonical state inspection", () => {
       ]),
     );
   });
+
+  it("preserves missing-record errors when evidence YAML is malformed", async () => {
+    const root = await createStateFixture();
+    await rm(path.join(root, ".tos", "blockers.yaml"));
+    await writeFile(
+      path.join(root, ".tos", "decisions.yaml"),
+      "schema_version: 1\ndecisions:\n  - id: TOS-DEC-999\n    evidence: [\n",
+    );
+
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "TOS_STATE_MISSING_RECORD",
+          path: ".tos/blockers.yaml",
+        }),
+        expect.objectContaining({
+          code: "TOS_STATE_LOAD_FAILED",
+          message: expect.stringContaining(".tos/decisions.yaml"),
+        }),
+      ]),
+    );
+  });
 });
