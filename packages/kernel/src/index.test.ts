@@ -42,17 +42,13 @@ async function createStateFixture(): Promise<string> {
     "",
   ].join("\n"));
 
-  for (const file of [
-    "facts.yaml",
-    "requirements.yaml",
-    "modules.yaml",
-    "boot.yaml",
-    "decisions.yaml",
-    "blockers.yaml",
-    "evidence-index.yaml",
-  ]) {
-    await writeFile(path.join(stateRoot, file), "schema_version: 1\nmodules: []\n");
-  }
+  await writeFile(path.join(stateRoot, "facts.yaml"), "schema_version: 1\nfacts: []\n");
+  await writeFile(path.join(stateRoot, "requirements.yaml"), "schema_version: 1\nrequirements: []\n");
+  await writeFile(path.join(stateRoot, "modules.yaml"), "schema_version: 1\nmodules: []\n");
+  await writeFile(path.join(stateRoot, "boot.yaml"), "schema_version: 1\nboot: {}\n");
+  await writeFile(path.join(stateRoot, "decisions.yaml"), "schema_version: 1\ndecisions: []\n");
+  await writeFile(path.join(stateRoot, "blockers.yaml"), "schema_version: 1\nblockers: []\n");
+  await writeFile(path.join(stateRoot, "evidence-index.yaml"), "schema_version: 1\nevidence: []\n");
   await writeFile(path.join(stateRoot, "activity.jsonl"), "");
 
   const standardsRoot = path.join(root, "standards", "intake");
@@ -172,5 +168,23 @@ describe("canonical state inspection", () => {
     const report = await validateProject(root);
     expect(report.valid).toBe(false);
     expect(report.issues.some((entry) => entry.code === "FACT_EVIDENCE_REFERENCE_INVALID")).toBe(true);
+  });
+
+  it("rejects canonical fact state without a facts array", async () => {
+    const root = await createStateFixture();
+    await writeFile(path.join(root, ".tos", "facts.yaml"), "schema_version: 1\nnot_facts: []\n");
+
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues.some((entry) => entry.code === "FACT_EVIDENCE_SHAPE_INVALID")).toBe(true);
+  });
+
+  it("rejects canonical decision state without a decisions array", async () => {
+    const root = await createStateFixture();
+    await writeFile(path.join(root, ".tos", "decisions.yaml"), "schema_version: 1\nnot_decisions: []\n");
+
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues.some((entry) => entry.code === "DECISION_EVIDENCE_SHAPE_INVALID")).toBe(true);
   });
 });
