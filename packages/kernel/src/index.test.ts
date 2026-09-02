@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -109,20 +109,13 @@ describe("canonical state inspection", () => {
     expect(report.issues.some((issue) => issue.path === "standards/intake/questions.json")).toBe(true);
   });
 
-  it("rejects a dangling repository evidence reference", async () => {
+  it("rejects the deliberately dangling repository evidence fixture", async () => {
     const root = await createStateFixture();
-    await writeFile(
-      path.join(root, ".tos", "facts.yaml"),
-      [
-        "schema_version: 1",
-        "facts:",
-        "  - id: TOS-FACT-900",
-        "    evidence:",
-        "      - type: repository",
-        "        reference: docs/does-not-exist.md",
-        "",
-      ].join("\n"),
+    const fixture = await readFile(
+      new URL("../test-fixtures/dangling-evidence.facts.yaml", import.meta.url),
+      "utf8",
     );
+    await writeFile(path.join(root, ".tos", "facts.yaml"), fixture);
     await writeFile(path.join(root, ".tos", "decisions.yaml"), "schema_version: 1\ndecisions: []\n");
     await writeFile(path.join(root, ".tos", "evidence-index.yaml"), "schema_version: 1\nevidence: []\n");
 
