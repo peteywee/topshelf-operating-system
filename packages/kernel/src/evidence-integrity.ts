@@ -11,6 +11,7 @@ const REPOSITORY_BACKED_FACT_TYPES = new Set([
 ]);
 const AUTOMATED_FACT_TYPE = "automated-validation";
 const SUPPORTED_GITHUB_EVIDENCE_URL = /^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/(?:issues|pull)\/\d+(?:#.*)?$/;
+const URL_SCHEME_PREFIX = /^[A-Za-z][A-Za-z0-9+.-]*:/;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -267,16 +268,18 @@ export async function validateDecisionEvidenceReferences(
       }
       const reference = rawReference.trim();
 
-      if (reference.startsWith("https://")) {
-        if (!SUPPORTED_GITHUB_EVIDENCE_URL.test(reference)) {
-          issues.push(
-            issue(
-              "DECISION_EVIDENCE_REFERENCE_UNSUPPORTED",
-              `Decision evidence URL '${reference}' must be a GitHub issue or pull-request URL.`,
-              evidencePath,
-            ),
-          );
-        }
+      if (SUPPORTED_GITHUB_EVIDENCE_URL.test(reference)) {
+        continue;
+      }
+
+      if (URL_SCHEME_PREFIX.test(reference)) {
+        issues.push(
+          issue(
+            "DECISION_EVIDENCE_REFERENCE_UNSUPPORTED",
+            `Decision evidence URL '${reference}' must be a canonical HTTPS GitHub issue or pull-request URL.`,
+            evidencePath,
+          ),
+        );
         continue;
       }
 
