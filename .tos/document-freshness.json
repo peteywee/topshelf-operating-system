@@ -9,11 +9,12 @@
       "path": "docs/governed/session-bootstrap-and-document-freshness.md",
       "class": "governance",
       "claims_truth_state": "verified",
-      "verified_at_commit": "e10aa527b283933e10c0ed01bc5c54d103e1624e",
+      "verified_at_commit": "ba97308ee6069b42e7599f6ddce3c75c728716fe",
       "depends_on": [
         "scripts/check-doc-freshness.mjs",
         "scripts/check-doc-freshness.test.mjs",
         "scripts/check-doc-freshness-anchor.test.mjs",
+        "scripts/check-doc-freshness-hardening.test.mjs",
         ".github/workflows/ci.yml",
         "package.json"
       ]
@@ -23,7 +24,7 @@
       "path": "docs/governed/claude-2026-09-01-audit-disposition.md",
       "class": "audit",
       "claims_truth_state": "verified",
-      "verified_at_commit": "e10aa527b283933e10c0ed01bc5c54d103e1624e",
+      "verified_at_commit": "ba97308ee6069b42e7599f6ddce3c75c728716fe",
       "depends_on": [
         "README.md",
         "package.json",
@@ -31,6 +32,7 @@
         "scripts/check-doc-freshness.mjs",
         "scripts/check-doc-freshness.test.mjs",
         "scripts/check-doc-freshness-anchor.test.mjs",
+        "scripts/check-doc-freshness-hardening.test.mjs",
         ".tos/activity.jsonl",
         ".tos/blockers.yaml",
         ".tos/boot.yaml",
