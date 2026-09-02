@@ -32,7 +32,7 @@ decisions:
     status: approved
     authority: Patrick Craven
     decided_on: "2026-09-01"
-    decision: TopShelf Operating System is canonical in peteywee/topshelf-operating-system. The former topshelf-project-template is retired and deleted as a separate architectural authority; reusable predecessor logic may be integrated into TOS through controlled change.
+    decision: TopShelf Operating System is canonical in peteywee/topshelf-operating-system. The former peteywee/topshelf-project-template is retired and deleted as a separate architectural authority; reusable predecessor logic may be integrated into TOS through controlled change.
     supersedes:
       - TOS-DEC-002
     evidence:
