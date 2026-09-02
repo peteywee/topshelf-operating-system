@@ -75,8 +75,8 @@ function runGit(args, cwd = gitCwd) {
 
 function safeRepoPath(value, { allowTrailingSlash = false } = {}) {
   if (typeof value !== "string" || value.length === 0) return false;
-  if (value.includes("\0") || value.includes("\\")) return false;
-  if (value.startsWith("/") || value.startsWith(":")) return false;
+  if (value.includes("\0") || value.includes("\\") || value.includes(":")) return false;
+  if (value.startsWith("/")) return false;
   if (/[?*\[\]]/.test(value)) return false;
   const hasTrailingSlash = value.endsWith("/");
   if (hasTrailingSlash && !allowTrailingSlash) return false;
@@ -110,6 +110,10 @@ function changedPaths(anchor, head, paths) {
   return splitNulPaths(result.rawStdout);
 }
 
+function humanValue(value) {
+  return JSON.stringify(String(value));
+}
+
 function outputAndExit(report, args, code) {
   const actualCode = args.reportOnly && code === EXIT.stale ? EXIT.ok : code;
   report.exit_code = actualCode;
@@ -118,11 +122,11 @@ function outputAndExit(report, args, code) {
   } else {
     console.log(`Document freshness at ${report.head_sha ?? "unresolved"}`);
     if (report.errors?.length) {
-      for (const error of report.errors) console.log(`  ERROR ${error.code}: ${error.message}`);
+      for (const error of report.errors) console.log(`  ERROR ${error.code}: ${humanValue(error.message)}`);
     }
     for (const doc of report.documents ?? []) {
-      console.log(`  ${doc.status.toUpperCase().padEnd(12)} ${doc.doc_id} (${doc.path})`);
-      for (const changed of doc.changed_paths ?? []) console.log(`               changed: ${changed}`);
+      console.log(`  ${doc.status.toUpperCase().padEnd(12)} ${doc.doc_id} (${humanValue(doc.path)})`);
+      for (const changed of doc.changed_paths ?? []) console.log(`               changed: ${humanValue(changed)}`);
     }
     if (report.counts) {
       console.log(
