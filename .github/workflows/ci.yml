@@ -68,6 +68,10 @@ jobs:
           grep -q "TOS-FACT-003" /tmp/tos-fact-list.txt
           pnpm tos -- fact show TOS-FACT-001 2026-07-25 > /tmp/tos-fact-001.yaml
           grep -q "status: verified_yes" /tmp/tos-fact-001.yaml
+          if pnpm tos -- fact validate 2026-08-25; then
+            echo "Expired facts incorrectly passed freshness validation" >&2
+            exit 1
+          fi
 
       - name: Validate current canonical liveness
         run: |
