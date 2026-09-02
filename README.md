@@ -13,7 +13,7 @@ TopShelf Operating System is the lean evidence-driven control layer for Top Shel
 
 TOS is the canonical authority for TopShelf terminology, intake answer validity, project-versus-operation classification, Lite/Standard/Controlled project tiering, required artifact selection, module decisions, authorization blockers, and future work-order execution.
 
-The former `topshelf-project-template` is retired and deleted as a separate architectural authority. Reusable predecessor logic may be integrated into TOS through controlled changes, but it must not be resurrected as a competing source of truth.
+The former `peteywee/topshelf-project-template` is retired and deleted as a separate architectural authority. Reusable predecessor logic may be integrated into TOS through controlled changes, but it must not be resurrected as a competing source of truth.
 
 The canonical repository is `peteywee/topshelf-operating-system`.
 
