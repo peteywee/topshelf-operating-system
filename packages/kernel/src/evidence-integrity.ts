@@ -144,6 +144,16 @@ export async function validateFactEvidenceReferences(
 
       const type = typeof evidence.type === "string" ? evidence.type.trim() : "";
       const reference = typeof evidence.reference === "string" ? evidence.reference.trim() : "";
+      if (type.length === 0) {
+        issues.push(
+          issue(
+            "FACT_EVIDENCE_TYPE_INVALID",
+            `Evidence type for ${factId} must be a non-empty string.`,
+            `${evidenceBasePath}.type`,
+          ),
+        );
+        continue;
+      }
       if (reference.length === 0) {
         issues.push(
           issue(
@@ -193,7 +203,7 @@ export async function validateFactEvidenceReferences(
       issues.push(
         issue(
           "FACT_EVIDENCE_TYPE_UNSUPPORTED",
-          `Evidence type '${type || "<empty>"}' is not supported for semantic resolution.`,
+          `Evidence type '${type}' is not supported for semantic resolution.`,
           `${evidenceBasePath}.type`,
         ),
       );
