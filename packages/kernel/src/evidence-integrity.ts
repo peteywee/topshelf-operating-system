@@ -1,0 +1,204 @@
+import { access } from "node:fs/promises";
+import path from "node:path";
+import type { ValidationIssue } from "@topshelf-os/shared";
+
+const REPOSITORY_BACKED_FACT_TYPES = new Set([
+  "repository",
+  "contract",
+  "register",
+  "roadmap",
+  "module-state",
+]);
+const AUTOMATED_FACT_TYPE = "automated-validation";
+const SUPPORTED_GITHUB_EVIDENCE_URL = /^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/(?:issues|pull)\/\d+(?:#.*)?$/;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function issue(code: string, message: string, issuePath: string): ValidationIssue {
+  return { code, message, path: issuePath, severity: "error" };
+}
+
+function evidenceIds(input: unknown): Set<string> {
+  if (!isRecord(input) || !Array.isArray(input.evidence)) return new Set();
+  return new Set(
+    input.evidence
+      .filter(isRecord)
+      .map((entry) => entry.id)
+      .filter((value): value is string => typeof value === "string" && /^TOS-EVD-\d{3}$/.test(value)),
+  );
+}
+
+function normalizeRepositoryPath(reference: string): string | undefined {
+  if (
+    reference.length === 0 ||
+    reference.includes("\0") ||
+    reference.includes("\\") ||
+    reference.includes(":") ||
+    /[*?\[\]{}]/.test(reference) ||
+    path.posix.isAbsolute(reference)
+  ) {
+    return undefined;
+  }
+
+  const candidate = reference.endsWith("/") ? reference.slice(0, -1) : reference;
+  if (candidate.length === 0 || candidate === "." || candidate.startsWith("../") || candidate.includes("/../")) {
+    return undefined;
+  }
+  if (path.posix.normalize(candidate) !== candidate) return undefined;
+  return candidate;
+}
+
+async function validateRepositoryPath(
+  root: string,
+  reference: string,
+  malformedCode: string,
+  missingCode: string,
+  issuePath: string,
+  label: string,
+): Promise<ValidationIssue[]> {
+  const normalized = normalizeRepositoryPath(reference);
+  if (normalized === undefined) {
+    return [issue(malformedCode, `${label} '${reference}' is not a safe canonical repository path.`, issuePath)];
+  }
+
+  const absolute = path.resolve(root, ...normalized.split("/"));
+  const rootPrefix = `${path.resolve(root)}${path.sep}`;
+  if (!absolute.startsWith(rootPrefix)) {
+    return [issue(malformedCode, `${label} '${reference}' resolves outside the project root.`, issuePath)];
+  }
+
+  try {
+    await access(absolute);
+    return [];
+  } catch {
+    return [issue(missingCode, `${label} '${reference}' does not resolve in the repository.`, issuePath)];
+  }
+}
+
+export async function validateFactEvidenceReferences(
+  root: string,
+  factInput: unknown,
+  evidenceIndexInput: unknown,
+): Promise<ValidationIssue[]> {
+  const issues: ValidationIssue[] = [];
+  if (!isRecord(factInput) || !Array.isArray(factInput.facts)) return issues;
+  const knownEvidenceIds = evidenceIds(evidenceIndexInput);
+
+  for (const [factIndex, fact] of factInput.facts.entries()) {
+    if (!isRecord(fact) || !Array.isArray(fact.evidence)) continue;
+    const factId = typeof fact.id === "string" ? fact.id : `facts[${factIndex}]`;
+
+    for (const [evidenceIndex, evidence] of fact.evidence.entries()) {
+      const evidencePath = `facts[${factIndex}].evidence[${evidenceIndex}].reference`;
+      if (!isRecord(evidence)) continue;
+      const type = typeof evidence.type === "string" ? evidence.type.trim() : "";
+      const reference = typeof evidence.reference === "string" ? evidence.reference.trim() : "";
+      if (reference.length === 0) continue;
+
+      if (REPOSITORY_BACKED_FACT_TYPES.has(type)) {
+        issues.push(
+          ...(await validateRepositoryPath(
+            root,
+            reference,
+            "FACT_EVIDENCE_REFERENCE_INVALID",
+            "FACT_EVIDENCE_REFERENCE_UNRESOLVED",
+            evidencePath,
+            `Evidence reference for ${factId}`,
+          )),
+        );
+        continue;
+      }
+
+      if (type === AUTOMATED_FACT_TYPE) {
+        if (!/^TOS-EVD-\d{3}$/.test(reference)) {
+          issues.push(
+            issue(
+              "FACT_EVIDENCE_ID_INVALID",
+              `Automated evidence reference '${reference}' must match TOS-EVD-###.`,
+              evidencePath,
+            ),
+          );
+        } else if (!knownEvidenceIds.has(reference)) {
+          issues.push(
+            issue(
+              "FACT_EVIDENCE_ID_UNRESOLVED",
+              `Automated evidence reference '${reference}' is not present in .tos/evidence-index.yaml.`,
+              evidencePath,
+            ),
+          );
+        }
+        continue;
+      }
+
+      issues.push(
+        issue(
+          "FACT_EVIDENCE_TYPE_UNSUPPORTED",
+          `Evidence type '${type || "<empty>"}' is not supported for semantic resolution.`,
+          `facts[${factIndex}].evidence[${evidenceIndex}].type`,
+        ),
+      );
+    }
+  }
+
+  return issues;
+}
+
+export async function validateDecisionEvidenceReferences(
+  root: string,
+  decisionInput: unknown,
+): Promise<ValidationIssue[]> {
+  const issues: ValidationIssue[] = [];
+  if (!isRecord(decisionInput) || !Array.isArray(decisionInput.decisions)) return issues;
+
+  for (const [decisionIndex, decision] of decisionInput.decisions.entries()) {
+    if (!isRecord(decision) || !Array.isArray(decision.evidence)) continue;
+    const decisionId = typeof decision.id === "string" ? decision.id : `decisions[${decisionIndex}]`;
+
+    for (const [evidenceIndex, rawReference] of decision.evidence.entries()) {
+      const evidencePath = `decisions[${decisionIndex}].evidence[${evidenceIndex}]`;
+      if (typeof rawReference !== "string" || rawReference.trim().length === 0) continue;
+      const reference = rawReference.trim();
+
+      if (reference.startsWith("https://")) {
+        if (!SUPPORTED_GITHUB_EVIDENCE_URL.test(reference)) {
+          issues.push(
+            issue(
+              "DECISION_EVIDENCE_REFERENCE_UNSUPPORTED",
+              `Decision evidence URL '${reference}' must be a GitHub issue or pull-request URL.`,
+              evidencePath,
+            ),
+          );
+        }
+        continue;
+      }
+
+      issues.push(
+        ...(await validateRepositoryPath(
+          root,
+          reference,
+          "DECISION_EVIDENCE_REFERENCE_INVALID",
+          "DECISION_EVIDENCE_REFERENCE_UNRESOLVED",
+          evidencePath,
+          `Evidence reference for ${decisionId}`,
+        )),
+      );
+    }
+  }
+
+  return issues;
+}
+
+export async function validateCanonicalEvidenceReferences(
+  root: string,
+  factInput: unknown,
+  decisionInput: unknown,
+  evidenceIndexInput: unknown,
+): Promise<ValidationIssue[]> {
+  const [factIssues, decisionIssues] = await Promise.all([
+    validateFactEvidenceReferences(root, factInput, evidenceIndexInput),
+    validateDecisionEvidenceReferences(root, decisionInput),
+  ]);
+  return [...factIssues, ...decisionIssues];
+}

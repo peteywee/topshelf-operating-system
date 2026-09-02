@@ -7,6 +7,7 @@ import type {
   ValidationIssue,
   ValidationReport,
 } from "@topshelf-os/shared";
+import { validateCanonicalEvidenceReferences } from "./evidence-integrity.js";
 
 export const REQUIRED_STATE_RECORDS = [
   ".tos/project.yaml",
@@ -188,7 +189,30 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
       path: missingPath,
       severity: "error",
     }));
-    return { valid: issues.length === 0, issues };
+
+    const evidenceRecordsPresent = [
+      ".tos/facts.yaml",
+      ".tos/decisions.yaml",
+      ".tos/evidence-index.yaml",
+    ].every((recordPath) => !snapshot.missingRecords.includes(recordPath));
+
+    if (evidenceRecordsPresent) {
+      const [factInput, decisionInput, evidenceIndexInput] = await Promise.all([
+        readYamlRecord<unknown>(snapshot.root, ".tos/facts.yaml"),
+        readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml"),
+        readYamlRecord<unknown>(snapshot.root, ".tos/evidence-index.yaml"),
+      ]);
+      issues.push(
+        ...(await validateCanonicalEvidenceReferences(
+          snapshot.root,
+          factInput,
+          decisionInput,
+          evidenceIndexInput,
+        )),
+      );
+    }
+
+    return { valid: !issues.some((entry) => entry.severity === "error"), issues };
   } catch (error) {
     return {
       valid: false,

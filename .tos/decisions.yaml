@@ -10,7 +10,7 @@ decisions:
       - TopShelf Op Sys
     evidence:
       - README.md
-      - docs/01-charter-and-governing-principles.md
+      - docs/01_OFFICIAL_IDENTITY_AND_NAMING.md
   - id: TOS-DEC-002
     title: Separate product repository
     status: superseded
@@ -18,7 +18,7 @@ decisions:
     decided_on: "2026-07-24"
     decision: TOS is implemented in peteywee/topshelf-operating-system; topshelf-project-template remains a predecessor until parity is proven and then is archived rather than deleted.
     evidence:
-      - docs/11-implementation-and-migration-plan.md
+      - https://github.com/peteywee/topshelf-operating-system/issues/17
   - id: TOS-DEC-003
     title: Batch implementation model
     status: approved

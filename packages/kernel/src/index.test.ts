@@ -108,4 +108,47 @@ describe("canonical state inspection", () => {
     expect(report.valid).toBe(false);
     expect(report.issues.some((issue) => issue.path === "standards/intake/questions.json")).toBe(true);
   });
+
+  it("rejects a dangling repository evidence reference", async () => {
+    const root = await createStateFixture();
+    await writeFile(
+      path.join(root, ".tos", "facts.yaml"),
+      [
+        "schema_version: 1",
+        "facts:",
+        "  - id: TOS-FACT-900",
+        "    evidence:",
+        "      - type: repository",
+        "        reference: docs/does-not-exist.md",
+        "",
+      ].join("\n"),
+    );
+    await writeFile(path.join(root, ".tos", "decisions.yaml"), "schema_version: 1\ndecisions: []\n");
+    await writeFile(path.join(root, ".tos", "evidence-index.yaml"), "schema_version: 1\nevidence: []\n");
+
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues.some((entry) => entry.code === "FACT_EVIDENCE_REFERENCE_UNRESOLVED")).toBe(true);
+  });
+
+  it("rejects an unsupported decision evidence URL", async () => {
+    const root = await createStateFixture();
+    await writeFile(path.join(root, ".tos", "facts.yaml"), "schema_version: 1\nfacts: []\n");
+    await writeFile(
+      path.join(root, ".tos", "decisions.yaml"),
+      [
+        "schema_version: 1",
+        "decisions:",
+        "  - id: TOS-DEC-900",
+        "    evidence:",
+        "      - https://example.com/not-canonical",
+        "",
+      ].join("\n"),
+    );
+    await writeFile(path.join(root, ".tos", "evidence-index.yaml"), "schema_version: 1\nevidence: []\n");
+
+    const report = await validateProject(root);
+    expect(report.valid).toBe(false);
+    expect(report.issues.some((entry) => entry.code === "DECISION_EVIDENCE_REFERENCE_UNSUPPORTED")).toBe(true);
+  });
 });
