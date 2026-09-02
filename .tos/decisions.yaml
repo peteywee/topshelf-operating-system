@@ -62,7 +62,7 @@ decisions:
     status: approved
     authority: Patrick Craven
     decided_on: "2026-09-01"
-    decision: TOS will be grounded against three primary proving workloads/workflows: Teach for SaaS and production governance, xqueue for operational automation and external side effects, and bounded autonomous execution centered on tos execute next for the TOS execution model itself.
+    decision: "TOS will be grounded against three primary proving workloads/workflows: Teach for SaaS and production governance, xqueue for operational automation and external side effects, and bounded autonomous execution centered on tos execute next for the TOS execution model itself."
     evidence:
       - README.md
       - https://github.com/peteywee/topshelf-operating-system/issues/17
