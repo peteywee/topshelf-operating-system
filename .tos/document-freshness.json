@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "governed_roots": [
+    "docs/governed"
+  ],
+  "documents": [
+    {
+      "doc_id": "TOS-DOC-GOV-0001",
+      "path": "docs/governed/session-bootstrap-and-document-freshness.md",
+      "class": "governance",
+      "claims_truth_state": "verified",
+      "verified_at_commit": "8cc6ba4e88898190244b7411811e432a616764dd",
+      "depends_on": [
+        "scripts/check-doc-freshness.mjs",
+        "scripts/check-doc-freshness.test.mjs",
+        "scripts/check-doc-freshness-anchor.test.mjs",
+        "scripts/check-doc-freshness-hardening.test.mjs",
+        ".github/workflows/ci.yml",
+        "package.json"
+      ]
+    },
+    {
+      "doc_id": "TOS-DOC-AUDIT-0001-REVIEW",
+      "path": "docs/governed/claude-2026-09-01-audit-disposition.md",
+      "class": "audit",
+      "claims_truth_state": "verified",
+      "verified_at_commit": "8cc6ba4e88898190244b7411811e432a616764dd",
+      "depends_on": [
+        "README.md",
+        "package.json",
+        "scripts/run-tos.mjs",
+        "scripts/check-doc-freshness.mjs",
+        "scripts/check-doc-freshness.test.mjs",
+        "scripts/check-doc-freshness-anchor.test.mjs",
+        "scripts/check-doc-freshness-hardening.test.mjs",
+        ".tos/activity.jsonl",
+        ".tos/blockers.yaml",
+        ".tos/boot.yaml",
+        ".tos/decisions.yaml",
+        ".tos/evidence-index.yaml",
+        ".tos/facts.yaml",
+        ".tos/modules.yaml",
+        ".tos/project.yaml",
+        ".tos/requirements.yaml",
+        ".github/workflows/",
+        "packages/",
+        "schemas/"
+      ]
+    }
+  ]
+}

@@ -42,6 +42,12 @@ jobs:
       - name: Build, typecheck, and test
         run: pnpm check
 
+      - name: Test documentation freshness control
+        run: pnpm test:doc-freshness
+
+      - name: Validate governed documentation freshness
+        run: node scripts/check-doc-freshness.mjs --registry .tos/document-freshness.json --ref HEAD --json
+
       - name: Report runtime version
         run: |
           pnpm tos -- --version > /tmp/tos-version.txt
