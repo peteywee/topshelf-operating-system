@@ -202,19 +202,27 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
     ].every((recordPath) => !snapshot.missingRecords.includes(recordPath));
 
     if (evidenceRecordsPresent) {
-      const [factInput, decisionInput, evidenceIndexInput] = await Promise.all([
-        readYamlRecord<unknown>(snapshot.root, ".tos/facts.yaml"),
-        readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml"),
-        readYamlRecord<unknown>(snapshot.root, ".tos/evidence-index.yaml"),
-      ]);
-      issues.push(
-        ...(await validateCanonicalEvidenceReferences(
-          snapshot.root,
-          factInput,
-          decisionInput,
-          evidenceIndexInput,
-        )),
-      );
+      try {
+        const [factInput, decisionInput, evidenceIndexInput] = await Promise.all([
+          readYamlRecord<unknown>(snapshot.root, ".tos/facts.yaml"),
+          readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml"),
+          readYamlRecord<unknown>(snapshot.root, ".tos/evidence-index.yaml"),
+        ]);
+        issues.push(
+          ...(await validateCanonicalEvidenceReferences(
+            snapshot.root,
+            factInput,
+            decisionInput,
+            evidenceIndexInput,
+          )),
+        );
+      } catch (error) {
+        issues.push({
+          code: "TOS_STATE_LOAD_FAILED",
+          message: error instanceof Error ? error.message : String(error),
+          severity: "error",
+        });
+      }
     }
 
     return { valid: !issues.some((entry) => entry.severity === "error"), issues };
