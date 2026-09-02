@@ -81,14 +81,10 @@ export async function findProjectRoot(startDirectory = process.cwd()): Promise<s
 }
 
 export async function readYamlRecord<T>(root: string, relativePath: string): Promise<T> {
-  const absolutePath = path.join(root, relativePath);
-  const contents = await readFile(absolutePath, "utf8");
-  return YAML.parse(contents) as T;
-}
-
-async function readValidationYamlRecord(root: string, relativePath: string): Promise<unknown> {
   try {
-    return await readYamlRecord<unknown>(root, relativePath);
+    const absolutePath = path.join(root, relativePath);
+    const contents = await readFile(absolutePath, "utf8");
+    return YAML.parse(contents) as T;
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
     throw new TosStateError(`Failed to load ${relativePath}: ${detail}`);
@@ -207,9 +203,9 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
 
     if (evidenceRecordsPresent) {
       const [factInput, decisionInput, evidenceIndexInput] = await Promise.all([
-        readValidationYamlRecord(snapshot.root, ".tos/facts.yaml"),
-        readValidationYamlRecord(snapshot.root, ".tos/decisions.yaml"),
-        readValidationYamlRecord(snapshot.root, ".tos/evidence-index.yaml"),
+        readYamlRecord<unknown>(snapshot.root, ".tos/facts.yaml"),
+        readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml"),
+        readYamlRecord<unknown>(snapshot.root, ".tos/evidence-index.yaml"),
       ]);
       issues.push(
         ...(await validateCanonicalEvidenceReferences(
