@@ -86,6 +86,15 @@ export async function readYamlRecord<T>(root: string, relativePath: string): Pro
   return YAML.parse(contents) as T;
 }
 
+async function readValidationYamlRecord(root: string, relativePath: string): Promise<unknown> {
+  try {
+    return await readYamlRecord<unknown>(root, relativePath);
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new TosStateError(`Failed to load ${relativePath}: ${detail}`);
+  }
+}
+
 export function validateProjectRecord(input: unknown): ValidationReport {
   const issues: ValidationIssue[] = [];
 
@@ -198,9 +207,9 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
 
     if (evidenceRecordsPresent) {
       const [factInput, decisionInput, evidenceIndexInput] = await Promise.all([
-        readYamlRecord<unknown>(snapshot.root, ".tos/facts.yaml"),
-        readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml"),
-        readYamlRecord<unknown>(snapshot.root, ".tos/evidence-index.yaml"),
+        readValidationYamlRecord(snapshot.root, ".tos/facts.yaml"),
+        readValidationYamlRecord(snapshot.root, ".tos/decisions.yaml"),
+        readValidationYamlRecord(snapshot.root, ".tos/evidence-index.yaml"),
       ]);
       issues.push(
         ...(await validateCanonicalEvidenceReferences(
