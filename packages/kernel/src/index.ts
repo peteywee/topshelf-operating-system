@@ -7,6 +7,7 @@ import type {
   ValidationIssue,
   ValidationReport,
 } from "@topshelf-os/shared";
+import { validateCanonicalEvidenceReferences } from "./evidence-integrity.js";
 
 export const REQUIRED_STATE_RECORDS = [
   ".tos/project.yaml",
@@ -80,9 +81,14 @@ export async function findProjectRoot(startDirectory = process.cwd()): Promise<s
 }
 
 export async function readYamlRecord<T>(root: string, relativePath: string): Promise<T> {
-  const absolutePath = path.join(root, relativePath);
-  const contents = await readFile(absolutePath, "utf8");
-  return YAML.parse(contents) as T;
+  try {
+    const absolutePath = path.join(root, relativePath);
+    const contents = await readFile(absolutePath, "utf8");
+    return YAML.parse(contents) as T;
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new TosStateError(`Failed to load ${relativePath}: ${detail}`);
+  }
 }
 
 export function validateProjectRecord(input: unknown): ValidationReport {
@@ -188,7 +194,38 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
       path: missingPath,
       severity: "error",
     }));
-    return { valid: issues.length === 0, issues };
+
+    const evidenceRecordsPresent = [
+      ".tos/facts.yaml",
+      ".tos/decisions.yaml",
+      ".tos/evidence-index.yaml",
+    ].every((recordPath) => !snapshot.missingRecords.includes(recordPath));
+
+    if (evidenceRecordsPresent) {
+      try {
+        const [factInput, decisionInput, evidenceIndexInput] = await Promise.all([
+          readYamlRecord<unknown>(snapshot.root, ".tos/facts.yaml"),
+          readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml"),
+          readYamlRecord<unknown>(snapshot.root, ".tos/evidence-index.yaml"),
+        ]);
+        issues.push(
+          ...(await validateCanonicalEvidenceReferences(
+            snapshot.root,
+            factInput,
+            decisionInput,
+            evidenceIndexInput,
+          )),
+        );
+      } catch (error) {
+        issues.push({
+          code: "TOS_STATE_LOAD_FAILED",
+          message: error instanceof Error ? error.message : String(error),
+          severity: "error",
+        });
+      }
+    }
+
+    return { valid: !issues.some((entry) => entry.severity === "error"), issues };
   } catch (error) {
     return {
       valid: false,

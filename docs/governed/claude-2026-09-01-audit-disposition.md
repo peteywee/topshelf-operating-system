@@ -16,12 +16,12 @@ The original external artifacts remain source material. This repository records 
 
 | Finding | Disposition |
 |---|---|
-| F-01 — canonical fact freshness is expired while CI uses pinned historical dates | Verified. Current-date liveness work belongs to #23. |
+| F-01 — canonical fact freshness is expired while CI uses pinned historical dates | Verified as a historical finding. The Issue #23 candidate reverifies the expired canonical facts from observed repository/CI evidence and adds a separate real-UTC-date fact/requirement/boot liveness gate while retaining pinned historical regression checks. |
 | F-02 — JSON Schemas are not the sole/runtime enforcement mechanism | Supported. Treat as architecture/schema-enforcement work, not proof that validation is absent. |
 | F-03 — `tos execute next` is not implemented in runtime 0.2.1 | Verified. It remains a planned primary proving workflow, not an existing runtime command. |
 | F-04 — current CLI lacks a general structured JSON output contract | Verified for the inspected command surface. |
 | F-05 — current `.tos` state is YAML-heavy while JSON-first is an approved direction | Verified as architectural transition, not authorization for mass conversion. |
-| F-06 — canonical fact/decision records contain dangling repository evidence references | Verified. Resolution and semantic evidence validation belong to #23. |
+| F-06 — canonical fact/decision records contain dangling repository evidence references | Verified as a historical finding. The Issue #23 candidate reconciles the known dangling fact/decision paths and makes repository-backed evidence resolution fail closed through canonical-state validation, with negative tests for missing and unsupported references. |
 | F-07 — predecessor/template authority text is stale relative to current owner direction | Verified as historical drift; preserve supersession rather than rewriting history. |
 | F-08 — Teach has substantial governance patterns not presently implemented as TOS adoption | Supported with scope. Teach is a proving workload and source of lessons, not proof that TOS already governs it. |
 | F-09 — current proving workloads do not yet prove non-Node execution portability | Supported as an assurance limitation, not a contradiction of technology-agnostic governance design. |

@@ -31,17 +31,17 @@ facts:
     evidence:
       - type: register
         reference: registers/contract-register.csv
-        captured_on: "2026-07-25"
-        commit_sha: f6da923529d9ccf3c2eb56140c05518fd52f83ed
+        captured_on: "2026-09-02"
+        commit_sha: 571125e9ce63a72643289055b4d68083b9ccdfff
       - type: automated-validation
-        reference: TOS-EVD-003
-        captured_on: "2026-07-25"
-        commit_sha: 1fdcfa80c8544dc85f66ed013dac26605779bf19
+        reference: TOS-EVD-010
+        captured_on: "2026-09-02"
+        commit_sha: 571125e9ce63a72643289055b4d68083b9ccdfff
     authority: contract-registry-validation
-    last_verified: "2026-07-25"
+    last_verified: "2026-09-02"
     freshness:
       max_age_days: 30
-      expires_on: "2026-08-24"
+      expires_on: "2026-10-02"
     invalidated_by:
       - Contract registry count changes without a reconciled register and validation result.
   - id: TOS-FACT-003
@@ -51,18 +51,18 @@ facts:
     status: verified_no
     confidence: high
     evidence:
+      - type: repository
+        reference: README.md
+        captured_on: "2026-09-02"
+        commit_sha: 571125e9ce63a72643289055b4d68083b9ccdfff
       - type: roadmap
-        reference: docs/08-roadmap-and-work-breakdown.md
-        captured_on: "2026-07-25"
-        commit_sha: f6da923529d9ccf3c2eb56140c05518fd52f83ed
-      - type: module-state
-        reference: .tos/modules.yaml
-        captured_on: "2026-07-25"
-        commit_sha: f6da923529d9ccf3c2eb56140c05518fd52f83ed
+        reference: docs/09_ROADMAP.md
+        captured_on: "2026-09-02"
+        commit_sha: 571125e9ce63a72643289055b4d68083b9ccdfff
     authority: Patrick Craven
-    last_verified: "2026-07-25"
+    last_verified: "2026-09-02"
     freshness:
       max_age_days: 30
-      expires_on: "2026-08-24"
+      expires_on: "2026-10-02"
     invalidated_by:
       - Promotion through the TOS 1.0 acceptance gate.

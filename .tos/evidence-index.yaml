@@ -63,3 +63,10 @@ evidence:
     commit_sha: 7c5b71d0f7d3cb16519c7336f35cdf3cb035f65b
     source: GitHub PR 14 and Actions run 30614718767
     captured_on: "2026-07-31"
+  - id: TOS-EVD-010
+    claim: Current main after canonical authority reconciliation passes TOS CI on Node.js 20 and 22, including contract catalog validation and the 105-template contract inventory smoke check.
+    class: automated
+    status: verified
+    commit_sha: 571125e9ce63a72643289055b4d68083b9ccdfff
+    source: GitHub Actions run 33599424859 (TOS CI #134)
+    captured_on: "2026-09-02"
