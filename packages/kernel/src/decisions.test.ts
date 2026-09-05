@@ -1,6 +1,7 @@
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import YAML from "yaml";
 import { afterEach, describe, expect, it } from "vitest";
 import { validateDecisionCatalog } from "./decisions.js";
 
@@ -37,6 +38,24 @@ describe("validateDecisionCatalog", () => {
     });
 
     expect(report).toEqual({ valid: true, issues: [] });
+  });
+
+  it("rejects the committed missing-authority fixture", async () => {
+    const fixture = await readFile(
+      new URL("../test-fixtures/invalid-decision-missing-authority.yaml", import.meta.url),
+      "utf8",
+    );
+    const report = await validateDecisionCatalog(await tempRoot(), YAML.parse(fixture) as unknown);
+
+    expect(report.valid).toBe(false);
+    expect(report.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "DECISION_SCHEMA_REQUIRED",
+          path: "decisions[0].authority",
+        }),
+      ]),
+    );
   });
 
   it("rejects a missing required authority", async () => {
