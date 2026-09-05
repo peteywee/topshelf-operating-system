@@ -108,14 +108,21 @@ describe("validateDecisionCatalog", () => {
     expect(report.issues.some((entry) => entry.code === "DECISION_ID_DUPLICATE")).toBe(true);
   });
 
-  it("rejects a broken supersession reference", async () => {
+  it("rejects a broken supersession reference with a real catalog path", async () => {
     const report = await validateDecisionCatalog(await tempRoot(), {
       schema_version: 1,
       decisions: [decision({ id: "TOS-DEC-901", supersedes: ["TOS-DEC-999"] })],
     });
 
     expect(report.valid).toBe(false);
-    expect(report.issues.some((entry) => entry.code === "DECISION_SUPERSESSION_MISSING")).toBe(true);
+    expect(report.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "DECISION_SUPERSESSION_MISSING",
+          path: "decisions[0].supersedes",
+        }),
+      ]),
+    );
   });
 
   it("requires superseded targets to be marked superseded", async () => {
@@ -128,7 +135,14 @@ describe("validateDecisionCatalog", () => {
     });
 
     expect(report.valid).toBe(false);
-    expect(report.issues.some((entry) => entry.code === "DECISION_SUPERSESSION_STATUS")).toBe(true);
+    expect(report.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "DECISION_SUPERSESSION_STATUS",
+          path: "decisions[1].supersedes",
+        }),
+      ]),
+    );
   });
 
   it("accepts a valid decision-to-decision supersession", async () => {
@@ -143,7 +157,7 @@ describe("validateDecisionCatalog", () => {
     expect(report).toEqual({ valid: true, issues: [] });
   });
 
-  it("rejects supersession cycles", async () => {
+  it("rejects supersession cycles with a real catalog path", async () => {
     const report = await validateDecisionCatalog(await tempRoot(), {
       schema_version: 1,
       decisions: [
@@ -153,7 +167,14 @@ describe("validateDecisionCatalog", () => {
     });
 
     expect(report.valid).toBe(false);
-    expect(report.issues.some((entry) => entry.code === "DECISION_SUPERSESSION_CYCLE")).toBe(true);
+    expect(report.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "DECISION_SUPERSESSION_CYCLE",
+          path: "decisions[0].supersedes",
+        }),
+      ]),
+    );
   });
 
   it("preserves legacy non-decision supersession labels without treating them as IDs", async () => {
