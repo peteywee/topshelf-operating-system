@@ -56,3 +56,7 @@ modules:
     status: planned
     source: packages/scheduler/
     reason: Deferred until file-based work orders demonstrate a measured concurrency limitation.
+  - id: context-engine
+    status: planned
+    source: docs/architecture/tos-context-engine.md
+    reason: Defines the planned provider-neutral persistence, retrieval, provenance, checkpoint, and cross-agent context subsystem without changing canonical TOS authority.
