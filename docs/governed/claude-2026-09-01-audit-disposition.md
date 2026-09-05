@@ -18,7 +18,7 @@ The original external artifacts remain source material. This repository records 
 | Finding | Disposition |
 |---|---|
 | F-01 — canonical fact freshness is expired while CI uses pinned historical dates | Verified as a historical finding. Issue #23 reverified the expired canonical facts from observed repository/CI evidence and added a separate real-UTC-date fact/requirement/boot liveness gate while retaining pinned historical regression checks. |
-| F-02 — JSON Schemas are not the sole/runtime enforcement mechanism | Supported. Treat as architecture/schema-enforcement work, not proof that validation is absent. Issue #21 specifically identified and now has an implementation candidate for the incompatible canonical-decision/schema boundary; that candidate must still pass exact-candidate promotion gates before this statement can be treated as completed runtime behavior. |
+| F-02 — JSON Schemas are not the sole/runtime enforcement mechanism | Supported as a historical architecture finding, not proof that validation is absent. Issue #21 repaired the incompatible canonical-decision/schema boundary and PR #31 promoted schema-backed decision validation into canonical `main`; schema coverage for other boundaries remains incomplete. |
 | F-03 — `tos execute next` is not implemented in runtime 0.2.1 | Verified. It remains a planned primary proving workflow, not an existing runtime command. |
 | F-04 — current CLI lacks a general structured JSON output contract | Verified for the inspected command surface. |
 | F-05 — current `.tos` state is YAML-heavy while JSON-first is an approved direction | Verified as architectural transition, not authorization for mass conversion. |
@@ -62,25 +62,26 @@ The adopted implementation therefore uses an external JSON registry, explicit go
 
 ### 2026-09-05 operational re-verification
 
-The ancestry control exposed a real promotion failure after the Issue #23 work was squash-promoted: `.tos/document-freshness.json` retained `b24dc457e7d142c8fc0575f70d5ff64e28f80763`, a branch-local verification commit that was not an ancestor of canonical `main` at `355003e504463d85412f52eb0852f4640a8adebc`. As a result, the current `main` CI build/tests passed but governed-document freshness failed closed before later canonical validation steps could execute.
+The ancestry control exposed a real promotion failure after the Issue #23 work was squash-promoted: `.tos/document-freshness.json` retained `b24dc457e7d142c8fc0575f70d5ff64e28f80763`, a branch-local verification commit that was not an ancestor of canonical `main` at `355003e504463d85412f52eb0852f4640a8adebc`. As a result, the then-current `main` CI build/tests passed but governed-document freshness failed closed before later canonical validation steps could execute.
 
-That failure is valid detection of invalid governance data, not a reason to weaken the checker. The missing rule was promotion semantics: squash/rebase/cherry-pick promotion can preserve content while replacing commit identity. A branch-local anchor cannot remain a canonical verification anchor unless promotion preserves its ancestry.
+That failure was valid detection of invalid governance data, not a reason to weaken the checker. The missing rule was promotion semantics: squash/rebase/cherry-pick promotion can preserve content while replacing commit identity. A branch-local anchor cannot remain a canonical verification anchor unless promotion preserves its ancestry.
 
-The governing documentation is therefore clarified so that a history-rewriting promotion requires re-verification/re-anchoring on canonical lineage, or a promotion method that preserves the verified anchor ancestry. `DOC_ANCHOR_NOT_ANCESTOR` remains fail-closed.
+Issue #32 and PR #31 repaired that condition. PR #31 was promoted with a normal merge commit (`9fd5301a8271e9f0f6687f317ee83e085e1b9a29`) so the verified branch anchors remained in canonical ancestry, and post-merge TOS CI run #178 completed successfully on canonical `main`. `DOC_ANCHOR_NOT_ANCESTOR` remains fail-closed.
 
 ## Decision-schema re-verification
 
-Issue #21 was also re-audited on 2026-09-05 because its known split-brain decision representation blocks safe addition of later architecture decisions. The verified defect is that `.tos/decisions.yaml` and `schemas/decision.schema.json` describe incompatible decision objects and canonical project validation did not execute decision-schema validation.
+Issue #21 was re-audited on 2026-09-05 because its split-brain decision representation blocked safe addition of later architecture decisions. The verified defect was that `.tos/decisions.yaml` and `schemas/decision.schema.json` described incompatible decision objects and canonical project validation did not execute decision-schema validation.
 
-The current bounded implementation candidate preserves the historical `.tos/decisions.yaml` decision object as v1, aligns the JSON Schema to that actual representation, adds schema-backed kernel validation and supersession integrity checks, preserves the legacy `TopShelf Op Sys` label without pretending it is a decision ID, and adds deliberate invalid fixtures. This paragraph records candidate disposition only; merge/promotion remains subject to exact-candidate CI and authority rules.
+PR #31 repaired and promoted that boundary. Canonical decision record v1 preserves the historical `.tos/decisions.yaml` representation, the JSON Schema now describes that representation, ordinary canonical validation executes schema-backed decision validation, supersession integrity is enforced, the legacy `TopShelf Op Sys` label is preserved without pretending it is a decision ID, and deliberate invalid fixtures exercise fail-closed behavior. Review-found invalid-regex and semantic-path defects were also fixed before promotion. Exact-candidate run #174 and post-merge canonical run #178 both completed successfully.
 
 ## Separation of work
 
-This disposition intentionally keeps work boundaries explicit while acknowledging blocking dependencies:
+This disposition keeps work boundaries explicit while recording completed blockers accurately:
 
-- **#22:** session bootstrap and governed-document freshness, including valid verification-anchor lineage;
-- **#23:** current canonical fact/requirement/boot liveness and dangling evidence resolution — completed, with current main subsequently revealing the anchor-lineage defect described above;
-- **#21:** canonical decision object/schema enforcement — current blocking repair candidate;
+- **#22:** session bootstrap and governed-document freshness control, including valid verification-anchor lineage;
+- **#23:** current canonical fact/requirement/boot liveness and dangling evidence resolution — completed;
+- **#21:** canonical decision object/schema enforcement — completed through PR #31;
+- **#32:** governed-document anchor-lineage repair and promotion semantics — completed through PR #31;
 - **TOS bounded autonomous execution:** future `tos execute next` implementation and its independent verification/promotion controls.
 
 No external model output becomes canonical solely because another model produced it.
