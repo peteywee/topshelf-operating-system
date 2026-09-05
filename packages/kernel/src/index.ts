@@ -20,7 +20,6 @@ export const REQUIRED_STATE_RECORDS = [
   ".tos/blockers.yaml",
   ".tos/evidence-index.yaml",
   ".tos/activity.jsonl",
-  "schemas/decision.schema.json",
   "standards/intake/questions.json",
   "standards/intake/module-rules.json",
   "standards/intake/tailoring.json",
@@ -150,7 +149,7 @@ export function validateProjectRecord(input: unknown): ValidationReport {
     requiredString(state, "last_reconciled", "state", issues);
   }
 
-  return { valid: issues.every((issue) => issue.severity !== "error"), issues };
+  return { valid: issues.every((entry) => entry.severity !== "error"), issues };
 }
 
 export async function inspectProject(startDirectory = process.cwd()): Promise<TosProjectSnapshot> {
@@ -160,7 +159,7 @@ export async function inspectProject(startDirectory = process.cwd()): Promise<To
 
   if (!report.valid) {
     throw new TosStateError(
-      report.issues.map((issue) => `${issue.code}: ${issue.message}`).join("\n"),
+      report.issues.map((entry) => `${entry.code}: ${entry.message}`).join("\n"),
     );
   }
 
@@ -199,10 +198,7 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
 
     let decisionInput: unknown;
     let decisionLoadFailed = false;
-    const decisionValidationReady = [
-      ".tos/decisions.yaml",
-      "schemas/decision.schema.json",
-    ].every((recordPath) => !snapshot.missingRecords.includes(recordPath));
+    const decisionValidationReady = !snapshot.missingRecords.includes(".tos/decisions.yaml");
 
     if (decisionValidationReady) {
       try {
