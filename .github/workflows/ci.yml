@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate on Node.js 24
+    name: Validate configured Node.js runtime
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
