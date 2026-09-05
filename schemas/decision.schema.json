@@ -1,20 +1,28 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://topshelf.local/schemas/v1/decision.schema.json",
+  "title": "TOS Decision Record v1",
+  "description": "Authoritative schema for one record in .tos/decisions.yaml schema_version 1.",
+  "x-tos-schema-version": 1,
   "type": "object",
   "additionalProperties": false,
-  "$id": "https://topshelf.local/schemas/decision.schema.json",
-  "title": "TOS Decision",
   "required": [
-    "decision_id",
+    "id",
+    "title",
     "status",
-    "statement",
     "authority",
-    "rationale",
-    "consequences"
+    "decided_on",
+    "decision",
+    "evidence"
   ],
   "properties": {
-    "decision_id": {
-      "type": "string"
+    "id": {
+      "type": "string",
+      "pattern": "^TOS-DEC-[0-9]{3}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
     },
     "status": {
       "enum": [
@@ -25,17 +33,55 @@
         "withdrawn"
       ]
     },
-    "statement": {
-      "type": "string"
-    },
     "authority": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
+    },
+    "decided_on": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1
     },
     "rationale": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "consequences": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^TOS-DEC-[0-9]{3}$"
+      },
+      "uniqueItems": true
+    },
+    "supersedes_legacy_labels": {
+      "description": "Preserves historical non-decision labels previously stored in supersedes without pretending they are decision IDs.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
     }
   }
 }
