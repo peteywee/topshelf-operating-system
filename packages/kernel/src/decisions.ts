@@ -62,6 +62,30 @@ function validateSchemaDefinition(
     }
   }
 
+  if (schema.pattern !== undefined) {
+    if (typeof schema.pattern !== "string") {
+      issues.push(
+        issue(
+          "DECISION_SCHEMA_DEFINITION_INVALID",
+          `${schemaPath}.pattern must be a string.`,
+          `${schemaPath}.pattern`,
+        ),
+      );
+    } else {
+      try {
+        new RegExp(schema.pattern);
+      } catch (error) {
+        issues.push(
+          issue(
+            "DECISION_SCHEMA_DEFINITION_INVALID",
+            `${schemaPath}.pattern must be a valid regular expression: ${error instanceof Error ? error.message : String(error)}`,
+            `${schemaPath}.pattern`,
+          ),
+        );
+      }
+    }
+  }
+
   if (schema.properties !== undefined) {
     if (!isRecord(schema.properties)) {
       issues.push(
@@ -151,14 +175,20 @@ function validateSchemaValue(
         ),
       );
     }
-    if (schema.pattern !== undefined && !new RegExp(schema.pattern).test(value)) {
-      issues.push(
-        issue(
-          "DECISION_SCHEMA_PATTERN",
-          `${valuePath} does not match required pattern ${schema.pattern}.`,
-          valuePath,
-        ),
-      );
+    if (typeof schema.pattern === "string") {
+      try {
+        if (!new RegExp(schema.pattern).test(value)) {
+          issues.push(
+            issue(
+              "DECISION_SCHEMA_PATTERN",
+              `${valuePath} does not match required pattern ${schema.pattern}.`,
+              valuePath,
+            ),
+          );
+        }
+      } catch {
+        // Malformed schema patterns are reported by validateSchemaDefinition.
+      }
     }
   }
 
@@ -260,6 +290,7 @@ async function loadDecisionSchema(root: string): Promise<JsonSchema> {
 
 function detectSupersessionCycles(
   edges: Map<string, string[]>,
+  pathsById: Map<string, string>,
   issues: ValidationIssue[],
 ): void {
   const visiting = new Set<string>();
@@ -267,11 +298,12 @@ function detectSupersessionCycles(
 
   function visit(id: string, lineage: string[]): void {
     if (visiting.has(id)) {
+      const decisionPath = pathsById.get(id) ?? "decisions";
       issues.push(
         issue(
           "DECISION_SUPERSESSION_CYCLE",
           `Decision supersession cycle detected: ${[...lineage, id].join(" -> ")}.`,
-          `decisions.${id}.supersedes`,
+          `${decisionPath}.supersedes`,
         ),
       );
       return;
@@ -356,6 +388,7 @@ export async function validateDecisionCatalog(
   }
 
   const byId = new Map<string, Record<string, unknown>>();
+  const pathsById = new Map<string, string>();
   const edges = new Map<string, string[]>();
 
   input.decisions.forEach((decision, index) => {
@@ -374,6 +407,7 @@ export async function validateDecisionCatalog(
       );
     } else {
       byId.set(decision.id, decision);
+      pathsById.set(decision.id, decisionPath);
     }
 
     const supersedes = Array.isArray(decision.supersedes)
@@ -383,13 +417,14 @@ export async function validateDecisionCatalog(
   });
 
   for (const [id, supersedes] of edges) {
+    const decisionPath = pathsById.get(id) ?? "decisions";
     for (const target of supersedes) {
       if (target === id) {
         issues.push(
           issue(
             "DECISION_SUPERSESSION_SELF",
             `${id} cannot supersede itself.`,
-            `decisions.${id}.supersedes`,
+            `${decisionPath}.supersedes`,
           ),
         );
         continue;
@@ -400,7 +435,7 @@ export async function validateDecisionCatalog(
           issue(
             "DECISION_SUPERSESSION_MISSING",
             `${id} supersedes unknown decision ${target}.`,
-            `decisions.${id}.supersedes`,
+            `${decisionPath}.supersedes`,
           ),
         );
         continue;
@@ -410,14 +445,14 @@ export async function validateDecisionCatalog(
           issue(
             "DECISION_SUPERSESSION_STATUS",
             `${id} supersedes ${target}, but ${target} is not marked superseded.`,
-            `decisions.${id}.supersedes`,
+            `${decisionPath}.supersedes`,
           ),
         );
       }
     }
   }
 
-  detectSupersessionCycles(edges, issues);
+  detectSupersessionCycles(edges, pathsById, issues);
 
   return {
     valid: !issues.some((entry) => entry.severity === "error"),
