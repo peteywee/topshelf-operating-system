@@ -70,3 +70,10 @@ evidence:
     commit_sha: 571125e9ce63a72643289055b4d68083b9ccdfff
     source: GitHub Actions run 33599424859 (TOS CI #134)
     captured_on: "2026-09-02"
+  - id: TOS-EVD-011
+    claim: Canonical main after decision-register authority repair passes the full TOS CI pipeline under the active Node.js 24 LTS baseline, including governed-document freshness, schema-backed canonical state validation, current truth and boot liveness, intake, contract, authorization, and direct-edit controls.
+    class: automated
+    status: verified
+    commit_sha: 3a0a1f6a3903d76dade490afa6fd2e55b15878b3
+    source: GitHub PR 36 and Actions run 33948600841 (TOS CI #198)
+    captured_on: "2026-09-05"
