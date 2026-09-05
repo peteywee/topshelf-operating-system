@@ -17,12 +17,88 @@ type JsonSchema = {
   [key: string]: unknown;
 };
 
+const SUPPORTED_SCHEMA_KEYWORDS = new Set([
+  "$schema",
+  "$id",
+  "title",
+  "description",
+  "x-tos-schema-version",
+  "type",
+  "required",
+  "properties",
+  "additionalProperties",
+  "enum",
+  "pattern",
+  "minLength",
+  "minItems",
+  "uniqueItems",
+  "items",
+]);
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function issue(code: string, message: string, issuePath?: string): ValidationIssue {
   return { code, message, path: issuePath, severity: "error" };
+}
+
+function validateSchemaDefinition(
+  schema: JsonSchema,
+  schemaPath: string,
+  issues: ValidationIssue[],
+): void {
+  for (const keyword of Object.keys(schema)) {
+    if (!SUPPORTED_SCHEMA_KEYWORDS.has(keyword)) {
+      issues.push(
+        issue(
+          "DECISION_SCHEMA_UNSUPPORTED_KEYWORD",
+          `Unsupported JSON Schema keyword ${keyword} at ${schemaPath}.`,
+          schemaPath,
+        ),
+      );
+    }
+  }
+
+  if (schema.properties !== undefined) {
+    if (!isRecord(schema.properties)) {
+      issues.push(
+        issue(
+          "DECISION_SCHEMA_DEFINITION_INVALID",
+          `${schemaPath}.properties must be an object.`,
+          `${schemaPath}.properties`,
+        ),
+      );
+    } else {
+      for (const [key, child] of Object.entries(schema.properties)) {
+        if (!isRecord(child)) {
+          issues.push(
+            issue(
+              "DECISION_SCHEMA_DEFINITION_INVALID",
+              `${schemaPath}.properties.${key} must be an object.`,
+              `${schemaPath}.properties.${key}`,
+            ),
+          );
+          continue;
+        }
+        validateSchemaDefinition(child as JsonSchema, `${schemaPath}.properties.${key}`, issues);
+      }
+    }
+  }
+
+  if (schema.items !== undefined) {
+    if (!isRecord(schema.items)) {
+      issues.push(
+        issue(
+          "DECISION_SCHEMA_DEFINITION_INVALID",
+          `${schemaPath}.items must be an object.`,
+          `${schemaPath}.items`,
+        ),
+      );
+    } else {
+      validateSchemaDefinition(schema.items as JsonSchema, `${schemaPath}.items`, issues);
+    }
+  }
 }
 
 function typeMatches(value: unknown, expected: JsonSchema["type"]): boolean {
@@ -48,11 +124,7 @@ function validateSchemaValue(
 ): void {
   if (schema.type && !typeMatches(value, schema.type)) {
     issues.push(
-      issue(
-        "DECISION_SCHEMA_TYPE",
-        `Expected ${valuePath} to be ${schema.type}.`,
-        valuePath,
-      ),
+      issue("DECISION_SCHEMA_TYPE", `Expected ${valuePath} to be ${schema.type}.`, valuePath),
     );
     return;
   }
@@ -268,6 +340,8 @@ export async function validateDecisionCatalog(
     );
     return { valid: false, issues };
   }
+
+  validateSchemaDefinition(schema, "schemas/decision.schema.json", issues);
 
   if (schema["x-tos-schema-version"] !== input.schema_version) {
     issues.push(
