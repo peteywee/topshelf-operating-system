@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { ValidationIssue, ValidationReport } from "@topshelf-os/shared";
 
 type JsonSchema = {
@@ -152,14 +153,35 @@ function validateSchemaValue(
   }
 }
 
-async function loadDecisionSchema(root: string): Promise<JsonSchema> {
-  const schemaPath = path.join(root, "schemas", "decision.schema.json");
+async function parseDecisionSchema(schemaPath: string): Promise<JsonSchema> {
   const contents = await readFile(schemaPath, "utf8");
   const parsed = JSON.parse(contents) as unknown;
   if (!isRecord(parsed)) {
-    throw new Error("schemas/decision.schema.json must contain a JSON object.");
+    throw new Error(`${schemaPath} must contain a JSON object.`);
   }
   return parsed as JsonSchema;
+}
+
+async function loadDecisionSchema(root: string): Promise<JsonSchema> {
+  const projectSchemaPath = path.join(root, "schemas", "decision.schema.json");
+  const repositorySchemaPath = fileURLToPath(
+    new URL("../../../schemas/decision.schema.json", import.meta.url),
+  );
+
+  try {
+    return await parseDecisionSchema(projectSchemaPath);
+  } catch (projectError) {
+    if (path.resolve(projectSchemaPath) === path.resolve(repositorySchemaPath)) {
+      throw projectError;
+    }
+    try {
+      return await parseDecisionSchema(repositorySchemaPath);
+    } catch (repositoryError) {
+      throw new Error(
+        `project schema failed (${projectError instanceof Error ? projectError.message : String(projectError)}); repository schema failed (${repositoryError instanceof Error ? repositoryError.message : String(repositoryError)})`,
+      );
+    }
+  }
 }
 
 function detectSupersessionCycles(
