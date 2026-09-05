@@ -5,7 +5,7 @@
   "temporary_defined_outcome": "yes",
   "recurring_operational_work": "no",
   "expected_outcome": "A validated bounded autonomous execution kernel and controlled pilot report exist.",
-  "success_measure": "Node 20 and 22 pass; one low-risk pilot completes with independent verification.",
+  "success_measure": "Node 24 passes; one low-risk pilot completes with independent verification.",
   "duration_band": "two_to_twelve_weeks",
   "contributor_band": "one",
   "client_facing": "no",
