@@ -88,9 +88,19 @@ The legacy CSV is therefore classified as `historical_frozen` and `noncanonical`
 
 Provenance checking also exposed a separate historical metadata defect: the current CSV and the copy at foundation evidence commit `80684d74793eb541cd493e9d8f5a94434b096539` resolve to the same Git blob `24c4f5c464e29d5c6d2bd73210fac934f189086f`, proving the file itself did not drift. However, the July `TOS_PACKAGE_MANIFEST.json` declares SHA-256 `0909b03c0827c710f532f708b69cebff2de1c39b80a91ea27b01bd14e027b93e`, while the preserved CSV bytes hash to `e8cd5086f84daaa28eb4ee8063571a496a969a96b5a11497485f8eb4492681fa`. The historical manifest declaration is retained as historical evidence, while the discrepancy is explicitly classified rather than silently corrected.
 
-The new register-authority guard fails closed on legacy CSV drift, canonical classification of the legacy register, unclassified additional decision CSVs, historical blob mismatch, or unauthorized changes to the preserved manifest declaration.
+The register-authority guard fails closed on legacy CSV drift, canonical classification of the legacy register, unclassified additional decision CSVs, historical blob mismatch, or unauthorized changes to the preserved manifest declaration.
 
 TOS-DEC-021 records Node.js 24 LTS as the canonical active implementation baseline and uses `supersedes_legacy_labels` to reference the old Foundation Package `TOS-DEC-005` label without pretending that label is a canonical decision record.
+
+PR #36 promoted the decision-register authority repair with normal merge commit `3a0a1f6a3903d76dade490afa6fd2e55b15878b3`. Post-merge TOS CI #198 / Actions run `33948600841` completed successfully on that exact canonical `main` commit, and issue #35 closed as completed.
+
+## Canonical project-baseline recording
+
+Issue #37 and PR #38 record the post-#35 canonical project baseline without creating another runtime decision. The baseline source is the already-promoted and independently validated canonical `main` commit `3a0a1f6a3903d76dade490afa6fd2e55b15878b3`, not the later commit that records the baseline metadata.
+
+`.tos/project.yaml` advances `state.last_reconciled` to `2026-09-05`. `TOS-EVD-011` records the exact baseline source commit and successful TOS CI #198 under the active Node.js 24 LTS baseline. `TOS-ACT-023` appends a `baseline_recorded` event tied to that evidence. Earlier Node.js 20/22 evidence remains historical and unchanged.
+
+This separation prevents a self-referential baseline: the baseline record describes a commit that was already canonical and fully validated before the record was authored. The runtime choice continues to be governed by TOS-DEC-021; the project-baseline record is evidence/reconciliation state, not a new architectural decision.
 
 ## Separation of work
 
@@ -101,7 +111,8 @@ This disposition keeps work boundaries explicit while recording completed and ac
 - **#21:** canonical decision object/schema enforcement — completed through PR #31;
 - **#32:** governed-document anchor-lineage repair and promotion semantics — completed through PR #31;
 - **#33:** single Node.js 24 LTS active runtime baseline — completed through PR #34 and canonical CI #188;
-- **#35:** legacy decision-register authority classification, historical manifest discrepancy preservation, and canonical TOS-DEC-021 baseline recording — under bounded promotion at this re-verification point;
+- **#35:** legacy decision-register authority classification, historical manifest discrepancy preservation, and canonical TOS-DEC-021 baseline recording — completed through PR #36 and canonical CI #198;
+- **#37:** post-#35 canonical project-baseline evidence and reconciliation record — carried by PR #38 at this re-verification point;
 - **TOS bounded autonomous execution:** future `tos execute next` implementation and its independent verification/promotion controls.
 
 No external model output becomes canonical solely because another model produced it.
