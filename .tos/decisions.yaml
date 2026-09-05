@@ -75,3 +75,22 @@ decisions:
     evidence:
       - https://github.com/peteywee/topshelf-operating-system/issues/16
       - https://github.com/peteywee/topshelf-operating-system/issues/17
+  - id: TOS-DEC-021
+    title: Node.js 24 LTS active runtime baseline
+    status: approved
+    authority: Patrick Craven
+    decided_on: "2026-09-05"
+    decision: The TOS repository uses Node.js 24 LTS as its single active Node.js runtime baseline. `.nvmrc` is the single runtime selector consumed by local tooling and CI, `package.json` constrains Node.js to `>=24 <25`, and the prior Node.js 20/22 compatibility matrix is historical evidence rather than an active support contract. This implementation baseline does not constrain governed projects, which remain technology-agnostic under TOS-DEC-017.
+    rationale: A single current LTS runtime removes EOL Node.js 20 support, eliminates duplicate runtime selectors and CI variance, and gives TOS one reproducible implementation baseline while preserving technology-agnostic governance.
+    consequences:
+      - Runtime-baseline changes require a new controlled canonical decision and exact-candidate plus post-promotion validation.
+      - Historical Node.js 20/22 evidence remains historical and must not be rewritten to appear current.
+      - The frozen foundation decision register remains noncanonical and is not updated to mirror this baseline.
+    supersedes_legacy_labels:
+      - "Foundation package TOS-DEC-005: Implementation baseline (TypeScript, Node.js 20+, pnpm)"
+    evidence:
+      - .nvmrc
+      - package.json
+      - .github/workflows/ci.yml
+      - https://github.com/peteywee/topshelf-operating-system/pull/34
+      - https://github.com/peteywee/topshelf-operating-system/actions/runs/33947684613
