@@ -77,6 +77,23 @@ Allowed classes are:
 
 Unknown states, unknown classes, duplicate IDs, duplicate paths, unsafe paths, missing governed documents, short/unresolvable anchors, non-ancestor anchors, or uncovered Markdown files fail closed.
 
+## Promotion and history-rewrite rule
+
+A verification anchor is valid only on a history that preserves the anchored commit as an ancestor. This creates an explicit promotion requirement for governed verified documents.
+
+A branch-local verification SHA is **candidate evidence**, not automatically a valid canonical-lineage anchor. Squash merges and rebases create new commit identities and can remove the original branch commit from the promoted ancestry even when the resulting file contents are equivalent.
+
+Therefore:
+
+1. before promotion, verify each `verified_at_commit` is an ancestor of the exact promotion candidate;
+2. if promotion preserves ancestry with a normal merge commit, an otherwise-current anchor may remain valid;
+3. if promotion uses squash, rebase, cherry-pick, history rewriting, or any process that does not preserve the anchor as an ancestor, the promoted result MUST be re-verified on the canonical lineage and the registry re-anchored before that lineage can claim governed-document freshness;
+4. a pre-squash or pre-rebase branch SHA MUST NOT be copied forward as a canonical verified anchor merely because equivalent content was promoted;
+5. CI failure caused by `DOC_ANCHOR_NOT_ANCESTOR` is an invalid-governance condition to repair, not a check to bypass or downgrade to report-only;
+6. any PR that intentionally carries a newly verified branch-local anchor and is expected to finish green without a post-promotion repair must use a promotion method that preserves the anchor ancestry.
+
+This rule protects commit identity as evidence while avoiding the false assumption that content-equivalent squash commits preserve ancestry.
+
 ## Freshness semantics
 
 For each `verified` document, `scripts/check-doc-freshness.mjs` verifies that:
@@ -140,6 +157,8 @@ Do not infer merge deletion from `git diff base..branch` alone.
 Pinned historical-date tests are allowed as deterministic regression tests. They do not establish current-date liveness.
 
 Documentation freshness CI is a separate control and must run against the exact pull-request candidate on every supported TOS Node.js version. Current-date canonical fact/requirement/boot liveness remains a separate control boundary tracked independently from document freshness.
+
+A canonical branch that is red solely because its registered verification anchor is not in that branch's ancestry is itself in an invalid governed-document state. New unrelated material work must not normalize that failure; repair the anchor lineage or re-verification first when it blocks exact-candidate evidence.
 
 ## Negative controls
 
