@@ -93,4 +93,3 @@ decisions:
       - package.json
       - .github/workflows/ci.yml
       - https://github.com/peteywee/topshelf-operating-system/pull/34
-      - https://github.com/peteywee/topshelf-operating-system/actions/runs/33947684613
