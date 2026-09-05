@@ -41,7 +41,7 @@ GitHub is a durable TOS project-management record. Material bounded work should 
 
 ## Runtime quick start
 
-Requirements for the current TOS repository implementation: Node.js 20 or 22 and pnpm 10.33.3 through Corepack.
+Requirements for the current TOS repository implementation: Node.js 24 LTS and pnpm 10.33.3 through Corepack.
 
 ```bash
 corepack enable
@@ -179,7 +179,7 @@ The approved direction is therefore not "replace every YAML file immediately." I
 
 - Canonical repository: `peteywee/topshelf-operating-system`
 - CLI command: `tos`
-- Current TOS repository implementation: TypeScript on Node.js 20 or 22, pnpm 10.33.3
+- Current TOS repository implementation: TypeScript on Node.js 24 LTS, pnpm 10.33.3
 - Governance architecture: technology-agnostic kernel with technology/provider-specific adapters or modules where justified
 - Current state implementation: YAML-heavy `.tos/` records plus append-only `.tos/activity.jsonl`
 - Approved machine-interface/state direction: JSON-first with explicit schemas and controlled migration
