@@ -7,6 +7,7 @@ import type {
   ValidationIssue,
   ValidationReport,
 } from "@topshelf-os/shared";
+import { validateDecisionCatalog } from "./decisions.js";
 import { validateCanonicalEvidenceReferences } from "./evidence-integrity.js";
 
 export const REQUIRED_STATE_RECORDS = [
@@ -19,6 +20,7 @@ export const REQUIRED_STATE_RECORDS = [
   ".tos/blockers.yaml",
   ".tos/evidence-index.yaml",
   ".tos/activity.jsonl",
+  "schemas/decision.schema.json",
   "standards/intake/questions.json",
   "standards/intake/module-rules.json",
   "standards/intake/tailoring.json",
@@ -195,24 +197,48 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
       severity: "error",
     }));
 
+    let decisionInput: unknown;
+    let decisionLoadFailed = false;
+    const decisionValidationReady = [
+      ".tos/decisions.yaml",
+      "schemas/decision.schema.json",
+    ].every((recordPath) => !snapshot.missingRecords.includes(recordPath));
+
+    if (decisionValidationReady) {
+      try {
+        decisionInput = await readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml");
+        const decisionReport = await validateDecisionCatalog(snapshot.root, decisionInput);
+        issues.push(...decisionReport.issues);
+      } catch (error) {
+        decisionLoadFailed = true;
+        issues.push({
+          code: "TOS_STATE_LOAD_FAILED",
+          message: error instanceof Error ? error.message : String(error),
+          severity: "error",
+        });
+      }
+    }
+
     const evidenceRecordsPresent = [
       ".tos/facts.yaml",
       ".tos/decisions.yaml",
       ".tos/evidence-index.yaml",
     ].every((recordPath) => !snapshot.missingRecords.includes(recordPath));
 
-    if (evidenceRecordsPresent) {
+    if (evidenceRecordsPresent && !decisionLoadFailed) {
       try {
-        const [factInput, decisionInput, evidenceIndexInput] = await Promise.all([
+        const [factInput, loadedDecisionInput, evidenceIndexInput] = await Promise.all([
           readYamlRecord<unknown>(snapshot.root, ".tos/facts.yaml"),
-          readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml"),
+          decisionInput === undefined
+            ? readYamlRecord<unknown>(snapshot.root, ".tos/decisions.yaml")
+            : Promise.resolve(decisionInput),
           readYamlRecord<unknown>(snapshot.root, ".tos/evidence-index.yaml"),
         ]);
         issues.push(
           ...(await validateCanonicalEvidenceReferences(
             snapshot.root,
             factInput,
-            decisionInput,
+            loadedDecisionInput,
             evidenceIndexInput,
           )),
         );
