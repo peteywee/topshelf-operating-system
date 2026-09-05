@@ -1,0 +1,9 @@
+schema_version: 1
+decisions:
+  - id: TOS-DEC-999
+    title: Invalid fixture missing authority
+    status: approved
+    decided_on: "2026-09-04"
+    decision: This fixture must fail because authority is required.
+    evidence:
+      - README.md
