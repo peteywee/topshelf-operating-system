@@ -6,7 +6,7 @@ decisions:
     authority: Patrick Craven
     decided_on: "2026-07-23"
     decision: The official and exclusive product name is TopShelf Operating System, abbreviated TOS.
-    supersedes:
+    supersedes_legacy_labels:
       - TopShelf Op Sys
     evidence:
       - README.md
