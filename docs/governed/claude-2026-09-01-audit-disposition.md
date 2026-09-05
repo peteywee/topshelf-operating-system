@@ -74,14 +74,34 @@ Issue #21 was re-audited on 2026-09-05 because its split-brain decision represen
 
 PR #31 repaired and promoted that boundary. Canonical decision record v1 preserves the historical `.tos/decisions.yaml` representation, the JSON Schema now describes that representation, ordinary canonical validation executes schema-backed decision validation, supersession integrity is enforced, the legacy `TopShelf Op Sys` label is preserved without pretending it is a decision ID, and deliberate invalid fixtures exercise fail-closed behavior. Review-found invalid-regex and semantic-path defects were also fixed before promotion. Exact-candidate run #174 and post-merge canonical run #178 both completed successfully.
 
+## Runtime-baseline re-verification
+
+Issue #33 and PR #34 replaced the active Node.js 20/22 compatibility matrix with one Node.js 24 LTS implementation baseline. PR #34 was promoted with normal merge commit `a11f403cef087a0801f9239d1a69afb0d08dad9f`; post-merge TOS CI run #188 completed successfully on canonical `main`. `.nvmrc` is the single Node-version selector consumed by CI, while `package.json` constrains the implementation runtime to Node.js `>=24 <25`. Historical Node.js 20/22 evidence remains historical rather than being rewritten.
+
+The runtime baseline is an implementation choice, not a universal project constraint; TOS-DEC-017 continues to require technology-agnostic governance.
+
+## Decision-register authority re-verification
+
+Issue #35 was opened after the Node-baseline audit found that `registers/decision-register.csv` reused `TOS-DEC-*` identifiers with meanings that conflict with schema-validated `.tos/decisions.yaml`. Repository search established that the CSV is part of the historical Foundation Contract Package rather than an active runtime decision consumer.
+
+The legacy CSV is therefore classified as `historical_frozen` and `noncanonical`; `.tos/decisions.yaml` remains the only active authority for canonical `TOS-DEC-*` identifiers. The historical CSV is not rewritten to make its July decisions appear current, and current baseline changes are recorded through the canonical decision catalog instead.
+
+Provenance checking also exposed a separate historical metadata defect: the current CSV and the copy at foundation evidence commit `80684d74793eb541cd493e9d8f5a94434b096539` resolve to the same Git blob `24c4f5c464e29d5c6d2bd73210fac934f189086f`, proving the file itself did not drift. However, the July `TOS_PACKAGE_MANIFEST.json` declares SHA-256 `0909b03c0827c710f532f708b69cebff2de1c39b80a91ea27b01bd14e027b93e`, while the preserved CSV bytes hash to `e8cd5086f84daaa28eb4ee8063571a496a969a96b5a11497485f8eb4492681fa`. The historical manifest declaration is retained as historical evidence, while the discrepancy is explicitly classified rather than silently corrected.
+
+The new register-authority guard fails closed on legacy CSV drift, canonical classification of the legacy register, unclassified additional decision CSVs, historical blob mismatch, or unauthorized changes to the preserved manifest declaration.
+
+TOS-DEC-021 records Node.js 24 LTS as the canonical active implementation baseline and uses `supersedes_legacy_labels` to reference the old Foundation Package `TOS-DEC-005` label without pretending that label is a canonical decision record.
+
 ## Separation of work
 
-This disposition keeps work boundaries explicit while recording completed blockers accurately:
+This disposition keeps work boundaries explicit while recording completed and active blockers accurately:
 
 - **#22:** session bootstrap and governed-document freshness control, including valid verification-anchor lineage;
 - **#23:** current canonical fact/requirement/boot liveness and dangling evidence resolution — completed;
 - **#21:** canonical decision object/schema enforcement — completed through PR #31;
 - **#32:** governed-document anchor-lineage repair and promotion semantics — completed through PR #31;
+- **#33:** single Node.js 24 LTS active runtime baseline — completed through PR #34 and canonical CI #188;
+- **#35:** legacy decision-register authority classification, historical manifest discrepancy preservation, and canonical TOS-DEC-021 baseline recording — under bounded promotion at this re-verification point;
 - **TOS bounded autonomous execution:** future `tos execute next` implementation and its independent verification/promotion controls.
 
 No external model output becomes canonical solely because another model produced it.
