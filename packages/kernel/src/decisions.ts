@@ -40,7 +40,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function issue(code: string, message: string, issuePath?: string): ValidationIssue {
-  return { code, message, path: issuePath, severity: "error" };
+  return issuePath === undefined
+    ? { code, message, severity: "error" }
+    : { code, message, path: issuePath, severity: "error" };
 }
 
 function validateSchemaDefinition(
