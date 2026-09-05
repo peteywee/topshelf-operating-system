@@ -38,6 +38,10 @@ function safeRepositoryPath(value) {
   );
 }
 
+function isHex(value, length) {
+  return typeof value === "string" && new RegExp(`^[a-f0-9]{${length}}$`).test(value);
+}
+
 async function readJson(filePath, code) {
   try {
     const parsed = JSON.parse(await readFile(filePath, "utf8"));
@@ -154,7 +158,19 @@ async function main() {
         `${registerPath} canonical_source, when present, must be .tos/decisions.yaml.`,
       );
     }
-    if (typeof entry.frozen_sha256 !== "string" || !/^[a-f0-9]{64}$/.test(entry.frozen_sha256)) {
+    if (!isHex(entry.historical_commit, 40)) {
+      fail(
+        "REGISTER_HISTORICAL_COMMIT_INVALID",
+        `${registerPath} requires a 40-character historical_commit.`,
+      );
+    }
+    if (!isHex(entry.historical_git_blob_sha, 40)) {
+      fail(
+        "REGISTER_HISTORICAL_BLOB_INVALID",
+        `${registerPath} requires a 40-character historical_git_blob_sha.`,
+      );
+    }
+    if (!isHex(entry.frozen_sha256, 64)) {
       fail(
         "REGISTER_FROZEN_HASH_INVALID",
         `${registerPath} requires a lowercase 64-character frozen_sha256.`,
@@ -165,6 +181,12 @@ async function main() {
       fail(
         "REGISTER_MANIFEST_INVALID",
         `${registerPath} must reference TOS_PACKAGE_MANIFEST.json as its historical package manifest.`,
+      );
+    }
+    if (!isHex(entry.manifest_declared_sha256, 64)) {
+      fail(
+        "REGISTER_MANIFEST_DECLARED_HASH_INVALID",
+        `${registerPath} requires the manifest's historical SHA-256 declaration.`,
       );
     }
 
@@ -187,6 +209,17 @@ async function main() {
       );
     }
 
+    const gitBlobHash = createHash("sha1")
+      .update(`blob ${contents.length}\0`)
+      .update(contents)
+      .digest("hex");
+    if (gitBlobHash !== entry.historical_git_blob_sha) {
+      fail(
+        "LEGACY_REGISTER_HISTORICAL_BLOB_MISMATCH",
+        `${registerPath} Git blob ${gitBlobHash} does not match historical blob ${entry.historical_git_blob_sha}.`,
+      );
+    }
+
     const manifest = await readJson(
       path.join(root, "TOS_PACKAGE_MANIFEST.json"),
       "REGISTER_PACKAGE_MANIFEST_INVALID",
@@ -202,10 +235,21 @@ async function main() {
       );
       continue;
     }
-    if (manifestEntry.sha256 !== entry.frozen_sha256) {
+    if (manifestEntry.sha256 !== entry.manifest_declared_sha256) {
       fail(
-        "REGISTER_MANIFEST_HASH_MISMATCH",
-        `${registerPath} frozen hash does not match its historical package manifest hash.`,
+        "REGISTER_MANIFEST_DECLARATION_CHANGED",
+        `${registerPath} historical manifest declaration no longer matches register-authority.json.`,
+      );
+    }
+
+    const expectedManifestStatus =
+      entry.manifest_declared_sha256 === entry.frozen_sha256
+        ? "matches"
+        : "historical_mismatch_preserved";
+    if (entry.manifest_hash_status !== expectedManifestStatus) {
+      fail(
+        "REGISTER_MANIFEST_STATUS_INVALID",
+        `${registerPath} manifest_hash_status must be ${expectedManifestStatus}.`,
       );
     }
   }
