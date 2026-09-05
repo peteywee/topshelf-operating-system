@@ -9,7 +9,7 @@
       "path": "docs/governed/session-bootstrap-and-document-freshness.md",
       "class": "governance",
       "claims_truth_state": "verified",
-      "verified_at_commit": "f6c3327d82a169701bd72f129d0f1a32d06df003",
+      "verified_at_commit": "6ff0640696893637914e6a4b7128adcf28473dd1",
       "depends_on": [
         "scripts/check-doc-freshness.mjs",
         "scripts/check-doc-freshness.test.mjs",
@@ -24,7 +24,7 @@
       "path": "docs/governed/claude-2026-09-01-audit-disposition.md",
       "class": "audit",
       "claims_truth_state": "verified",
-      "verified_at_commit": "656d23aeec68ea37253452880a8fe72beef722c0",
+      "verified_at_commit": "6ff0640696893637914e6a4b7128adcf28473dd1",
       "depends_on": [
         "README.md",
         "package.json",

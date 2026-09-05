@@ -16,4 +16,4 @@ Owns the CLI, repository inspection, interactive intake, truth resolution, sched
 
 ## Implementation baseline
 
-Use a pnpm TypeScript monorepo on Node.js 20 or later. Core packages: kernel, contracts, runtime, inspectors, scheduler, work-orders, evidence, promotion, recovery, module SDK, adapter SDK, and CLI. Providers remain outside the kernel.
+Use a pnpm TypeScript monorepo on Node.js 24 LTS. Core packages: kernel, contracts, runtime, inspectors, scheduler, work-orders, evidence, promotion, recovery, module SDK, adapter SDK, and CLI. Providers remain outside the kernel.
