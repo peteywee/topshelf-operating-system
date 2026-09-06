@@ -6,7 +6,7 @@ Adapters implement agnostic capabilities for providers such as GitHub, Vercel, S
 
 ## TSAL and workload upgrade boundary
 
-TSAL, TOS, and governed workloads have independent version lines.
+TSAL, TOS, and workloads have independent version lines.
 
 A new TSAL version is an input to compatibility assessment, not an instruction to mutate every workload.
 
@@ -41,6 +41,6 @@ Restoring external/provider state to an already-approved configuration without c
 
 Every generated project records its TOS version and active modules. TOS-owned file upgrades use three-way ownership rules: unchanged TOS-owned files may update automatically; modified TOS-owned files require merge; project-owned files are not overwritten. Skipped changes require an upgrade decision.
 
-TSAL-governed workload content is not automatically classified as TOS-owned merely because TOS manages the project. TOS must respect project ownership and the workload's own release boundaries.
+Workload content that uses TSAL contracts is not automatically classified as TOS-owned merely because TOS manages the project. TOS must respect project ownership and the workload's own release boundaries.
 
 The governing architecture decision is `docs/architecture/tsal-tos-workload-boundary.md`.
