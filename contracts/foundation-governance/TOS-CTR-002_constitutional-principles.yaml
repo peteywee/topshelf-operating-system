@@ -2,7 +2,7 @@ contract:
   contract_id: TOS-CTR-002
   contract_type: Constitutional Principles
   title: <Constitutional Principles title>
-  version: 0.1.0
+  version: 0.2.0
   status: draft
   applicability: core
   not_applicable_reason: <required when not_applicable>
@@ -15,45 +15,98 @@ contract:
   supersedes: []
   source_of_truth: <canonical file path or system>
 definition:
-  purpose: Defines immutable operating rules that subordinate modules, agents, and projects must follow.
-  scope: <included scope>
+  purpose: Defines immutable operating rules that subordinate modules, agents, adapters, runtimes, and projects must follow.
+  scope: TOS-managed authority, automation governance, architecture boundaries, evidence, and privileged execution.
   out_of_scope:
-  - <explicit exclusions>
+  - Domain-specific workload behavior unless it crosses a TOS-managed authority boundary.
   terms:
-    <term>: <definition>
+    tos_kernel: Deterministic trusted core and enforcement boundary for TOS-managed privileged actions.
+    control_plane: TOS userland that observes, diagnoses, plans, coordinates, and proposes actions without self-granting execution authority.
+    privileged_action: Any TOS-managed mutation of canonical, external/provider, production, public, financial, security/identity, release/promotion, or destructive state.
+    kernel_mediation: Deterministic admission of a privileged action through the TOS kernel before side effects occur.
+    workload: Independently safe domain system managed or observed by TOS.
+    tsal: Provider-neutral automation standard defining lifecycle, contracts, authority semantics, evidence, conformance, and compatibility expectations.
+    authority: Policy-backed right to decide or execute a bounded class of actions.
+    credential: Technical access mechanism that does not itself grant authority.
+    unknown: Explicit truth state meaning sufficient reliable evidence is unavailable.
+    exact_candidate: Immutable commit or artifact identity to which candidate evidence applies.
   trigger: Every TOS installation
 obligations:
   inputs:
-  - <required input>
+  - Owner-approved governing policy and authority model.
+  - Canonical controlled vocabulary.
+  - Applicable TSAL and TOS contracts.
   outputs:
-  - <required output>
+  - Enforceable constitutional invariants inherited by subordinate controls.
   preconditions:
-  - <must be true before execution>
+  - Constitutional terms and authority boundaries are explicitly defined.
   invariants:
-  - <must always remain true>
+  - Truth MUST NOT be rewritten merely to obtain a green status.
+  - Credentials MUST NOT be treated as authority.
+  - UNKNOWN MUST remain first-class and MUST NOT be coerced to PASS.
+  - Workloads MUST preserve approved local safety when TOS or TSAL is unavailable.
+  - TSAL MUST NOT become runtime middleware or depend on TOS implementation details.
+  - TOS-managed privileged actions MUST use required kernel mediation once the execution kernel is implemented and proven.
+  - AI MAY propose or explain but MUST NOT replace a deterministic control that can be evaluated mechanically.
+  - Agents, modules, adapters, and services MUST NOT self-grant capabilities or silently expand scope.
+  - Candidate evidence MUST bind to the exact candidate claimed.
+  - Implementers MUST NOT self-approve where independent verification is required.
+  - Owner-reserved actions remain reserved unless an explicit authorized delegation exists.
+  - Overrides MUST be attributable and MUST preserve the original evidence and reason for override.
   postconditions:
-  - <must be true after execution>
+  - Subordinate policies and work orders cannot validly contradict these invariants without an approved superseding governing decision.
   permissions:
-  - <allowed action>
+  - Narrower contracts MAY add stricter controls or definitions that do not reverse constitutional meaning.
+  - The owner MAY approve an explicit superseding governing decision with migration and compatibility evidence.
   prohibitions:
-  - <forbidden action>
+  - Silent scope or authority expansion.
+  - Privileged mutation through a bypass path when kernel mediation is required.
+  - Inferring capability grants from credentials, tool reachability, prior success, or AI confidence.
+  - Erasing or rewriting failure evidence through repair, retry, recovery, or override.
+  - Treating a newer TSAL version as an instruction to silently mutate every workload.
   failure_behavior:
-  - <required failure behavior>
+  - Fail closed when required authority, identity, state, scope, or evidence cannot be established.
+  - Preserve evidence and escalate when certainty or authority is insufficient.
 assurance:
   acceptance_criteria:
-  - <observable pass/fail condition>
+  - Governing architecture documents preserve the TSAL/TOS/workload and TOS-control-plane/kernel boundaries.
+  - Privileged-execution designs identify a deterministic admission path and explicit bypass prohibition.
+  - Controlled vocabulary defines kernel, control plane, workload, TSAL, authority, credential, privileged action, and UNKNOWN.
   validation:
-  - <command/check/review>
+  - Contract catalog validation.
+  - Architecture review against docs/00_GOVERNING_DECISION.md and docs/02_SYSTEM_ARCHITECTURE.md.
+  - Negative testing of authority, bypass, UNKNOWN, exact-candidate, and self-approval controls where implemented.
   negative_controls:
-  - <deliberate violation that must be detected>
+  - A credentialed caller without a capability grant must be denied privileged execution.
+  - An AI recommendation that conflicts with deterministic policy must not override the deterministic denial.
+  - A privileged mutation path that bypasses required kernel admission must be detected as an architecture violation.
+  - A failed or ambiguous observation must not be converted to PASS without new evidence.
   required_evidence:
-  - <evidence class and artifact>
+  - Exact-candidate CI and contract validation for changes to constitutional controls.
+  - Review evidence for any superseding governing decision.
 change_and_exit:
-  change_control: <decision/change record required>
-  compatibility: <compatibility rule>
-  deprecation: <deprecation procedure>
-  retirement: <retirement and archive procedure>
+  change_control: Requires an explicit owner-approved governing decision with semantic impact analysis.
+  compatibility: Changes that weaken or reverse an invariant require migration, negative tests, and compatibility evidence before adoption.
+  deprecation: Constitutional rules are superseded explicitly; they are never silently redefined.
+  retirement: Retired constitutional versions remain archived as historical evidence.
 contract_body:
-  principles: <define principles>
-  prohibited_overrides: <define prohibited overrides>
-  exception_process: <define exception process>
+  required_principles:
+  - Truth before convenience.
+  - Bounded authority before autonomous action.
+  - Deterministic enforcement before discretionary AI judgment.
+  - Exact evidence before promotion.
+  - Independent verification where risk requires it.
+  - Fail closed on missing authority or unresolved ambiguity.
+  - No privileged bypass of the TOS execution kernel.
+  - Workload independence from live TOS/TSAL services for local safety.
+  prohibited_overrides:
+  - Self-granted authority.
+  - Evidence deletion or falsification.
+  - Silent standards adoption.
+  - Credential-implies-authority reasoning.
+  exception_process:
+    proposal: <document requested exception and bounded scope>
+    authority: <owner or delegated approval authority>
+    compensating_controls: <required compensating controls>
+    expiry_or_review_trigger: <date or event>
+    evidence: <required exception and outcome evidence>
