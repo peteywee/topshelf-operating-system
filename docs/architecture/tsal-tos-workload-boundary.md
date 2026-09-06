@@ -8,36 +8,35 @@ This document defines the responsibility boundary the TopShelf automation stack 
 
 ```text
                               OWNER
-                               │
                     goals / authority / limits
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │         TOS         │
-                    │ autonomous operator │
-                    └──────────┬──────────┘
-                               │
-             observe → decide → execute → verify
-                         → escalate
-                               │
-             ┌─────────────────┼─────────────────┐
-             ▼                 ▼                 ▼
-          XQueue              Teach           future
-          workload            workload        workloads
-             │                 │                 │
-             └─────────────────┼─────────────────┘
-                               │
-              truthful facts / evidence / bounded actions
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │        TSAL         │
-                    │ rules / contracts   │
-                    │ evidence / policy   │
-                    └─────────────────────┘
+                         │              ▲
+                         ▼              │ escalate
+                    ┌───────────────┐   │
+                    │      TOS      │───┘
+                    │ control plane │
+                    └───────┬───────┘
+                            │
+              bounded operations / actions
+                            ▼
+             ┌──────────────┼──────────────┐
+             ▼              ▼              ▼
+          XQueue          Teach          future
+          workload        workload       workloads
+             │              │              │
+             └──────────────┼──────────────┘
+                            │
+             facts / evidence / outcomes
+                            │
+                            └──────────────► TOS
+
+              TOS ── consult/evaluate ──► TSAL
+                                          rules
+                                          contracts
+                                          schemas
+                                          proof semantics
 ```
 
-The diagram is a responsibility model, not a runtime call chain. TOS may consume TSAL interfaces and workload interfaces directly. TSAL is not middleware between TOS and a workload.
+This is a responsibility model, not a runtime call chain through TSAL. Workloads emit facts, evidence, outcomes, and declared bounded action surfaces for TOS. TOS evaluates those facts and proposed actions against TSAL-defined contracts, schemas, and proof semantics. TSAL is not a runtime sink, service dependency, or middleware between TOS and a workload.
 
 ## Constitutional responsibilities
 
@@ -67,7 +66,7 @@ TOS owns cross-project autonomous operations:
 - invoke declared bounded actions;
 - independently verify outcomes;
 - preserve evidence;
-- escalate when certainty, authority, or repair policy is insufficient.
+- escalate to the owner when certainty, authority, or repair policy is insufficient.
 
 TOS MUST NOT infer authority from credentials alone, silently expand a workload contract, or rewrite evidence to manufacture a successful state.
 
@@ -78,7 +77,7 @@ A workload such as XQueue or Teach owns its domain behavior and local safety con
 - execute the domain job;
 - maintain truthful durable state;
 - fail closed on ambiguity;
-- expose health/facts/evidence;
+- expose health/facts/evidence and outcomes for TOS or other authorized consumers;
 - expose explicit bounded repair/action primitives where appropriate;
 - remain independently safe if TOS or TSAL is unavailable.
 
