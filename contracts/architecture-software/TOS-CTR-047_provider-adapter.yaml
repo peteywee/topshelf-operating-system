@@ -2,7 +2,7 @@ contract:
   contract_id: TOS-CTR-047
   contract_type: Provider Adapter
   title: <Provider Adapter title>
-  version: 0.1.0
+  version: 0.2.0
   status: draft
   applicability: conditional
   not_applicable_reason: <required when not_applicable>
@@ -15,48 +15,91 @@ contract:
   supersedes: []
   source_of_truth: <canonical file path or system>
 definition:
-  purpose: Defines capability interface, provider mapping, configuration, failure translation, and portability.
-  scope: <included scope>
+  purpose: Defines capability interface, provider mapping, configuration, authority boundary, external-state semantics, failure translation, evidence, and portability.
+  scope: Provider- or project-specific implementations used by TOS to observe or mutate systems behind an agnostic capability.
   out_of_scope:
-  - <explicit exclusions>
+  - Business policy and authority grants, which must originate from governing contracts/policy rather than the adapter.
   terms:
-    <term>: <definition>
+    adapter: Provider/project-specific translation layer behind an agnostic capability.
+    capability: Explicit action or action class presented through the adapter interface.
+    provider_state: Authoritative external state owned or reported by the provider.
+    replacement_semantics: Provider behavior in which submitted configuration replaces, deletes, resets, or revokes omitted/empty/existing state.
+    mutation: Operation capable of changing provider/project state.
+    observation: Read-only operation that acquires provider/project facts.
+    kernel_admitted_action: Bounded privileged action already admitted by the TOS execution kernel.
   trigger: Any provider-specific implementation behind an agnostic capability
 obligations:
   inputs:
-  - <required input>
+  - Agnostic capability request and declared target.
+  - Provider configuration and identity.
+  - Authority/capability disposition for mutation-capable requests.
+  - Current provider state when required for safe mutation or reconciliation.
   outputs:
-  - <required output>
+  - Normalized facts/results/errors that preserve provider truth and ambiguity.
+  - Mutation evidence identifying exact target, request, provider result, and post-action observation when required.
   preconditions:
-  - <must be true before execution>
+  - Adapter distinguishes read-only operations from mutations.
+  - Provider replacement/deletion/omission semantics for authority-sensitive configuration are known or the mutation fails closed.
   invariants:
-  - <must always remain true>
+  - Adapter MUST NOT invent or broaden authority.
+  - Credentials MUST NOT be interpreted as permission to mutate every reachable provider surface.
+  - Mutation-capable adapter operations MUST accept only declared bounded capabilities and MUST preserve target/scope.
+  - TOS-managed privileged mutation MUST NOT be executed through the adapter without required kernel admission once the execution kernel is implemented and proven.
+  - Empty, null, omitted, default, replace, reset, revoke, and delete semantics MUST NOT be treated as equivalent without provider evidence.
+  - Provider ambiguity MUST remain explicit; the adapter MUST NOT translate UNKNOWN into success.
+  - Provider-reported command success MUST NOT substitute for authoritative post-action state when reconciliation is required.
   postconditions:
-  - <must be true after execution>
+  - Callers can distinguish requested action, provider response, authoritative observed state, and unresolved ambiguity.
   permissions:
-  - <allowed action>
+  - Read-only observation MAY be callable directly by authorized TOS userland when the capability contract allows it.
+  - Mutation MAY execute only within the admitted bounded action and provider semantics declared by the adapter contract.
   prohibitions:
-  - <forbidden action>
+  - Hidden provider mutations during nominally read-only operations.
+  - Direct privileged mutation intended to bypass kernel or owner denial.
+  - Silent fallback from preview/test resources to production resources.
+  - Destructive interpretation of empty/omitted configuration without explicit provider semantics and authority.
   failure_behavior:
-  - <required failure behavior>
+  - Fail closed on unknown destructive/replacement semantics for a protected mutation.
+  - Return normalized UNKNOWN/ambiguous state when provider outcome cannot be proven.
+  - Preserve evidence and require reconciliation before an ambiguous side effect is automatically retried when duplicate/destructive effects are possible.
 assurance:
   acceptance_criteria:
-  - <observable pass/fail condition>
+  - Adapter contract lists read-only and mutation operations separately.
+  - Every mutation operation identifies required capability, target scope, provider semantics, and post-action verification/reconciliation.
+  - Production/test/preview resource identities cannot silently collapse into one another.
   validation:
-  - <command/check/review>
+  - Provider contract tests and negative tests.
+  - Authority/kernel-admission tests for mutation-capable operations where implemented.
+  - External-state reconciliation tests for authority-sensitive provider surfaces.
   negative_controls:
-  - <deliberate violation that must be detected>
+  - Valid credentials without admitted mutation capability must not authorize a provider change.
+  - Omitted/empty authority-sensitive configuration with destructive provider semantics must be preserved or rejected rather than silently deleted.
+  - A successful provider command followed by mismatched authoritative state must remain failure/BLOCKING until reconciled.
+  - A preview/test request that resolves to production identity unexpectedly must fail closed.
   required_evidence:
-  - <evidence class and artifact>
+  - Provider-state evidence for material privileged mutation.
+  - Exact action/candidate identity and normalized provider result.
 change_and_exit:
-  change_control: <decision/change record required>
-  compatibility: <compatibility rule>
-  deprecation: <deprecation procedure>
-  retirement: <retirement and archive procedure>
+  change_control: Provider semantic, authority-surface, identity, or mutation-interface changes require compatibility and negative-test review.
+  compatibility: Adapter changes must preserve agnostic capability semantics or explicitly version/migrate the interface.
+  deprecation: Deprecated provider operations identify replacement and removal conditions.
+  retirement: Provider credentials/access are revoked and consumers migrated before adapter retirement.
 contract_body:
-  capability: <define capability>
-  provider: <define provider>
-  interface_mapping: <define interface mapping>
-  configuration: <define configuration>
-  failure_translation: <define failure translation>
-  portability_tests: <define portability tests>
+  capability: <define agnostic capability>
+  provider: <define provider and resource identity>
+  interface_mapping:
+    read_only_operations: <define query/observation operations>
+    mutation_operations: <define mutation operations and capability names>
+  authority:
+    source: Governing policy/work order/kernel admission; never credentials alone.
+    kernel_mediation: <define privileged mutation operations requiring admission>
+    reserved_actions: <define provider actions reserved to owner or other authority>
+  configuration: <define configuration and environment/resource identity rules>
+  provider_state_semantics:
+    omission: <preserve/no-op/delete/unknown>
+    empty: <preserve/no-op/delete/unknown>
+    replacement: <define full or partial replacement semantics>
+    deletion: <define deletion/revocation semantics>
+  failure_translation: <map provider errors/ambiguity to normalized TOS truth states>
+  reconciliation: <define authoritative post-action read and mismatch behavior>
+  portability_tests: <define provider-neutral contract tests and provider-specific negative tests>

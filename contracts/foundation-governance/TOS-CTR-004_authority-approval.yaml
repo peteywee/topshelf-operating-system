@@ -2,7 +2,7 @@ contract:
   contract_id: TOS-CTR-004
   contract_type: Authority and Approval
   title: <Authority and Approval title>
-  version: 0.1.0
+  version: 0.2.0
   status: draft
   applicability: core
   not_applicable_reason: <required when not_applicable>
@@ -15,46 +15,100 @@ contract:
   supersedes: []
   source_of_truth: <canonical file path or system>
 definition:
-  purpose: Defines who may decide, approve, execute, verify, override, promote, and retire work.
-  scope: <included scope>
+  purpose: Defines who may decide, approve, execute, verify, override, promote, and retire work and how TOS enforces those boundaries.
+  scope: Human, agent, service, module, adapter, workload, provider, and kernel authority involved in TOS-managed actions.
   out_of_scope:
-  - <explicit exclusions>
+  - Provider authentication mechanics except where they are incorrectly treated as authority.
   terms:
-    <term>: <definition>
+    authority: Policy-backed right to decide or execute a bounded class of actions within declared scope and conditions.
+    capability: Explicitly named action or action class that can be granted, denied, narrowed, reserved, or delegated.
+    credential: Technical mechanism enabling access; credentials do not themselves grant policy authority.
+    reserved_action: Capability retained by the owner or another named authority and unavailable for self-delegation by automation.
+    privileged_action: TOS-managed mutation of canonical, external/provider, production, public, financial, security/identity, release/promotion, or destructive state.
+    kernel_admission: Deterministic allow/deny decision required before a TOS-managed privileged action may execute.
+    delegation: Explicit bounded transfer of authority identifying grantor, grantee, capability, scope, conditions, and expiry/review trigger.
+    override: Explicit bounded supersession of normal policy by authorized human authority while preserving evidence and attribution.
+    verification_authority: Authority to attest that evidence satisfies a claim; distinct from execution authority.
   trigger: Every TOS installation and project
 obligations:
   inputs:
-  - <required input>
+  - Capability registry and authority source.
+  - Owner-reserved action list.
+  - Applicable task/work order, project scope, risk class, and exact candidate where required.
+  - Current truth and evidence required by policy.
   outputs:
-  - <required output>
+  - Explicit allow, deny, reserved, or escalate disposition for protected actions.
+  - Attributable authority and approval record for admitted privileged execution.
   preconditions:
-  - <must be true before execution>
+  - Requested capability, target, scope, actor, and authority source are identifiable.
+  - Required reserved-action and segregation-of-duty rules are loaded.
   invariants:
-  - <must always remain true>
+  - Credentials MUST NOT imply authority.
+  - Tool reachability MUST NOT imply authority.
+  - Previous successful execution MUST NOT imply future authority.
+  - An actor MUST NOT self-grant or silently broaden a capability.
+  - Owner-reserved actions MUST remain denied to automation unless explicitly delegated by policy.
+  - Execution authority and verification authority MUST remain conceptually separate even if one component holds both in a lower-risk case.
+  - TOS-managed privileged actions MUST use kernel admission once the execution kernel is implemented and proven.
+  - An override MUST preserve the original observation, denial/failure, approver, reason, scope, and resulting evidence.
   postconditions:
-  - <must be true after execution>
+  - Every admitted privileged action can be traced to an explicit authority source and bounded capability.
   permissions:
-  - <allowed action>
+  - Authority MAY be delegated when the governing contract explicitly permits the capability, grantor, grantee, scope, conditions, and review/expiry.
+  - Read-only observation MAY be permitted without privileged kernel admission when the governing contract allows it.
   prohibitions:
-  - <forbidden action>
+  - Self-approval where independent approval or verification is required.
+  - Authority expansion based on credentials, role name, AI confidence, provider permissions, or convenience.
+  - Privileged execution through a bypass path intended to evade kernel denial or owner reservation.
+  - Retroactive approval that rewrites an unauthorized action as authorized.
   failure_behavior:
-  - <required failure behavior>
+  - Deny and fail closed when authority, capability, actor identity, target, or required scope cannot be established.
+  - Escalate to the owner or named authority when a reserved action or unresolved authority question blocks execution.
+  - Preserve denial and attempted-bypass evidence.
 assurance:
   acceptance_criteria:
-  - <observable pass/fail condition>
+  - Every privileged action class identifies capability, authority source, reserved status, and kernel-admission requirement.
+  - Credentials and authority are represented as separate fields/concepts.
+  - Delegations and overrides are attributable, bounded, reviewable, and non-silent.
   validation:
-  - <command/check/review>
+  - Authorization-capability validation.
+  - Work-order and boot authority validation.
+  - Negative tests for missing grant, reserved action, self-grant, and bypass where implemented.
   negative_controls:
-  - <deliberate violation that must be detected>
+  - Valid provider credentials with no capability grant must be denied mutation authority.
+  - An agent must not approve or expand its own work order.
+  - A denied kernel admission followed by direct adapter invocation must be detected as a bypass violation.
+  - An override lacking owner/delegated authority or attribution must be rejected.
   required_evidence:
-  - <evidence class and artifact>
+  - Capability/authority decision record for material privileged actions.
+  - Exact-candidate and verifier evidence where release/promotion policy requires it.
 change_and_exit:
-  change_control: <decision/change record required>
-  compatibility: <compatibility rule>
-  deprecation: <deprecation procedure>
-  retirement: <retirement and archive procedure>
+  change_control: Authority-model changes require explicit owner approval and downstream impact analysis.
+  compatibility: Existing reserved actions and denials remain restrictive unless an explicit compatible delegation or superseding decision changes them.
+  deprecation: Deprecated capabilities identify replacement, consumers, and revocation timing.
+  retirement: Retired grants and capabilities preserve historical audit records.
 contract_body:
-  authority_matrix: <define authority matrix>
-  approval_thresholds: <define approval thresholds>
-  segregation_of_duties: <define segregation of duties>
-  override_rules: <define override rules>
+  authority_matrix:
+    owner: <define owner-reserved and delegable capabilities>
+    control_plane: propose/coordinate; no implicit privileged authority
+    kernel: deterministic admission/enforcement; no self-created business authority
+    agent: <define explicitly granted capabilities>
+    module: <define explicitly granted capabilities>
+    adapter: execute only admitted bounded provider/project capability when mutation is privileged
+    verifier: <define verification authority and independence>
+  approval_thresholds: <define approval thresholds by action/risk class>
+  segregation_of_duties: <define execution/verification/promotion separation>
+  reserved_actions: <define owner or other reserved actions>
+  delegation_rules:
+    required_fields:
+    - grantor
+    - grantee
+    - capability
+    - target_scope
+    - conditions
+    - expiry_or_review_trigger
+    - evidence
+  override_rules:
+    authorization: <define who may override>
+    scope: <define bounded override scope>
+    recording: Override cannot erase original denial/failure/evidence.

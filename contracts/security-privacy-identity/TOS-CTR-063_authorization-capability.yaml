@@ -2,7 +2,7 @@ contract:
   contract_id: TOS-CTR-063
   contract_type: Authorization Capability
   title: <Authorization Capability title>
-  version: 0.1.0
+  version: 0.2.0
   status: draft
   applicability: conditional
   not_applicable_reason: <required when not_applicable>
@@ -15,48 +15,82 @@ contract:
   supersedes: []
   source_of_truth: <canonical file path or system>
 definition:
-  purpose: Defines capability registry, grant source, evaluation, denial, audit, and fail-closed behavior.
-  scope: <included scope>
+  purpose: Defines capability registry, grant source, deterministic admission, kernel enforcement, denial, audit, and fail-closed behavior.
+  scope: Any protected TOS, project, workload, provider, production, public, financial, security, identity, release, or destructive action/resource.
   out_of_scope:
-  - <explicit exclusions>
+  - Authentication mechanics except as evidence of actor identity; authentication alone is not authorization.
   terms:
-    <term>: <definition>
+    capability: Explicitly named action or action class that may be granted, denied, narrowed, reserved, or delegated.
+    capability_grant: Attributable policy record connecting an actor to a capability, scope, conditions, and authority source.
+    authority_source: Owner-approved policy, contract, delegation, or other canonical record that authorizes a grant.
+    credential: Access mechanism that cannot substitute for a capability grant.
+    admission: Deterministic evaluation of actor, capability, scope, target, conditions, current state, and reserved-action policy.
+    kernel_admission: Admission performed/enforced at the TOS execution-kernel boundary for privileged actions.
+    denial: Explicit refusal that cannot be bypassed by alternate tool/provider paths under the same TOS-managed authority.
   trigger: Any protected action, resource, or administrative function
 obligations:
   inputs:
-  - <required input>
+  - Actor identity and role/function.
+  - Requested capability, target, and scope.
+  - Canonical authority/grant source.
+  - Reserved-action policy and current conditions.
+  - Exact candidate/action identity where required.
   outputs:
-  - <required output>
+  - Allow, deny, reserved, or escalate decision with reason and evidence reference.
   preconditions:
-  - <must be true before execution>
+  - Capability and target are explicit and canonical authority sources are available.
   invariants:
-  - <must always remain true>
+  - Authentication success and credential possession MUST NOT imply authorization.
+  - Capability evaluation MUST default deny when required grant, scope, target, or conditions are absent or UNKNOWN.
+  - Actors MUST NOT self-grant, self-expand, or silently inherit privileged capabilities from tool/provider permissions.
+  - Reserved actions MUST remain denied unless the named authority explicitly delegates them.
+  - A kernel denial MUST apply to all TOS-managed execution paths for that action; alternate adapters/tools MUST NOT create a bypass.
+  - Capability grants MUST be narrowed to the smallest practical scope and conditions.
   postconditions:
-  - <must be true after execution>
+  - Material privileged actions can be traced to an admission decision and authority source.
   permissions:
-  - <allowed action>
+  - Explicit delegation MAY grant a narrower capability when the grantor has delegation authority.
   prohibitions:
-  - <forbidden action>
+  - Wildcard privilege expansion without an explicit contract and owner-approved reason.
+  - Using provider IAM reachability as the sole TOS authority source.
+  - Retrying through a different tool or adapter to evade a denial.
   failure_behavior:
-  - <required failure behavior>
+  - Fail closed and deny when authorization inputs are missing, stale, contradictory, or unproven.
+  - Escalate reserved or policy-ambiguous actions rather than guessing authority.
 assurance:
   acceptance_criteria:
-  - <observable pass/fail condition>
+  - Every protected capability has a canonical name, scope model, grant source, denial semantics, audit requirement, and reserved status.
+  - Privileged capabilities identify kernel-admission requirements once implemented.
+  - Authorization and authentication/credential checks are visibly separate.
   validation:
-  - <command/check/review>
+  - Capability registry validation.
+  - Kernel/authorization tests where implemented.
+  - Negative tests for missing grant, scope broadening, reserved action, alternate-path bypass, and stale/UNKNOWN policy.
   negative_controls:
-  - <deliberate violation that must be detected>
+  - Valid credentials with no capability grant must be denied.
+  - Grant for one target must not authorize a different target.
+  - A denied privileged action must not succeed through a different adapter/tool wrapper.
+  - An agent cannot grant itself a capability by editing its own work order or policy record.
   required_evidence:
-  - <evidence class and artifact>
+  - Authorization/admission decision and authority-source reference for material privileged actions.
 change_and_exit:
-  change_control: <decision/change record required>
-  compatibility: <compatibility rule>
-  deprecation: <deprecation procedure>
-  retirement: <retirement and archive procedure>
+  change_control: Capability additions, scope expansions, delegation rights, and reserved-action changes require explicit security/authority review.
+  compatibility: Existing denials remain deny-by-default unless a new valid grant explicitly changes them.
+  deprecation: Deprecated capabilities identify replacement, revocation date, consumers, and migration.
+  retirement: Grants are revoked and historical authorization/audit evidence retained.
 contract_body:
-  capabilities: <define capabilities>
-  grant_source: <define grant source>
-  evaluation: <define evaluation>
-  denial_semantics: <define denial semantics>
-  audit: <define audit>
-  fail_closed: <define fail closed>
+  capabilities: <define canonical capability registry>
+  grant_source: <define acceptable authority/grant sources>
+  evaluation:
+    actor: <define actor identity source>
+    capability: <define requested capability lookup>
+    target_scope: <define target and scope matching>
+    conditions: <define state/time/risk/work-order conditions>
+    reserved_action_check: <define reserved-action evaluation>
+    kernel_admission: <define privileged capabilities requiring kernel enforcement>
+  denial_semantics:
+    default: deny
+    bypass: A denial applies across all TOS-managed execution paths for the same requested action.
+    escalation: <define receiving authority for reserved/ambiguous denial>
+  audit: <define admission/denial evidence and retention>
+  fail_closed: Missing, stale, contradictory, or UNKNOWN authorization inputs deny protected execution.
