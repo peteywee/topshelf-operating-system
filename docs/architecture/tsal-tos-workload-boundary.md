@@ -1,6 +1,6 @@
 # TSAL / TOS / Workload Architecture Boundary
 
-Status: **governing architecture invariant**
+**Status:** governing architecture invariant
 
 This document defines the responsibility boundary the TopShelf automation stack is built around. Future implementation work MUST preserve this direction unless Patrick explicitly approves a superseding governing decision with migration and compatibility evidence.
 
