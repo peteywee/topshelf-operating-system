@@ -8,24 +8,22 @@ TOS is the cross-project **control plane/operator**. It consumes TSAL through ne
 
 ```text
                               OWNER
-                               │
-                         goals / limits
-                               │
-                               ▼
-                              TOS
-                observe → decide → execute
-                     → verify → escalate
-                      │             │
-                      │             ▼
-                      │           TSAL
-                      │      rules/contracts/proof
-                      │             ▲
-                      ▼             │
+                    goals / authority / limits
+                         │              ▲
+                         ▼              │ escalate
+                        TOS ── consult ──┼────► TSAL
+            observe → decide → execute  │   rules/contracts/proof
+                    → verify            │
+                         │              │
+               bounded operations      │
+                         ▼              │
              XQueue / Teach / future workloads
-                facts / evidence / bounded actions
+                         │
+              facts / evidence / outcomes
+                         └──────────────► TOS
 ```
 
-The diagram is not a runtime middleware chain. TOS may read TSAL and workload interfaces directly.
+The diagram is a responsibility model, not a runtime middleware chain. TOS consults TSAL for rules/proof semantics, invokes workloads through declared bounded actions, verifies outcomes, and escalates unresolved authority or uncertainty to the OWNER.
 
 ### TSAL owns
 
