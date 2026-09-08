@@ -50,6 +50,36 @@
         "packages/",
         "schemas/"
       ]
+    },
+    {
+      "doc_id": "TOS-DOC-RUNBOOK-0001",
+      "path": "docs/governed/evidence-to-publication-sop.md",
+      "class": "runbook",
+      "claims_truth_state": "proposed",
+      "depends_on": [
+        "README.md",
+        "docs/05_AGENT_OPERATING_MODEL.md",
+        "docs/06_LIFECYCLE_EVIDENCE_AND_RECOVERY.md",
+        "docs/governed/session-bootstrap-and-document-freshness.md",
+        "contracts/foundation-governance/TOS-CTR-004_authority-approval.yaml",
+        "contracts/foundation-governance/TOS-CTR-005_source-of-truth.yaml",
+        "contracts/foundation-governance/TOS-CTR-012_change-control.yaml",
+        "contracts/planning-delivery/TOS-CTR-023_agent-work-order.yaml",
+        "contracts/planning-delivery/TOS-CTR-029_release.yaml",
+        "contracts/planning-delivery/TOS-CTR-030_rollback.yaml",
+        "contracts/architecture-software/TOS-CTR-049_deployment.yaml",
+        "contracts/planning-delivery/TOS-CTR-032_lesson-improvement.yaml",
+        "contracts/operations-evidence/TOS-CTR-069_evidence.yaml",
+        "contracts/operations-evidence/TOS-CTR-070_validation.yaml",
+        "contracts/operations-evidence/TOS-CTR-071_test-strategy.yaml",
+        "contracts/operations-evidence/TOS-CTR-072_negative-control.yaml",
+        "contracts/security-privacy-identity/TOS-CTR-060_privacy.yaml",
+        "contracts/security-privacy-identity/TOS-CTR-062_credential-secret.yaml",
+        "contracts/operations-evidence/TOS-CTR-083_external-authorization.yaml",
+        "contracts/operations-evidence/TOS-CTR-084_public-claim.yaml",
+        "contracts/ai-agent/TOS-CTR-093_agent-review-separation.yaml",
+        "contracts/architecture-software/TOS-CTR-053_design-system-brand.yaml"
+      ]
     }
   ]
 }
