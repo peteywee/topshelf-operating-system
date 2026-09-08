@@ -1,10 +1,10 @@
 # Evidence-to-publication operating procedure
 
-**Document ID:** TOS-DOC-RUNBOOK-0001  
-**Version:** 0.1.0 proposal  
-**Truth state:** proposed  
-**Control owner / adoption authority:** Patrick Craven  
-**Work item:** [TOS #40](https://github.com/peteywee/topshelf-operating-system/issues/40)
+- **Document ID:** TOS-DOC-RUNBOOK-0001
+- **Version:** 0.1.0 proposal
+- **Truth state:** proposed
+- **Control owner / adoption authority:** Patrick Craven
+- **Work item:** [TOS #40](https://github.com/peteywee/topshelf-operating-system/issues/40)
 
 This proposed SOP describes required behavior for an evidence-backed publication workflow. It does not assert that the controls are implemented, that the workflow has passed a live pilot, or that this document is adopted. Independent review and Patrick's adoption decision are outstanding. Nothing here grants an agent publication, merge, deployment, spending, account-management or policy-change authority.
 
