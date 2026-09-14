@@ -2,7 +2,7 @@ contract:
   contract_id: TOS-CTR-096
   contract_type: Human Override
   title: <Human Override title>
-  version: 0.1.0
+  version: 0.2.0
   status: draft
   applicability: core
   not_applicable_reason: <required when not_applicable>
@@ -15,49 +15,90 @@ contract:
   supersedes: []
   source_of_truth: <canonical file path or system>
 definition:
-  purpose: Defines who may pause, cancel, reverse, approve, or supersede automation and how it is recorded.
-  scope: <included scope>
+  purpose: Defines who may pause, cancel, reverse, approve, supersede, or exceptionally override automation and how the decision is bounded, enforced, and recorded.
+  scope: Every TOS-controlled automated action, including kernel-admitted privileged execution and owner-reserved actions.
   out_of_scope:
-  - <explicit exclusions>
+  - Unrecorded informal preferences that do not alter governed execution.
   terms:
-    <term>: <definition>
+    override: Explicit authorized decision to supersede normal policy for a bounded reason while preserving the original state/evidence.
+    reserved_action: Capability retained by owner or another named authority and unavailable to automation without explicit delegation/approval.
+    pause: Prevent new execution while preserving current state and evidence.
+    cancel: Terminate pending/future authorized work without falsifying completed effects.
+    reverse: Execute an authorized compensating/rollback action; reversal does not erase history.
+    supersede: Replace a prior decision/policy prospectively with an attributable newer decision.
+    break_glass: Emergency bounded override requiring explicit authority, reason, evidence, and post-event review.
   trigger: Every TOS-controlled automated action
 obligations:
   inputs:
-  - <required input>
+  - Authorized human/owner identity.
+  - Subject action, capability, target, and current state.
+  - Requested override type, reason, scope, duration/review trigger, and known risks.
+  - Existing denial/failure/evidence that led to the override where applicable.
   outputs:
-  - <required output>
+  - Attributable override decision with exact scope and resulting action/evidence.
   preconditions:
-  - <must be true before execution>
+  - Human identity and override authority are established independently of provider credentials.
+  - Requested override is bounded enough to execute or deny deterministically.
   invariants:
-  - <must always remain true>
+  - Override MUST NOT erase, rewrite, or relabel the original failure, denial, ambiguity, or evidence.
+  - Override MUST NOT silently become a permanent wildcard capability grant.
+  - A human with provider credentials but without TOS override authority is not an authorized override source.
+  - Kernel enforcement MUST record and honor an authorized override only within its exact scope once the execution kernel is implemented and proven.
+  - Emergency urgency MUST NOT excuse loss of attribution or evidence.
   postconditions:
-  - <must be true after execution>
+  - The system can reconstruct what normal policy decided, who overrode it, why, what scope changed, what happened, and when normal policy resumes/reviews.
   permissions:
-  - <allowed action>
+  - Authorized owner/delegate MAY pause, cancel, reverse, approve, or supersede within declared authority.
+  - Break-glass action MAY be allowed only when explicitly defined and attributable.
   prohibitions:
-  - <forbidden action>
+  - Agent or service self-override.
+  - Retroactively marking an unauthorized action as originally authorized.
+  - Deleting evidence to make an override appear unnecessary.
+  - Permanent privilege escalation through a one-time emergency exception.
   failure_behavior:
-  - <required failure behavior>
+  - Reject override when actor authority, target, scope, or required evidence cannot be established.
+  - Preserve the blocked state and escalate when override itself is ambiguous.
 assurance:
   acceptance_criteria:
-  - <observable pass/fail condition>
+  - Override records contain actor, authority source, subject, reason, exact scope, timing/review trigger, prior decision/evidence, resulting action, and post-action verification.
+  - Normal policy resumes automatically or is explicitly reviewed after temporary override expiry.
   validation:
-  - <command/check/review>
+  - Human-override and authorization-capability validation.
+  - Audit/recovery review for material overrides.
   negative_controls:
-  - <deliberate violation that must be detected>
+  - Agent attempts to approve its own override must be denied.
+  - Override without attribution/reason/scope must be rejected.
+  - Override that attempts to delete original evidence must be rejected or separately flagged as an integrity violation.
+  - Expired temporary override must not continue granting authority.
   required_evidence:
-  - <evidence class and artifact>
+  - Immutable/append-oriented override record and linked pre/post-action evidence.
 change_and_exit:
-  change_control: <decision/change record required>
-  compatibility: <compatibility rule>
-  deprecation: <deprecation procedure>
-  retirement: <retirement and archive procedure>
+  change_control: Changes to override authority or break-glass capabilities require explicit owner/security review.
+  compatibility: Existing evidence and original decisions remain historical truth after supersession.
+  deprecation: Deprecated override mechanisms identify replacement and revoke stale grants.
+  retirement: Retired overrides and emergency grants are revoked; audit history is retained.
 contract_body:
-  authorized_humans: <define authorized humans>
-  pause: <define pause>
-  cancel: <define cancel>
-  reverse: <define reverse>
-  approve: <define approve>
-  supersede: <define supersede>
-  recording: <define recording>
+  authorized_humans: <define owner/delegated override authorities>
+  pause: <define pause semantics and resumption>
+  cancel: <define cancellation and already-executed effect handling>
+  reverse: <define compensating/rollback authority and verification>
+  approve: <define approval boundaries>
+  supersede: <define prospective replacement and versioning>
+  break_glass:
+    allowed: <true/false>
+    scope: <define narrowly permitted emergency actions>
+    expiry_or_review_trigger: <define mandatory review/expiry>
+    post_event_review: <define required review>
+  recording:
+    required_fields:
+    - actor
+    - authority_source
+    - subject
+    - prior_decision_or_failure
+    - reason
+    - scope
+    - effective_time
+    - expiry_or_review_trigger
+    - resulting_action
+    - verification
+    evidence_rule: Original evidence is preserved and linked; override evidence is additive.

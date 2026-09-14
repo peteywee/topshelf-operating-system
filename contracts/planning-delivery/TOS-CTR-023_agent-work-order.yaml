@@ -2,7 +2,7 @@ contract:
   contract_id: TOS-CTR-023
   contract_type: Agent Work Order
   title: <Agent Work Order title>
-  version: 0.1.0
+  version: 0.2.0
   status: draft
   applicability: conditional
   not_applicable_reason: <required when not_applicable>
@@ -15,49 +15,90 @@ contract:
   supersedes: []
   source_of_truth: <canonical file path or system>
 definition:
-  purpose: Compiles a task into explicit authority, file scope, checks, stop conditions, and handoff requirements.
-  scope: <included scope>
+  purpose: Compiles a task into explicit scope, capabilities, authority, exact-candidate context, checks, stop conditions, kernel requirements, and handoff obligations.
+  scope: Any AI-agent implementation, review, verification, repair, promotion, or other delegated work executed under TOS governance.
   out_of_scope:
-  - <explicit exclusions>
+  - Unprivileged conversational advice that performs no governed project action.
   terms:
-    <term>: <definition>
+    work_order: Versioned bounded execution instruction containing scope, authority, capabilities, checks, evidence, and stop conditions.
+    capability: Explicit action or action class granted to the agent for this work order.
+    privileged_action: TOS-managed protected mutation requiring kernel admission when the execution kernel is implemented and proven.
+    exact_candidate: Immutable base/head/artifact identity against which work and evidence are evaluated.
+    repair_budget: Maximum bounded repair effort/actions permitted before stop or escalation.
+    stop_condition: Condition that ends agent authority even if the requested outcome is incomplete.
+    kernel_mediation: Required deterministic admission path for TOS-managed privileged execution.
   trigger: Any task executed or reviewed by an AI agent
 obligations:
   inputs:
-  - <required input>
+  - Task/requirement identity and intended outcome.
+  - Exact base/candidate identity where source-controlled work is involved.
+  - Allowed and forbidden paths/resources.
+  - Explicit capabilities and authority source.
+  - Reserved actions and approval requirements.
+  - Required tests, negative tests, evidence, and verification.
   outputs:
-  - <required output>
+  - Bounded implementation/review result with evidence and unresolved items.
+  - Explicit handoff identifying remaining authority or decisions.
   preconditions:
-  - <must be true before execution>
+  - Scope, capability, authority source, and stop conditions are explicit enough to evaluate.
+  - Any privileged action identifies whether kernel mediation and owner approval are required.
   invariants:
-  - <must always remain true>
+  - An agent MUST NOT self-expand file/resource scope or capabilities.
+  - An agent MUST NOT infer authority from available tools, credentials, repository permissions, or prior work.
+  - An agent MUST NOT bypass kernel admission for a TOS-managed privileged action.
+  - An implementing agent MUST NOT self-approve when independent review/verification is required.
+  - Work evidence MUST identify the exact candidate or execution it supports.
+  - Repair attempts MUST remain inside the declared repair budget.
   postconditions:
-  - <must be true after execution>
+  - Changed scope, unresolved ambiguity, failed gates, exhausted repair budget, or required owner action is explicit in the handoff.
   permissions:
-  - <allowed action>
+  - Execute only capabilities explicitly granted in the work order and subordinate contracts.
+  - Perform read-only inspection needed to satisfy the work order when not otherwise prohibited.
   prohibitions:
-  - <forbidden action>
+  - Silent scope expansion.
+  - Self-granted capabilities or approvals.
+  - Direct privileged provider/project mutation to evade kernel/owner controls.
+  - Rewriting evidence or tests to manufacture success.
   failure_behavior:
-  - <required failure behavior>
+  - Stop when a stop condition, authority boundary, reserved action, repair-budget limit, or unresolved material ambiguity is reached.
+  - Preserve evidence and escalate the exact decision/action needed.
 assurance:
   acceptance_criteria:
-  - <observable pass/fail condition>
+  - Work order declares exact scope, capabilities, authority source, required commands/checks, evidence, stop conditions, and handoff.
+  - Privileged actions identify kernel mediation and reserved-action requirements.
+  - Candidate-changing work is tied to exact base/head identities.
   validation:
-  - <command/check/review>
+  - Work-order schema/contract validation.
+  - Capability and authority validation.
+  - Exact-candidate CI/evidence validation where applicable.
   negative_controls:
-  - <deliberate violation that must be detected>
+  - Agent request outside allowed paths/capabilities must be rejected or escalated.
+  - Reserved action without explicit owner/delegated approval must stop.
+  - Kernel denial followed by direct mutation attempt must be detected as bypass.
+  - Exhausted repair budget must stop additional automatic repair.
   required_evidence:
-  - <evidence class and artifact>
+  - Work-order record and exact-candidate evidence.
+  - Audit of privileged tool/action calls when material.
 change_and_exit:
-  change_control: <decision/change record required>
-  compatibility: <compatibility rule>
-  deprecation: <deprecation procedure>
-  retirement: <retirement and archive procedure>
+  change_control: Material work-order scope/capability/authority changes require a new or explicitly amended authorized work order.
+  compatibility: Existing evidence applies only to the exact work-order/candidate scope it proves.
+  deprecation: Superseded work orders remain attributable and archived.
+  retirement: Closeout records final scope disposition, evidence, unresolved items, and authority handoff.
 contract_body:
   agent_function: <define agent function>
-  base_sha: <define base sha>
-  allowed_paths: <define allowed paths>
-  forbidden_paths: <define forbidden paths>
-  required_commands: <define required commands>
-  stop_conditions: <define stop conditions>
-  handoff: <define handoff>
+  base_sha: <define exact base SHA or not_applicable reason>
+  candidate_sha: <define exact candidate SHA when known>
+  allowed_paths: <define allowed paths/resources>
+  forbidden_paths: <define forbidden paths/resources>
+  capabilities: <define explicitly granted capabilities>
+  authority_source: <define policy/owner/delegation granting each capability>
+  reserved_actions: <define actions the agent may not perform without explicit approval>
+  kernel_mediation:
+    privileged_actions: <list privileged actions requiring execution-kernel admission>
+    read_only_exceptions: <list permitted unprivileged observations>
+  required_commands: <define required commands/checks>
+  negative_tests: <define required deliberate failure cases>
+  evidence_requirements: <define evidence classes/artifacts>
+  repair_budget: <define attempts/actions/time/scope budget>
+  stop_conditions: <define stop and escalation conditions>
+  handoff: <define receiving role, state, evidence, blockers, and next authority>

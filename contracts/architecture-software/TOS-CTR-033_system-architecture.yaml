@@ -2,7 +2,7 @@ contract:
   contract_id: TOS-CTR-033
   contract_type: System Architecture
   title: <System Architecture title>
-  version: 0.1.0
+  version: 0.2.0
   status: draft
   applicability: conditional
   not_applicable_reason: <required when not_applicable>
@@ -15,48 +15,76 @@ contract:
   supersedes: []
   source_of_truth: <canonical file path or system>
 definition:
-  purpose: Defines system context, decomposition, boundaries, data flows, trust boundaries, and tradeoffs.
-  scope: <included scope>
+  purpose: Defines system context, decomposition, kernel/control-plane boundary, data and control flows, trust/authority boundaries, dependencies, and tradeoffs.
+  scope: Every software, technical, or multi-component project whose architecture affects authority, safety, deployment, or integration behavior.
   out_of_scope:
-  - <explicit exclusions>
+  - Low-level implementation detail that does not change a declared architecture or authority boundary.
   terms:
-    <term>: <definition>
+    control_plane: Userland responsible for observation, reasoning, planning, coordination, and action proposals.
+    kernel: Deterministic trusted core that mediates TOS-managed privileged actions and canonical policy primitives.
+    adapter: Provider/project-specific implementation behind an agnostic interface without independent policy authority.
+    workload: Independently safe domain system observed or operated through declared interfaces.
+    trust_boundary: Boundary across which identity, data, authority, or assumptions require explicit validation.
+    authority_boundary: Boundary across which an action requires a distinct capability, approval, admission, or reserved authority.
+    privileged_path: End-to-end control path capable of producing a protected mutation.
   trigger: Every software, technical, or multi-component project
 obligations:
   inputs:
-  - <required input>
+  - System purpose, actors, workloads, providers, contracts, risks, authority model, and truth sources.
   outputs:
-  - <required output>
+  - Architecture decomposition and diagrams that distinguish owner, control plane/userland, kernel, modules/services, adapters, workloads, and external providers where applicable.
+  - Declared data flows, privileged control paths, trust boundaries, authority boundaries, and failure/escalation paths.
   preconditions:
-  - <must be true before execution>
+  - Architecture-critical terms use the canonical controlled vocabulary.
   invariants:
-  - <must always remain true>
+  - A diagram MUST NOT imply that TSAL is runtime middleware or a TOS application.
+  - A diagram MUST NOT imply that a workload depends on TOS for local approved safety unless an explicit contract says so and the governing architecture permits it.
+  - TOS-managed privileged paths MUST identify kernel admission when the execution kernel is implemented and required.
+  - Read-only observation and privileged mutation paths MUST be distinguishable.
+  - Adapters MUST NOT appear as independent policy/authority sources.
+  - Credential possession MUST NOT be represented as authority.
   postconditions:
-  - <must be true after execution>
+  - Reviewers can trace every material privileged side effect from proposal through admission, adapter/workload execution, evidence, verification, and escalation.
   permissions:
-  - <allowed action>
+  - Architecture MAY use additional layers when their responsibility and authority relationship is explicit.
   prohibitions:
-  - <forbidden action>
+  - Hidden privileged bypass paths.
+  - Cyclic dependency that makes TSAL core depend on TOS or workload implementation.
+  - Treating AI/userland discretionary reasoning as the final deterministic authority gate for a mechanically decidable privileged action.
   failure_behavior:
-  - <required failure behavior>
+  - Architecture review blocks promotion when a material trust/authority boundary, privileged path, or failure path is ambiguous.
 assurance:
   acceptance_criteria:
-  - <observable pass/fail condition>
+  - Context and component diagrams identify owner, control plane, kernel, adapters, workloads, TSAL relationship, and providers where applicable.
+  - Privileged mutation paths and read-only observation paths are separately documented.
+  - Every privileged path names its authority source and kernel/admission control or an explicit approved exception.
+  - Current implementation status is distinguished from intended architecture.
   validation:
-  - <command/check/review>
+  - Architecture review against docs/01_OFFICIAL_IDENTITY_AND_NAMING.md and docs/02_SYSTEM_ARCHITECTURE.md.
+  - Dependency and package-boundary checks where mechanically available.
   negative_controls:
-  - <deliberate violation that must be detected>
+  - A diagram routing privileged mutation directly from an agent/control plane to a provider must be rejected unless explicitly identified as an approved exception.
+  - A diagram that routes escalation to TSAL instead of an authority layer must be rejected.
+  - A diagram that makes workload evidence flow into TSAL as a runtime sink must be rejected.
   required_evidence:
-  - <evidence class and artifact>
+  - Reviewed exact-candidate architecture documents/diagrams for governing changes.
 change_and_exit:
-  change_control: <decision/change record required>
-  compatibility: <compatibility rule>
-  deprecation: <deprecation procedure>
-  retirement: <retirement and archive procedure>
+  change_control: Material changes to kernel, authority, trust, TSAL/TOS/workload, or privileged execution boundaries require explicit architecture change review.
+  compatibility: Architecture changes must identify affected contracts, modules, adapters, workloads, migrations, and release implications.
+  deprecation: Superseded architecture remains linked from the replacement decision.
+  retirement: Retired components/paths have consumers removed and historical evidence retained.
 contract_body:
-  context: <define context>
-  components: <define components>
-  boundaries: <define boundaries>
-  data_flows: <define data flows>
-  trust_boundaries: <define trust boundaries>
-  tradeoffs: <define tradeoffs>
+  context: <define owner, TOS, TSAL, workloads, providers, and external actors>
+  components: <define control plane, kernel, runtime services, modules, adapters, workloads, and provider components>
+  boundaries:
+    trust_boundaries: <define identity/data/trust boundaries>
+    authority_boundaries: <define capability/admission/approval boundaries>
+    kernel_boundary: <define what must be mediated and what read-only operations may remain outside privileged admission>
+  data_flows: <define observations, canonical state, evidence, and domain data flows>
+  control_flows:
+    read_only_paths: <define observation/query paths>
+    privileged_paths: <define proposal -> kernel admission -> execution -> evidence -> verification paths>
+    escalation_paths: <define fail-closed and owner/delegated escalation paths>
+  dependency_direction: <define allowed and forbidden dependency directions>
+  current_vs_target_state: <identify implemented controls separately from target architecture>
+  tradeoffs: <define tradeoffs and accepted residual risks>

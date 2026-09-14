@@ -2,7 +2,7 @@ contract:
   contract_id: TOS-CTR-003
   contract_type: Naming and Terminology
   title: <Naming and Terminology title>
-  version: 0.1.0
+  version: 0.2.0
   status: draft
   applicability: core
   not_applicable_reason: <required when not_applicable>
@@ -15,46 +15,126 @@ contract:
   supersedes: []
   source_of_truth: <canonical file path or system>
 definition:
-  purpose: Defines official names, controlled vocabulary, identifiers, file naming, and prohibited aliases.
-  scope: <included scope>
+  purpose: Defines official names, controlled vocabulary, identifiers, file naming, prohibited aliases, and architecture terms that must not be used interchangeably.
+  scope: TOS documentation, contracts, schemas, code, modules, adapters, agents, work orders, and project integrations.
   out_of_scope:
-  - <explicit exclusions>
+  - Domain vocabulary that does not affect TOS governance or integration semantics.
   terms:
-    <term>: <definition>
+    owner: Ultimate human or formally designated authority that sets intent, grants or reserves authority, accepts residual risk, and receives escalations.
+    tos: Complete TopShelf Operating System, including kernel, userland/control plane, runtime services, modules, adapters, CLI/UI, canonical state, and governance.
+    tos_kernel: Deterministic trusted core that owns canonical policy primitives and mediates TOS-managed privileged actions.
+    execution_kernel: Kernel capability that admits, rejects, fences, records, and verifies privileged execution.
+    control_plane: TOS userland that observes, diagnoses, plans, coordinates, and proposes actions without self-granting execution authority.
+    userland: TOS components outside the kernel, including CLI/UI, agents, planners, schedulers, modules, and orchestration services.
+    runtime_service: Executable TOS service that performs a bounded system function and is not automatically trusted kernel code.
+    module: Versioned TOS capability selected under contracts; activation does not itself grant mutation authority.
+    adapter: Provider- or project-specific implementation behind an agnostic interface; translates semantics but does not invent policy or authority.
+    workload: Independently safe domain system operated or observed by TOS, such as XQueue or Teach.
+    tsal: Top Shelf Automation Lifecycle, the provider-neutral automation standard for lifecycle, contracts, risk/authority semantics, evidence, conformance, and compatibility.
+    contract: Versioned, owned, testable control defining scope, terms, obligations, permissions, prohibitions, failure behavior, assurance, and change/exit rules.
+    capability: Explicitly named action or class of actions that may be granted, denied, narrowed, reserved, or delegated.
+    authority: Policy-backed right to decide or execute a bounded class of actions within declared scope and conditions.
+    credential: Technical access mechanism such as a token, key, secret, identity, or session; access possibility is not authority.
+    privileged_action: TOS-managed mutation of canonical, external/provider, production, public, financial, security/identity, release/promotion, or destructive state.
+    bounded_action: Action whose target, allowed effect, authority source, scope, preconditions, blast radius, failure behavior, evidence, and verification are explicit.
+    reserved_action: Capability policy keeps with the owner or another named authority and automation cannot self-grant.
+    kernel_mediation: Required deterministic admission of a TOS-managed privileged action through the execution kernel before side effects occur.
+    observation: Read-only acquisition of facts or external reality; observation does not authorize mutation.
+    repair: Bounded action intended to restore already-approved declared state without silently expanding scope or policy.
+    recovery: Controlled return to a known safe state after failure, ambiguity, or partial execution.
+    reconciliation: Comparison of competing or ambiguous truth sources without manufacturing certainty.
+    verification: Independent or mechanically reproducible evaluation that claimed outcomes and evidence are correct.
+    evidence: Durable proof supporting a specific claim about a candidate, execution, deployment, runtime state, reconciliation, or attestation.
+    exact_candidate: Immutable commit or artifact identity to which candidate evidence and release decisions apply.
+    escalation: Transfer of an unresolved decision to an authority capable of deciding it when automation lacks authority, certainty, or repair policy.
+    fail_closed: Refuse or stop a protected action when required authority, identity, state, evidence, or certainty cannot be established.
+    unknown: Explicit truth state meaning sufficient reliable evidence is unavailable and a safer state cannot be asserted.
+    adoption: Explicit decision to target a newer standard, contract, module, or interface; detection is not adoption.
+    override: Explicitly authorized bounded decision to supersede normal policy while preserving the original evidence and reason.
   trigger: Every TOS installation and project
 obligations:
   inputs:
-  - <required input>
+  - Canonical TOS identity and architecture decisions.
+  - Applicable TSAL terminology and project/domain vocabulary.
   outputs:
-  - <required output>
+  - One controlled vocabulary with explicit definitions and deprecated aliases.
   preconditions:
-  - <must be true before execution>
+  - Every architecture-critical acronym and overloaded term is identified.
   invariants:
-  - <must always remain true>
+  - Kernel, control plane, runtime service, module, adapter, workload, and TSAL MUST NOT be treated as synonyms.
+  - Credential and authority MUST remain distinct concepts.
+  - Detection and adoption MUST remain distinct concepts.
+  - Observation and mutation MUST remain distinct concepts.
+  - UNKNOWN is a truth state, not a temporary synonym for failure or success.
   postconditions:
-  - <must be true after execution>
+  - New contracts and architecture documents use canonical terms consistently or record an explicit narrower definition.
   permissions:
-  - <allowed action>
+  - Domain-specific contracts MAY add terms when they do not reverse canonical meanings.
   prohibitions:
-  - <forbidden action>
+  - Calling TSAL a TOS application or runtime middleware.
+  - Calling an independent workload a TOS module merely because TOS manages it.
+  - Calling any runtime service the kernel merely because it is important or privileged.
+  - Using credential, permission, capability, and authority interchangeably.
+  - Redefining a controlled term silently in a subordinate document.
   failure_behavior:
-  - <required failure behavior>
+  - Treat ambiguous or contradictory use of an architecture-critical term as a contract/documentation defect requiring resolution before promotion.
 assurance:
   acceptance_criteria:
-  - <observable pass/fail condition>
+  - docs/01_OFFICIAL_IDENTITY_AND_NAMING.md defines all required architecture-critical terms.
+  - Contracts that exercise privileged authority reference or repeat the relevant controlled definitions.
+  - Architecture diagrams distinguish control plane, kernel, TSAL, adapters, and workloads.
   validation:
-  - <command/check/review>
+  - Documentation review against the canonical controlled vocabulary.
+  - Contract catalog validation.
   negative_controls:
-  - <deliberate violation that must be detected>
+  - A document describing TSAL as a runtime application must be rejected or corrected.
+  - A design that equates credential possession with authority must be rejected or corrected.
+  - A diagram that routes privileged execution around the kernel must be rejected or explicitly justified as an approved exception.
   required_evidence:
-  - <evidence class and artifact>
+  - Reviewed canonical vocabulary and architecture documents at the exact candidate.
 change_and_exit:
-  change_control: <decision/change record required>
-  compatibility: <compatibility rule>
-  deprecation: <deprecation procedure>
-  retirement: <retirement and archive procedure>
+  change_control: Changes to architecture-critical definitions require semantic impact analysis and governing review.
+  compatibility: Narrower definitions may strengthen but must not silently reverse existing canonical meaning.
+  deprecation: Deprecated terms retain a mapping to the replacement term and a review/removal plan.
+  retirement: Historical terminology remains archived with the version in which it was valid.
 contract_body:
-  official_terms: <define official terms>
+  official_terms:
+    source: docs/01_OFFICIAL_IDENTITY_AND_NAMING.md
+    required_terms:
+    - owner
+    - TOS
+    - TOS kernel
+    - execution kernel
+    - control plane
+    - userland
+    - runtime/system service
+    - module
+    - adapter
+    - workload
+    - TSAL
+    - contract
+    - capability
+    - authority
+    - credential
+    - privileged action
+    - bounded action
+    - reserved action
+    - kernel mediation
+    - observation
+    - repair
+    - recovery
+    - reconciliation
+    - verification
+    - evidence
+    - exact candidate
+    - escalation
+    - fail closed
+    - UNKNOWN
+    - adoption
+    - override
   identifier_patterns: <define identifier patterns>
   file_naming_rules: <define file naming rules>
-  deprecated_terms: <define deprecated terms>
+  deprecated_terms:
+    TSAL_application: Use TSAL standard or TSAL interfaces; TSAL is not a TOS application.
+    workload_module: Use workload for independent domain systems; module is reserved for TOS capabilities.
+    credential_authority: Prohibited equivalence; credentials enable access but do not grant policy authority.
