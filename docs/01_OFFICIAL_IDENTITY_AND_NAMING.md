@@ -37,7 +37,7 @@ These definitions are normative across TOS architecture, contracts, modules, ada
 - **Credential** — a secret, token, key, identity, session, or technical mechanism that may enable access. A credential proves access possibility, not authorization to use every reachable capability.
 - **Privileged action** — any TOS-managed action that can mutate canonical state, external/provider state, security/identity state, financial state, public state, production state, release/promotion state, or another protected authority surface.
 - **Bounded action** — an action whose target, allowed effect, authority source, preconditions, blast radius, failure behavior, evidence, and verification requirements are explicit enough to admit or reject deterministically.
-- **Reserved action** — a capability that policy keeps with the owner or another explicit authority and that automation may not self-grant or silently delegate.
+- **Reserved action** — a capability that policy keeps with the Owner or another explicit authority and that automation may not self-grant or silently delegate.
 - **Kernel mediation** — the rule that a TOS-managed privileged action must be admitted through the kernel's deterministic authority/policy boundary before execution and must produce required evidence afterward.
 - **Observation** — a read-only acquisition of facts or external reality. Observation does not itself authorize mutation.
 - **Repair** — a bounded action intended to restore already-approved declared state after drift or failure without silently expanding scope or policy.
