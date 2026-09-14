@@ -2,7 +2,7 @@
 
 **Status:** governing architecture invariant
 
-This document defines the responsibility boundary the TopShelf automation stack is built around. Future implementation work MUST preserve this direction unless the owner explicitly approves a superseding governing decision with migration and compatibility evidence.
+This document defines the responsibility boundary the TopShelf automation stack is built around. Future implementation work MUST preserve this direction unless the Owner explicitly approves a superseding governing decision with migration and compatibility evidence.
 
 Normative terms are defined in `docs/01_OFFICIAL_IDENTITY_AND_NAMING.md`.
 
@@ -66,7 +66,7 @@ TOS owns cross-project autonomous operations:
 - invoke declared bounded actions;
 - independently verify outcomes;
 - preserve evidence;
-- escalate to the owner when certainty, authority, or repair policy is insufficient.
+- escalate to the Owner when certainty, authority, or repair policy is insufficient.
 
 TOS MUST NOT infer authority from credentials alone, silently expand a workload contract, or rewrite evidence to manufacture a successful state.
 
@@ -183,7 +183,7 @@ diagnose / classify
 propose bounded action
   ↓
 kernel admission
-  ├─ deny / unknown / reserved → preserve evidence → escalate owner
+  ├─ deny / unknown / reserved → preserve evidence → escalate Owner
   └─ allow → execute → independently verify
                          ├─ proven → continue / close
                          └─ not proven → fail closed / recover / escalate
