@@ -50,6 +50,16 @@
         "packages/",
         "schemas/"
       ]
+    },
+    {
+      "doc_id": "TOS-DOC-GOV-BVA-0001",
+      "path": "docs/governed/BATCH_VERIFY_ACTIVATE_WORKFLOW.md",
+      "class": "governance",
+      "claims_truth_state": "declared",
+      "depends_on": [
+        "skills/batch-verify-activate/SKILL.md",
+        "skills/README.md"
+      ]
     }
   ]
 }
