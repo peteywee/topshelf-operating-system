@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TOS scheduled kernel manifest receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "v",
+    "commit",
+    "verifier",
+    "scope",
+    "run",
+    "attempt",
+    "result",
+    "manifest",
+    "inventory",
+    "readiness",
+    "sha256"
+  ],
+  "properties": {
+    "v": {
+      "const": 1
+    },
+    "commit": {
+      "$ref": "#/$defs/commit"
+    },
+    "verifier": {
+      "$ref": "#/$defs/commit"
+    },
+    "scope": {
+      "const": "packages/kernel"
+    },
+    "run": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "result": {
+      "enum": [
+        "success",
+        "failure"
+      ]
+    },
+    "manifest": {
+      "$ref": "#/$defs/outcome"
+    },
+    "inventory": {
+      "$ref": "#/$defs/outcome"
+    },
+    "readiness": {
+      "$ref": "#/$defs/outcome"
+    },
+    "sha256": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "outcome": {
+      "enum": [
+        "success",
+        "failure",
+        "skipped"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "success"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "manifest": {
+            "const": "success"
+          },
+          "inventory": {
+            "const": "success"
+          },
+          "readiness": {
+            "const": "success"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "manifest": {
+            "const": "success"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "sha256": {
+            "type": "string"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "sha256": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}
