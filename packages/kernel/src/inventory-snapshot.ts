@@ -1,10 +1,9 @@
 // The inventory validator reads the register and YAML templates. Its implementation
 // and locked dependency versions are part of the evidence subject as well.
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
-import { constants } from "node:fs";
-import { open, readdir, realpath } from "node:fs/promises";
+import { readdir, realpath } from "node:fs/promises";
 import path from "node:path";
+import { matchesBlob } from "./snapshot-blob.js";
 
 const inputs = ["registers/contract-register.csv", "packages/contracts/src/index.ts", "pnpm-lock.yaml"];
 const yaml = /\.ya?ml$/i;
@@ -43,19 +42,8 @@ export async function inventoryMatchesSnapshot(root: string, commit: string): Pr
   const names = [...inputs, ...await templatePaths(root, "contracts")];
   if (expected.size !== names.length || !inputs.every(name => expected.has(name))) return false;
   for (const name of names) {
-    const file = path.join(root, name);
     const blob = expected.get(name);
-    if (!blob || await realpath(file) !== file) return false;
-    const handle = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
-    try {
-      const stat = await handle.stat();
-      if (!stat.isFile() || stat.size !== blob.size) return false;
-      const hash = createHash("sha1").update(`blob ${stat.size}\0`);
-      if (blob.size > 0) {
-        for await (const chunk of handle.createReadStream({ autoClose: false, end: blob.size - 1 })) hash.update(chunk);
-      }
-      if ((await handle.stat()).size !== blob.size || hash.digest("hex") !== blob.oid) return false;
-    } finally { await handle.close(); }
+    if (!blob || !await matchesBlob(root, name, blob)) return false;
   }
   return true;
 }

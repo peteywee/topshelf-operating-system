@@ -3,6 +3,7 @@ import { findProjectRoot, readYamlRecord } from "./index.js";
 
 import { INVENTORY_STATEMENT, renewedInventoryCommit } from "./inventory-ledger.js";
 import { inventoryMatchesSnapshot } from "./inventory-snapshot.js";
+import { incompleteRuntimeBaseline, incompleteRuntimeWitnessMatches } from "./runtime-snapshot.js";
 
 export type FactObservedState = "yes" | "no" | "unknown" | "conflicting" | "not_applicable";
 export type FactTargetState = "yes" | "no" | "unknown" | "not_applicable";
@@ -20,7 +21,7 @@ export interface TimedFactFreshness {
   expires_on: string;
 }
 
-export type FactFreshnessPolicy = TimedFactFreshness | { kind: "contract_inventory_snapshot"; commit_sha: string };
+export type FactFreshnessPolicy = TimedFactFreshness | { kind: "contract_inventory_snapshot" | "incomplete_runtime_snapshot"; commit_sha: string };
 
 export interface FactValidationIssue extends ValidationIssue { factId?: string }
 
@@ -235,8 +236,12 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
     if (freshness.kind === "contract_inventory_snapshot" && id === "TOS-FACT-002"
       && Object.keys(freshness).length === 2 && typeof freshness.commit_sha === "string" && /^[0-9a-f]{40}$/.test(freshness.commit_sha)) {
       policy = { kind: "contract_inventory_snapshot", commit_sha: freshness.commit_sha };
+    } else if (freshness.kind === "incomplete_runtime_snapshot" && Object.keys(freshness).length === 2
+      && freshness.commit_sha === incompleteRuntimeBaseline && id === "TOS-FACT-003"
+      && statement === "The TOS runtime is complete." && observedState === "no" && status === "verified_no") {
+      policy = { kind: "incomplete_runtime_snapshot", commit_sha: incompleteRuntimeBaseline };
     } else {
-      issues.push(issue("FACT_SNAPSHOT_POLICY_INVALID", "Expected the inventory fact and its evidence commit.", `${factPath}.freshness`));
+      issues.push(issue("FACT_SNAPSHOT_POLICY_INVALID", "Snapshot policy does not match the reviewed fact and evidence commit.", `${factPath}.freshness`));
     }
   } else {
     if (!Number.isInteger(freshness.max_age_days) || (freshness.max_age_days as number) <= 0) {
@@ -280,7 +285,7 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
   if (policy && "commit_sha" in policy) {
     const commit = policy.commit_sha;
     if (!evidence.some(entry => entry.type === "automated-validation" && entry.commit_sha === commit)) {
-      issues.push(issue("FACT_SNAPSHOT_EVIDENCE_MISSING", "Inventory snapshot needs automated validation evidence at the same commit.", `${factPath}.evidence`));
+      issues.push(issue("FACT_SNAPSHOT_EVIDENCE_MISSING", "Fact snapshot needs automated validation evidence at the same commit.", `${factPath}.evidence`));
     }
   }
   const invalidatedBy = validateStringArray(input.invalidated_by, factPath, issues);
@@ -369,13 +374,19 @@ async function readFactInputs(root: string, options: FactCatalogOptions, snapsho
       const verified = refs.find(ref => {
         const matches = records.filter(item => isRecord(item) && item.id === ref.reference);
         const record = matches[0];
-        return matches.length === 1 && isRecord(record) && record.fact_id === fact.id && record.commit_sha === commit
+        const runtimeBound = fact.id !== "TOS-FACT-003" ||
+          (ref.reference === "TOS-EVD-014" && ref.captured_on === fact.last_verified);
+        return runtimeBound && matches.length === 1 && isRecord(record) && record.fact_id === fact.id && record.commit_sha === commit
           && record.statement === fact.statement && record.observed_state === fact.observed_state
           && record.status === "verified" && record.class === "automated" && nonEmptyString(record.source) !== undefined
           && record.captured_on === ref.captured_on && parseDateOnly(record.captured_on) !== undefined;
       });
       if (!verified) {
-        failure = issue("FACT_SNAPSHOT_EVIDENCE_MISSING", "Missing a verified inventory evidence record for this commit.", recordPath);
+        failure = issue("FACT_SNAPSHOT_EVIDENCE_MISSING", "Missing a verified fact evidence record for this commit.", recordPath);
+      } else if (fact.freshness.kind === "incomplete_runtime_snapshot") {
+        if (!await incompleteRuntimeWitnessMatches(root, fact)) {
+          failure = issue("FACT_SNAPSHOT_CHANGED", "The reviewed incomplete-runtime witness changed; re-evaluate runtime completion.", recordPath);
+        }
       } else if (!await inventoryMatchesSnapshot(root, commit)) {
         const binding = { baseline: commit, evidenceId: verified.reference };
         const renewed = fact.statement === INVENTORY_STATEMENT && fact.observed_state === "yes" && fact.status === "verified_yes"
@@ -385,7 +396,7 @@ async function readFactInputs(root: string, options: FactCatalogOptions, snapsho
         }
       }
     } catch {
-      failure = issue("FACT_SNAPSHOT_UNAVAILABLE", "The verified inventory inputs could not be read.", recordPath);
+      failure = issue("FACT_SNAPSHOT_UNAVAILABLE", "The verified snapshot inputs could not be read.", recordPath);
     }
     if (failure) report.issues.push({ ...failure, factId: fact.id });
   }
