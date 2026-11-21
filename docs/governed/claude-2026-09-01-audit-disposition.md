@@ -112,6 +112,8 @@ On November 21, the 105-template inventory and incomplete runtime were independe
 
 The scoped-readiness follow-up binds inventory evidence to its Git inputs, keeps full-planner health observable, and limits the contract-promotion gate to its own prerequisite and shared boot controls. Historical expiry remains covered against the October catalog.
 
+The inventory-renewal follow-up adds one local recurring verifier. Its standing grant covers evidence for the approved inventory claim. F-03 still applies to general work selection, and this single-host capability does not establish the portability in F-09.
+
 ## Separation of work
 
 This disposition keeps work boundaries explicit while recording completed and active blockers accurately:
