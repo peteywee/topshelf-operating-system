@@ -6,7 +6,7 @@ Create one place to browse TOS and TSAL on a Linux or macOS development machine.
 node ops/workspace/init.mjs ../TSAL
 ```
 
-This creates ~/topshelf with ordinary symbolic links. To choose another location, supply a second argument whose parent directory exists. Running the command again checks and reuses the same links. A conflicting file or link stops setup. Links point to the existing checkouts, so an edit through a link edits the original file.
+This creates ~/topshelf with ordinary symbolic links. To choose another location, supply a second argument in an existing trusted parent directory. Existing workspace directories must be owned by your account and writable only by that account. Running the command again checks and reuses the same links. Setup checks for conflicting files and links before it creates directories. Links point to the existing checkouts, so an edit through a link edits the original file.
 
 | Workspace path | Contents and owner |
 | --- | --- |
