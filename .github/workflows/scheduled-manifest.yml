@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      VERIFIER: 738bbd3a1305b2aa818fb3cdced36c6b51d7ce1a
+      VERIFIER: 6536425ac3f6ec7f76b493e942d993329d64ca74
     steps:
       - name: Check out trusted worker
         uses: actions/checkout@v4
