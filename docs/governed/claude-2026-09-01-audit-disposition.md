@@ -108,6 +108,8 @@ The CLI now accepts one human-triggered work order through `tos execute manifest
 
 On November 20, 2026, current-date fact and boot validation reported two expired facts dated October 2, 2026. Issue #23 introduced the liveness check. Its historical closure does not establish current planning readiness. The manifest grant binds one exact read-only snapshot operation independently of planning readiness.
 
+On November 21, the 105-template inventory and incomplete runtime were independently rechecked at PR #46 commit `1f7431860c6614ae73b7c3302debe31db8f39c6d`. TOS-EVD-012 and TOS-EVD-013 record the evidence for the renewed facts. The October expiry regression uses the historical catalog from main.
+
 ## Separation of work
 
 This disposition keeps work boundaries explicit while recording completed and active blockers accurately:

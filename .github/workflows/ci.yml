@@ -64,11 +64,15 @@ jobs:
           grep -q "TOS-FACT-003" /tmp/tos-fact-list.txt
           pnpm tos -- fact show TOS-FACT-001 2026-07-25 > /tmp/tos-fact-001.yaml
           grep -q "status: verified_yes" /tmp/tos-fact-001.yaml
-          # Facts reverified on 2026-09-02 expire on 2026-10-02; 2026-10-03 is the first expired as-of date.
-          if pnpm tos -- fact validate 2026-10-03; then
+          # Exercise the October expiry against the catalog that actually expired.
+          historical="$(mktemp -d)"
+          git archive bbb61d895af3337f3f47c778e1bbc8139f16bfc8 .tos | tar -x -C "$historical"
+          cli="$PWD/packages/cli/dist/index.js"
+          if (cd "$historical" && node "$cli" fact validate 2026-10-03) >"$historical/result" 2>&1; then
             echo "Expired facts incorrectly passed freshness validation" >&2
             exit 1
           fi
+          grep -q "FACT_FRESHNESS_EXPIRED.*2026-10-02" "$historical/result"
 
       - name: Validate current canonical liveness
         run: |

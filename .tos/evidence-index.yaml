@@ -77,3 +77,17 @@ evidence:
     commit_sha: 3a0a1f6a3903d76dade490afa6fd2e55b15878b3
     source: GitHub PR 36 and Actions run 33948600841 (TOS CI #198)
     captured_on: "2026-09-05"
+  - id: TOS-EVD-012
+    claim: Contract catalog validation passed and all 105 distinct named register IDs mapped one-to-one to the 105 tracked contract template paths.
+    class: automated
+    status: verified
+    commit_sha: 1f7431860c6614ae73b7c3302debe31db8f39c6d
+    source: Local CLI contract validate and independent CSV-to-git ls-files comparison on PR 46
+    captured_on: "2026-11-21"
+  - id: TOS-EVD-013
+    claim: Runtime version 0.2.1 supports the manifest milestone and still rejects the planned execute next command with exit 1. The 1.0 roadmap remains outstanding.
+    class: automated
+    status: verified
+    commit_sha: 1f7431860c6614ae73b7c3302debe31db8f39c6d
+    source: Local CLI --version and execute next, CLI dispatcher and docs/09_ROADMAP.md on PR 46
+    captured_on: "2026-11-21"
