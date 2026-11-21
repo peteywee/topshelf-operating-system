@@ -41,6 +41,8 @@ The [Unix-style workspace guide](ops/workspace/README.md) shows where to browse 
 - `agents/` and `skills/` — governed human-assisted roles and instructions, not an autonomous runtime.
 - `schemas/` — JSON Schema definitions for machine-readable TOS objects and contracts; schema coverage remains incomplete and is part of the ongoing JSON-first hardening direction.
 
+The [pre-cleanup snapshot](https://github.com/peteywee/topshelf-operating-system/tree/39b2e066bce401d03dd4c377024dfe5c32b67ff2) contains the original Word and PDF exports, diagrams, three foundation example YAML files, term and requirement CSV exports, historical implementation reports, and the external audit source index. The original package manifest remains part of the decision-register provenance record.
+
 ## Runtime quick start
 
 Requirements for the current TOS repository implementation: Node.js 24 LTS and pnpm 10.33.3 through Corepack.
