@@ -8,18 +8,21 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   verify:
     if: github.ref == 'refs/heads/main' && github.repository == 'peteywee/topshelf-operating-system'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      VERIFIER: f6b598d65497a94ead3ec9ca4225a23ecac22bde
     steps:
       - name: Check out trusted worker
         uses: actions/checkout@v4
         with:
           path: worker
-          ref: f6b598d65497a94ead3ec9ca4225a23ecac22bde
+          ref: ${{ env.VERIFIER }}
           persist-credentials: false
       - name: Check out event snapshot as data
         uses: actions/checkout@v4
@@ -41,6 +44,7 @@ jobs:
       - name: Prepare evidence directory
         run: mkdir evidence
       - name: Run the granted kernel-source manifest
+        id: manifest
         run: |
           set -eu
           umask 077
@@ -56,6 +60,7 @@ jobs:
           cp "$root/jobs/$job/manifest.json" evidence/manifest.json
           test "$(sha256sum evidence/manifest.json | cut -d' ' -f1)" = "$(jq -er 'select(.status=="succeeded").sha256' evidence/execution.json)"
       - name: Verify approved inventory independently
+        id: inventory
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
           set -eu
@@ -66,12 +71,53 @@ jobs:
           target="$(realpath source)"
           node worker/scripts/inventory-renew.mjs grant "$target" 1f7431860c6614ae73b7c3302debe31db8f39c6d TOS-EVD-012
           worker/scripts/inventory-renew-worker.sh run "$target" > evidence/inventory.json
+          jq -e --arg sha "$GITHUB_SHA" '.status == "verified" and .commit == $sha' evidence/inventory.json >/dev/null
+      - name: Read back requirement readiness
+        id: readiness
+        if: ${{ !cancelled() && steps.inventory.outcome == 'success' }}
+        run: |
           (cd source && node ../worker/packages/cli/dist/index.js requirement ready TOS-REQ-002) > evidence/readiness.json
-      - name: Publish run evidence
+          jq -e '.status == "ready" and .requirementId == "TOS-REQ-002"' evidence/readiness.json >/dev/null
+      - name: Write v1 receipt
         if: ${{ !cancelled() }}
+        id: receipt
+        env:
+          RESULT: ${{ job.status }}
+          MANIFEST: ${{ steps.manifest.outcome }}
+          INVENTORY: ${{ steps.inventory.outcome }}
+          READINESS: ${{ steps.readiness.outcome }}
+        run: |
+          digest=null
+          if [[ "$MANIFEST" == success ]]; then
+            digest=$(jq -ce '.sha256 | select(test("^[a-f0-9]{64}$"))' evidence/execution.json)
+          fi
+          jq -cn --arg commit "$GITHUB_SHA" --arg verifier "$VERIFIER" --arg run "$GITHUB_RUN_ID" \
+            --argjson attempt "$GITHUB_RUN_ATTEMPT" --arg result "$RESULT" --arg manifest "$MANIFEST" \
+            --arg inventory "$INVENTORY" --arg readiness "$READINESS" --argjson digest "$digest" \
+            '{v:1,commit:$commit,verifier:$verifier,scope:"packages/kernel",run:$run,attempt:$attempt,
+              result:$result,manifest:$manifest,inventory:$inventory,readiness:$readiness,sha256:$digest}' > receipt.json
+          key=$(jq -c 'del(.run,.attempt)' receipt.json | sha256sum | cut -d' ' -f1)
+          if [[ "$GITHUB_RUN_ATTEMPT" -gt 1 ]]; then key="$key-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"; fi
+          echo "name=receipt-v1-$key" >> "$GITHUB_OUTPUT"
+      - name: Check for a retained equivalent success
+        if: ${{ success() && github.run_attempt == '1' }}
+        id: previous
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.receipt.outputs.name }}
+        run: |
+          # On a lookup error, keep this receipt. Always retain a recovery after a failed run.
+          api="repos/$GITHUB_REPOSITORY/actions"
+          prior=$(gh api "$api/workflows/scheduled-manifest.yml/runs?branch=main&per_page=5" \
+            --jq "[.workflow_runs[] | select(.id < $GITHUB_RUN_ID)][0].conclusion" ) || exit 0
+          [[ "$prior" == success ]] || exit 0
+          count=$(gh api "$api/artifacts?name=$NAME&per_page=100" --jq '[.artifacts[] | select(.expired == false)] | length') || exit 0
+          if [[ "$count" -gt 0 ]]; then echo 'duplicate=true' >> "$GITHUB_OUTPUT"; fi
+      - name: Publish compact receipt
+        if: ${{ !cancelled() && steps.receipt.outcome == 'success' && steps.previous.outputs.duplicate != 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: manifest-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: evidence/
+          name: ${{ steps.receipt.outputs.name }}
+          path: receipt.json
           if-no-files-found: error
           retention-days: 30
