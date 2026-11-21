@@ -79,3 +79,36 @@ test("one expired inventory fact blocks its consumer while the recount and grant
   writeFileSync(file, stringify(catalog));
   assert.equal(run("boot", "ready", "TOS-REQ-002").status, 0);
 });
+
+test("runtime release evidence expiring on December 21 cannot disable independent checks", t => {
+  const tmp = mkdtempSync(join(tmpdir(), "tos-release-expiry-"));
+  t.after(() => rmSync(tmp, { recursive: true, force: true }));
+  const baseline = "ab5d6eb4aa36353ca0fd06a4f15af29c7c5ea84c";
+  execFileSync("git", ["clone", "--quiet", "--local", "--no-hardlinks", "--no-checkout", ".", tmp]);
+  execFileSync("git", ["-C", tmp, "checkout", "--quiet", "--detach", baseline]);
+  // Use the actual dependency declarations with the exact fact catalog that caused the outage.
+  writeFileSync(join(tmp, ".tos/requirements.yaml"), readFileSync(resolve(".tos/requirements.yaml")));
+  const cli = resolve("packages/cli/dist/index.js");
+  function run(...args) {
+    return spawnSync(process.execPath, [cli, ...args], { cwd: tmp, encoding: "utf8", timeout: 8000 });
+  }
+  function health() {
+    const result = run("requirement", "health", "2026-12-22");
+    assert.equal(result.status, 1);
+    return JSON.parse(result.stdout);
+  }
+  const first = health();
+  assert.deepEqual(first.unavailableFacts.map(f => f.id), ["TOS-FACT-003"]);
+  for (const id of ["TOS-REQ-001", "TOS-REQ-002"]) {
+    assert.equal(first.requirements.find(row => row.requirementId === id)?.status, "ready", id);
+  }
+  assert.equal(run("boot", "validate", "2026-12-22").status, 1);
+
+  // A change to the actual inventory still blocks its own consumer.
+  writeFileSync(join(tmp, "registers/contract-register.csv"), "invalid inventory\n");
+  const second = health();
+  assert.equal(second.requirements.find(row => row.requirementId === "TOS-REQ-001")?.status, "ready");
+  const blocked = second.requirements.find(row => row.requirementId === "TOS-REQ-002");
+  assert.equal(blocked?.status, "blocked");
+  assert.ok(blocked.issues.some(issue => issue.factId === "TOS-FACT-002"));
+});

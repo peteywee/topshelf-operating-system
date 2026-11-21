@@ -6,7 +6,6 @@ requirements:
     status: active
     fact_ids:
       - TOS-FACT-001
-      - TOS-FACT-003
     contract_ids:
       - TOS-CTR-005
     acceptance_criteria:
@@ -25,7 +24,6 @@ requirements:
     status: active
     fact_ids:
       - TOS-FACT-002
-      - TOS-FACT-003
     contract_ids:
       - TOS-CTR-005
       - TOS-CTR-085
