@@ -54,19 +54,19 @@ facts:
       - type: repository
         reference: README.md
         captured_on: "2026-11-21"
-        commit_sha: 1f7431860c6614ae73b7c3302debe31db8f39c6d
+        commit_sha: ab5d6eb4aa36353ca0fd06a4f15af29c7c5ea84c
       - type: roadmap
         reference: docs/09_ROADMAP.md
         captured_on: "2026-11-21"
-        commit_sha: 1f7431860c6614ae73b7c3302debe31db8f39c6d
+        commit_sha: ab5d6eb4aa36353ca0fd06a4f15af29c7c5ea84c
       - type: automated-validation
-        reference: TOS-EVD-013
+        reference: TOS-EVD-014
         captured_on: "2026-11-21"
-        commit_sha: 1f7431860c6614ae73b7c3302debe31db8f39c6d
+        commit_sha: ab5d6eb4aa36353ca0fd06a4f15af29c7c5ea84c
     authority: Patrick Craven
     last_verified: "2026-11-21"
     freshness:
-      max_age_days: 30
-      expires_on: "2026-12-21"
+      kind: incomplete_runtime_snapshot
+      commit_sha: ab5d6eb4aa36353ca0fd06a4f15af29c7c5ea84c
     invalidated_by:
       - Promotion through the TOS 1.0 acceptance gate.

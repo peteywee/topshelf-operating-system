@@ -94,3 +94,13 @@ evidence:
     commit_sha: 1f7431860c6614ae73b7c3302debe31db8f39c6d
     source: Local CLI --version and execute next, CLI dispatcher and docs/09_ROADMAP.md on PR 46
     captured_on: "2026-11-21"
+  - id: TOS-EVD-014
+    fact_id: TOS-FACT-003
+    statement: The TOS runtime is complete.
+    observed_state: no
+    claim: The canonical CLI reports 0.2.1 and rejects the required execute next command with exit 1 and manifest-only usage. The 1.0 roadmap remains outstanding.
+    class: automated
+    status: verified
+    commit_sha: ab5d6eb4aa36353ca0fd06a4f15af29c7c5ea84c
+    source: Built CLI --version and execute next; reviewed dispatcher, package entry points, README proving workflow and 1.0 roadmap.
+    captured_on: "2026-11-21"

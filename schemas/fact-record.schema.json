@@ -33,6 +33,17 @@
         "freshness",
         "invalidated_by"
       ],
+      "if": {
+        "properties": { "freshness": { "required": ["kind"], "properties": { "kind": { "const": "incomplete_runtime_snapshot" } } } }
+      },
+      "then": {
+        "properties": {
+          "id": { "const": "TOS-FACT-003" },
+          "statement": { "const": "The TOS runtime is complete." },
+          "observed_state": { "const": "no" },
+          "status": { "const": "verified_no" }
+        }
+      },
       "properties": {
         "id": {
           "type": "string",
@@ -96,7 +107,7 @@
               "additionalProperties": false,
               "required": ["kind", "commit_sha"],
               "properties": {
-                "kind": { "const": "contract_inventory_snapshot" },
+                "kind": { "enum": ["contract_inventory_snapshot", "incomplete_runtime_snapshot"] },
                 "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
               }
             }
