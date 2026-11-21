@@ -40,8 +40,8 @@ facts:
     authority: contract-registry-validation
     last_verified: "2026-11-21"
     freshness:
-      max_age_days: 30
-      expires_on: "2026-12-21"
+      kind: contract_inventory_snapshot
+      commit_sha: 1f7431860c6614ae73b7c3302debe31db8f39c6d
     invalidated_by:
       - Contract registry count changes without a reconciled register and validation result.
   - id: TOS-FACT-003

@@ -78,6 +78,9 @@ evidence:
     source: GitHub PR 36 and Actions run 33948600841 (TOS CI #198)
     captured_on: "2026-09-05"
   - id: TOS-EVD-012
+    fact_id: TOS-FACT-002
+    statement: The repository contains 105 named foundation contract templates.
+    observed_state: yes
     claim: Contract catalog validation passed and all 105 distinct named register IDs mapped one-to-one to the 105 tracked contract template paths.
     class: automated
     status: verified
