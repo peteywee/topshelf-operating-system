@@ -24,7 +24,7 @@
       "path": "docs/governed/claude-2026-09-01-audit-disposition.md",
       "class": "audit",
       "claims_truth_state": "verified",
-      "verified_at_commit": "15024745158d7b2e828d0520313001c2acc6527b",
+      "verified_at_commit": "76e447bcb02050a1d775ddbdb37aaac127f59a28",
       "depends_on": [
         "README.md",
         "package.json",
