@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      VERIFIER: f6b598d65497a94ead3ec9ca4225a23ecac22bde
+      VERIFIER: 738bbd3a1305b2aa818fb3cdced36c6b51d7ce1a
     steps:
       - name: Check out trusted worker
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
       - name: Check out pinned receipt reader
         uses: actions/checkout@v4
         with:
-          ref: 7d76e907eeaec5212185f02ce740a8cc84148d41
+          ref: 738bbd3a1305b2aa818fb3cdced36c6b51d7ce1a
           path: reader
           sparse-checkout: |
             scripts/receipt-integrity.py

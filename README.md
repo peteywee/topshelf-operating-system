@@ -29,6 +29,8 @@ GitHub is a durable TOS project-management record. Material bounded work should 
 
 ## Repository layout
 
+The [Unix-style workspace guide](ops/workspace/README.md) shows where to browse the two checkouts, configuration, documentation, and host-local execution state.
+
 - `.tos/` — current authoritative project state, facts, requirements, boot authority, evidence, decisions, blockers, and activity; currently YAML-heavy with JSONL activity history and subject to the approved JSON-first migration direction.
 - `standards/intake/` — canonical TopShelf question definitions, valid and invalid examples, module rules, project classification, tiering, and artifact tailoring.
 - `packages/shared/` — canonical types and runtime identifiers.
