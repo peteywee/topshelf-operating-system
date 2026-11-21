@@ -38,6 +38,14 @@ jobs:
       - name: Build, typecheck, and test
         run: pnpm check
 
+      - name: Test unattended inventory renewal
+        run: |
+          if ! command -v bwrap >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y bubblewrap
+          fi
+          node --test scripts/inventory-renew.test.mjs
+
       - name: Test documentation freshness control
         run: pnpm test:doc-freshness
 
@@ -55,57 +63,59 @@ jobs:
       - name: Report project status
         run: pnpm tos -- status
 
-      - name: Validate canonical facts
+      - name: Prepare historical project data for pinned-date regression checks
         run: |
-          pnpm tos -- fact validate 2026-07-25 > /tmp/tos-fact-validation.txt
+          mkdir "$RUNNER_TEMP/tos-historical"
+          git archive bbb61d895af3337f3f47c778e1bbc8139f16bfc8 | tar -x -C "$RUNNER_TEMP/tos-historical"
+          echo "TOS_TEST_CLI=$PWD/packages/cli/dist/index.js" >> "$GITHUB_ENV"
+
+      - name: Validate canonical facts
+        working-directory: ${{ runner.temp }}/tos-historical
+        run: |
+          node "$TOS_TEST_CLI" fact validate 2026-07-25 > /tmp/tos-fact-validation.txt
           grep -q "OK: fact catalog is valid (3 records, 0 stale, as of 2026-07-25)." /tmp/tos-fact-validation.txt
-          pnpm tos -- fact list 2026-07-25 > /tmp/tos-fact-list.txt
+          node "$TOS_TEST_CLI" fact list 2026-07-25 > /tmp/tos-fact-list.txt
           grep -q "Fact catalog: 3 records (as of 2026-07-25)" /tmp/tos-fact-list.txt
           grep -q "TOS-FACT-003" /tmp/tos-fact-list.txt
-          pnpm tos -- fact show TOS-FACT-001 2026-07-25 > /tmp/tos-fact-001.yaml
+          node "$TOS_TEST_CLI" fact show TOS-FACT-001 2026-07-25 > /tmp/tos-fact-001.yaml
           grep -q "status: verified_yes" /tmp/tos-fact-001.yaml
-          # Facts reverified on 2026-09-02 expire on 2026-10-02; 2026-10-03 is the first expired as-of date.
-          if pnpm tos -- fact validate 2026-10-03; then
+          # Exercise the October expiry against the catalog that actually expired.
+          if node "$TOS_TEST_CLI" fact validate 2026-10-03 >"$RUNNER_TEMP/expiry-result" 2>&1; then
             echo "Expired facts incorrectly passed freshness validation" >&2
             exit 1
           fi
+          grep -q "FACT_FRESHNESS_EXPIRED.*2026-10-02" "$RUNNER_TEMP/expiry-result"
 
-      - name: Validate current canonical liveness
-        run: |
-          CURRENT_DATE="$(date -u +%F)"
-          echo "Current UTC liveness date: ${CURRENT_DATE}"
-          pnpm tos -- fact validate "${CURRENT_DATE}" > /tmp/tos-current-facts.txt
-          grep -Eq "^OK: fact catalog is valid \([0-9]+ records, 0 stale, as of ${CURRENT_DATE}\)\.$" /tmp/tos-current-facts.txt
-          pnpm tos -- requirement validate "${CURRENT_DATE}" > /tmp/tos-current-requirements.txt
-          grep -q "OK: requirement catalog is valid" /tmp/tos-current-requirements.txt
-          pnpm tos -- boot validate "${CURRENT_DATE}" > /tmp/tos-current-boot.txt
-          grep -q "OK: boot packet is valid and ready" /tmp/tos-current-boot.txt
+      - name: Verify scoped admission, recovery, and independent work
+        run: node --test scripts/scoped-admission.test.mjs
 
       - name: Reconcile truth and validate requirements
+        working-directory: ${{ runner.temp }}/tos-historical
         run: |
-          pnpm tos -- fact reconcile 2026-07-25 > /tmp/tos-fact-reconcile.yaml
+          node "$TOS_TEST_CLI" fact reconcile 2026-07-25 > /tmp/tos-fact-reconcile.yaml
           grep -q "conflicts: \[\]" /tmp/tos-fact-reconcile.yaml
-          pnpm tos -- fact conflicts 2026-07-25 > /tmp/tos-fact-conflicts.txt
+          node "$TOS_TEST_CLI" fact conflicts 2026-07-25 > /tmp/tos-fact-conflicts.txt
           grep -q "OK: no fact conflicts found" /tmp/tos-fact-conflicts.txt
-          pnpm tos -- requirement validate 2026-07-25 > /tmp/tos-requirement-validation.txt
+          node "$TOS_TEST_CLI" requirement validate 2026-07-25 > /tmp/tos-requirement-validation.txt
           grep -q "OK: requirement catalog is valid (2 records" /tmp/tos-requirement-validation.txt
-          pnpm tos -- requirement list 2026-07-25 > /tmp/tos-requirement-list.txt
+          node "$TOS_TEST_CLI" requirement list 2026-07-25 > /tmp/tos-requirement-list.txt
           grep -q "TOS-REQ-002" /tmp/tos-requirement-list.txt
-          pnpm tos -- requirement trace TOS-REQ-001 2026-07-25 > /tmp/tos-requirement-trace.yaml
+          node "$TOS_TEST_CLI" requirement trace TOS-REQ-001 2026-07-25 > /tmp/tos-requirement-trace.yaml
           grep -q "TOS-FACT-003" /tmp/tos-requirement-trace.yaml
-          pnpm tos -- requirement gaps 2026-07-25
+          node "$TOS_TEST_CLI" requirement gaps 2026-07-25
 
       - name: Inspect repository and validate boot
+        working-directory: ${{ runner.temp }}/tos-historical
         run: |
-          pnpm tos -- inspect 2026-07-30 > /tmp/tos-inspection.yaml
+          node "$TOS_TEST_CLI" inspect 2026-07-30 > /tmp/tos-inspection.yaml
           grep -q "value: pnpm" /tmp/tos-inspection.yaml
           grep -q "id: software-engineering" /tmp/tos-inspection.yaml
           grep -q "decision: required" /tmp/tos-inspection.yaml
-          pnpm tos -- intake 2026-07-30 > /tmp/tos-intake.txt
+          node "$TOS_TEST_CLI" intake 2026-07-30 > /tmp/tos-intake.txt
           grep -q "TOS-INTAKE-003" /tmp/tos-intake.txt
-          pnpm tos -- boot validate 2026-07-30 > /tmp/tos-boot-validation.txt
+          node "$TOS_TEST_CLI" boot validate 2026-07-30 > /tmp/tos-boot-validation.txt
           grep -q "OK: boot packet is valid and ready" /tmp/tos-boot-validation.txt
-          pnpm tos -- boot show 2026-07-30 > /tmp/tos-boot.yaml
+          node "$TOS_TEST_CLI" boot show 2026-07-30 > /tmp/tos-boot.yaml
           grep -q "ready: true" /tmp/tos-boot.yaml
           grep -q "planner: human_assisted" /tmp/tos-boot.yaml
           if grep -q "planner: autonomous" /tmp/tos-boot.yaml; then
@@ -169,4 +179,6 @@ jobs:
           fi
 
       - name: Enforce direct-edit protection
+        env:
+          TOS_CONTRACT_BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: pnpm contract:guard

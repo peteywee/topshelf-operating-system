@@ -261,3 +261,5 @@ export async function validateProject(startDirectory = process.cwd()): Promise<V
     };
   }
 }
+
+export { readManifestOrder, runManifest } from "./manifest.js";

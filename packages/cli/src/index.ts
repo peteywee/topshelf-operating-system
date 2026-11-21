@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import process from "node:process";
-import { inspectProject, validateProject } from "@topshelf-os/kernel";
+import { inspectProject, readManifestOrder, runManifest, validateProject } from "@topshelf-os/kernel";
 import {
   TOS_OFFICIAL_NAME,
   TOS_RUNTIME_VERSION,
@@ -17,6 +17,7 @@ import { runRequirement } from "./requirement.js";
 const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
 
 Usage:
+  tos execute manifest <order.json>                Run or resume an owner-granted snapshot manifest
   tos status                                      Show canonical project state
   tos validate                                    Validate required .tos records
   tos inspect [as-of-date]                        Inspect repository signals and module applicability
@@ -28,6 +29,7 @@ Usage:
   tos intake evaluate <answers.json>              Classify work, tier, artifacts, modules, and blockers
   tos boot show [as-of-date]                      Show the reference-based agent boot packet
   tos boot validate [as-of-date]                  Validate boot authority and planning readiness
+  tos boot ready <requirement-id>                   Check planning readiness for one requirement
   tos contract list                               List registered contract templates
   tos contract show <id>                          Show one contract template
   tos contract validate                           Validate the complete contract catalog
@@ -42,6 +44,8 @@ Usage:
   tos fact validate [as-of-date]                  Validate provenance, state, and freshness
   tos fact reconcile [as-of-date]                 Detect duplicate and contradictory claims
   tos fact conflicts [as-of-date]                 List unresolved fact conflicts
+  tos requirement ready <id>                      Check current readiness for one canonical requirement
+  tos requirement health [as-of-date]             Report catalog health and affected requirements
   tos requirement list [as-of-date]               List canonical requirements
   tos requirement show <id> [as-of-date]          Show one requirement
   tos requirement validate [as-of-date]           Validate fact-to-acceptance traceability
@@ -105,6 +109,13 @@ async function main(): Promise<void> {
     case "-v":
       console.log(TOS_RUNTIME_VERSION);
       return;
+    case "execute": {
+      if (args.length !== 3 || args[1] !== "manifest") throw new Error("Usage: tos execute manifest <order.json>");
+      const result = runManifest(readManifestOrder(args[2]!));
+      console.log(JSON.stringify(result));
+      if (result.status !== "succeeded") process.exitCode = 1;
+      return;
+    }
     case "status":
       await runStatus();
       return;

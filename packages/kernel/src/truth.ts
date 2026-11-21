@@ -1,6 +1,9 @@
 import type { FactStatus, ValidationIssue, ValidationReport } from "@topshelf-os/shared";
 import { findProjectRoot, readYamlRecord } from "./index.js";
 
+import { INVENTORY_STATEMENT, renewedInventoryCommit } from "./inventory-ledger.js";
+import { inventoryMatchesSnapshot } from "./inventory-snapshot.js";
+
 export type FactObservedState = "yes" | "no" | "unknown" | "conflicting" | "not_applicable";
 export type FactTargetState = "yes" | "no" | "unknown" | "not_applicable";
 export type FactConfidence = "high" | "medium" | "low";
@@ -12,10 +15,14 @@ export interface FactEvidenceReference {
   commit_sha?: string;
 }
 
-export interface FactFreshnessPolicy {
+export interface TimedFactFreshness {
   max_age_days: number;
   expires_on: string;
 }
+
+export type FactFreshnessPolicy = TimedFactFreshness | { kind: "contract_inventory_snapshot"; commit_sha: string };
+
+export interface FactValidationIssue extends ValidationIssue { factId?: string }
 
 export interface TosFactRecord {
   id: string;
@@ -37,6 +44,7 @@ export interface TosFactFile {
 }
 
 export interface FactCatalog extends ValidationReport {
+  issues: FactValidationIssue[];
   root: string;
   recordPath: string;
   asOfDate: string;
@@ -214,11 +222,19 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
   if (lastVerifiedTime === undefined) issues.push(issue("FACT_LAST_VERIFIED_INVALID", "last_verified must be a valid YYYY-MM-DD date.", `${factPath}.last_verified`));
 
   const freshness = input.freshness;
+  let policy: FactFreshnessPolicy | undefined;
   let maxAgeDays: number | undefined;
   let expiresOn: string | undefined;
   let expiresTime: number | undefined;
   if (!isRecord(freshness)) {
     issues.push(issue("FACT_FRESHNESS_MISSING", "Freshness policy is required.", `${factPath}.freshness`));
+  } else if ("kind" in freshness) {
+    if (freshness.kind === "contract_inventory_snapshot" && id === "TOS-FACT-002"
+      && Object.keys(freshness).length === 2 && typeof freshness.commit_sha === "string" && /^[0-9a-f]{40}$/.test(freshness.commit_sha)) {
+      policy = { kind: "contract_inventory_snapshot", commit_sha: freshness.commit_sha };
+    } else {
+      issues.push(issue("FACT_SNAPSHOT_POLICY_INVALID", "Expected the inventory fact and its evidence commit.", `${factPath}.freshness`));
+    }
   } else {
     if (!Number.isInteger(freshness.max_age_days) || (freshness.max_age_days as number) <= 0) {
       issues.push(issue("FACT_MAX_AGE_INVALID", "max_age_days must be a positive integer.", `${factPath}.freshness.max_age_days`));
@@ -233,6 +249,7 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
     }
   }
 
+  if (maxAgeDays !== undefined && expiresOn !== undefined) policy = { max_age_days: maxAgeDays, expires_on: expiresOn };
   if (lastVerifiedTime !== undefined && expiresTime !== undefined && expiresTime < lastVerifiedTime) {
     issues.push(issue("FACT_EXPIRY_BEFORE_VERIFICATION", "expires_on cannot precede last_verified.", `${factPath}.freshness.expires_on`));
   }
@@ -250,6 +267,12 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
   }
 
   const evidence = validateEvidence(input.evidence, factPath, issues);
+  if (policy && "commit_sha" in policy) {
+    const commit = policy.commit_sha;
+    if (!evidence.some(entry => entry.type === "automated-validation" && entry.commit_sha === commit)) {
+      issues.push(issue("FACT_SNAPSHOT_EVIDENCE_MISSING", "Inventory snapshot needs automated validation evidence at the same commit.", `${factPath}.evidence`));
+    }
+  }
   const invalidatedBy = validateStringArray(input.invalidated_by, factPath, issues);
 
   if (
@@ -265,8 +288,7 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
     typeof confidence !== "string" ||
     !CONFIDENCE_LEVELS.includes(confidence as FactConfidence) ||
     typeof lastVerified !== "string" ||
-    maxAgeDays === undefined ||
-    expiresOn === undefined
+    policy === undefined
   ) {
     return undefined;
   }
@@ -281,13 +303,13 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
     evidence,
     authority,
     last_verified: lastVerified,
-    freshness: { max_age_days: maxAgeDays, expires_on: expiresOn },
+    freshness: policy,
     invalidated_by: invalidatedBy,
   };
 }
 
-export function validateFactFile(input: unknown, options: FactCatalogOptions = {}): ValidationReport & { facts: TosFactRecord[]; asOfDate: string } {
-  const issues: ValidationIssue[] = [];
+export function validateFactFile(input: unknown, options: FactCatalogOptions = {}): Pick<FactCatalog, "valid" | "issues" | "facts" | "asOfDate"> {
+  const issues: FactValidationIssue[] = [];
   const asOfDate = options.asOfDate ?? todayUtc();
   if (parseDateOnly(asOfDate) === undefined) {
     return { valid: false, issues: [issue("FACT_AS_OF_INVALID", "As-of date must be YYYY-MM-DD.", "asOfDate")], facts: [], asOfDate };
@@ -301,30 +323,73 @@ export function validateFactFile(input: unknown, options: FactCatalogOptions = {
     return { valid: false, issues, facts: [], asOfDate };
   }
 
-  const facts = input.facts
-    .map((fact, index) => validateFact(fact, index, asOfDate, issues))
-    .filter((fact): fact is TosFactRecord => fact !== undefined)
-    .sort((left, right) => left.id.localeCompare(right.id));
-
-  const seen = new Map<string, number>();
-  facts.forEach((fact, index) => {
-    const previous = seen.get(fact.id);
-    if (previous !== undefined) {
-      issues.push(issue("FACT_ID_DUPLICATE", `Duplicate fact ID '${fact.id}' appears at indexes ${previous} and ${index}.`, `facts[${index}].id`));
+  const facts: TosFactRecord[] = [];
+  const seen = new Set<string>();
+  input.facts.forEach((raw, index) => {
+    const recordIssues: ValidationIssue[] = [];
+    const fact = validateFact(raw, index, asOfDate, recordIssues);
+    const id = isRecord(raw) ? nonEmptyString(raw.id) : undefined;
+    if (id && /^TOS-FACT-\d{3}$/.test(id)) {
+      if (seen.has(id)) recordIssues.push(issue("FACT_ID_DUPLICATE", `Duplicate fact ID '${id}'.`, `facts[${index}].id`));
+      seen.add(id);
+      issues.push(...recordIssues.map(item => ({ ...item, factId: id })));
     } else {
-      seen.set(fact.id, index);
+      issues.push(...recordIssues);
     }
+    if (fact) facts.push(fact);
   });
-
+  facts.sort((left, right) => left.id.localeCompare(right.id));
   return { valid: !issues.some((item) => item.severity === "error"), issues, facts, asOfDate };
+}
+
+const recordPath = ".tos/facts.yaml";
+type FactInputs = Pick<FactCatalog, "facts" | "issues" | "asOfDate">;
+
+async function readFactInputs(root: string, options: FactCatalogOptions, snapshotFactIds?: ReadonlySet<string>): Promise<FactInputs> {
+  const input = await readYamlRecord<unknown>(root, recordPath);
+  const report = validateFactFile(input, options);
+  for (const fact of report.facts) {
+    if (!("commit_sha" in fact.freshness) || (snapshotFactIds && !snapshotFactIds.has(fact.id))) continue;
+    let failure: ValidationIssue | undefined;
+    try {
+      const commit = fact.freshness.commit_sha;
+      const index = await readYamlRecord<unknown>(root, ".tos/evidence-index.yaml");
+      const refs = fact.evidence.filter(item => item.type === "automated-validation" && item.commit_sha === commit);
+      const records: unknown[] = isRecord(index) && index.schema_version === 1 && Array.isArray(index.evidence) ? index.evidence : [];
+      const verified = refs.find(ref => {
+        const matches = records.filter(item => isRecord(item) && item.id === ref.reference);
+        const record = matches[0];
+        return matches.length === 1 && isRecord(record) && record.fact_id === fact.id && record.commit_sha === commit
+          && record.statement === fact.statement && record.observed_state === fact.observed_state
+          && record.status === "verified" && record.class === "automated" && nonEmptyString(record.source) !== undefined
+          && record.captured_on === ref.captured_on && parseDateOnly(record.captured_on) !== undefined;
+      });
+      if (!verified) {
+        failure = issue("FACT_SNAPSHOT_EVIDENCE_MISSING", "Missing a verified inventory evidence record for this commit.", recordPath);
+      } else if (!await inventoryMatchesSnapshot(root, commit)) {
+        const binding = { baseline: commit, evidenceId: verified.reference };
+        const renewed = fact.statement === INVENTORY_STATEMENT && fact.observed_state === "yes" && fact.status === "verified_yes"
+          ? renewedInventoryCommit(root, binding) : undefined;
+        if (!renewed || !await inventoryMatchesSnapshot(root, renewed) || renewedInventoryCommit(root, binding) !== renewed) {
+          failure = issue("FACT_SNAPSHOT_CHANGED", "Inventory inputs differ from the verified commit.", recordPath);
+        }
+      }
+    } catch {
+      failure = issue("FACT_SNAPSHOT_UNAVAILABLE", "The verified inventory inputs could not be read.", recordPath);
+    }
+    if (failure) report.issues.push({ ...failure, factId: fact.id });
+  }
+  return { facts: report.facts, issues: report.issues, asOfDate: report.asOfDate };
+}
+
+export async function loadScopedFactInputs(root: string, options: FactCatalogOptions, snapshotFactIds: ReadonlySet<string>): Promise<FactInputs> {
+  return readFactInputs(root, options, snapshotFactIds);
 }
 
 export async function loadFactCatalog(startDirectory = process.cwd(), options: FactCatalogOptions = {}): Promise<FactCatalog> {
   const root = await findProjectRoot(startDirectory);
-  const recordPath = ".tos/facts.yaml";
-  const input = await readYamlRecord<unknown>(root, recordPath);
-  const report = validateFactFile(input, options);
-  return { root, recordPath, ...report };
+  const report = await readFactInputs(root, options);
+  return { root, recordPath, ...report, valid: !report.issues.some(item => item.severity === "error") };
 }
 
 export async function validateFactCatalog(startDirectory = process.cwd(), options: FactCatalogOptions = {}): Promise<ValidationReport> {
