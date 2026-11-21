@@ -181,29 +181,48 @@ export function runManifest(value: unknown, root = join(userInfo().homedir, ".to
   } finally { closeSync(lock); }
 }
 
+function readCheckpoint(path: string): State | undefined {
+  let text: string;
+  try {
+    text = readText(path, 16384);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw error;
+  }
+  const saved = JSON.parse(text);
+  if (!saved || typeof saved.repository !== "string" || typeof saved.detail !== "string"
+    || !["accepted", "running", "succeeded", "failed", "blocked", "uncertain"].includes(saved.status)) {
+    throw new Error("Unreadable execution state");
+  }
+  return { ...saved, order: parseOrder(saved.order) };
+}
+
 function runLocked(root: string, dir: string, order: Order) {
   const statePath = join(dir, "state.json");
   const outputPath = join(dir, "manifest.json");
   let state: State | undefined;
-  if (existsSync(statePath)) {
-    const saved = JSON.parse(readText(statePath, 16384));
-    if (!saved || typeof saved.repository !== "string" || typeof saved.detail !== "string"
-      || !["accepted", "running", "succeeded", "failed", "blocked", "uncertain"].includes(saved.status)) {
-      throw new Error("Unreadable execution state");
-    }
-    if (JSON.stringify(parseOrder(saved.order)) !== JSON.stringify(order)) {
-      return { status: "blocked", detail: "Job ID belongs to a different work order" };
-    }
-    state = saved as State;
+  try {
+    state = readCheckpoint(statePath);
+  } catch {
+    // The checkpoint may contain the only accepted identity. Keep its original bytes.
+    const result = { status: "uncertain", detail: "Stored execution state could not be read or validated" };
+    writeAtomic(join(dir, "last-uncertainty.json"), JSON.stringify({ order, ...result }));
+    return result;
+  }
+  function deny(detail: string) {
+    const result = { status: "blocked", detail };
+    writeAtomic(join(dir, "last-denial.json"), JSON.stringify({ order, ...result }));
+    return result;
+  }
+  if (state && JSON.stringify(state.order) !== JSON.stringify(order)) {
+    return deny("Job ID belongs to a different work order");
   }
   let repository: string;
   try {
     repository = authorizedRepository(root, order);
     if (state && state.repository !== repository) throw new Error("Grant source changed");
   } catch {
-    const denied = { status: "blocked", detail: "No matching owner grant for this work order and source" };
-    writeAtomic(join(dir, "last-denial.json"), JSON.stringify({ order, ...denied }));
-    return denied;
+    return deny("No matching owner grant for this work order and source");
   }
   function checkpoint(status: Status, detail: string, sha256?: string) {
     const next = { order, repository, status, detail, ...(sha256 ? { sha256 } : {}) };

@@ -56,6 +56,15 @@ describe("canonical fact catalog", () => {
     expect(report.issues.some((entry) => entry.code === "FACT_STATUS_STATE_MISMATCH")).toBe(true);
   });
 
+  it.each([
+    [{ last_verified: "2026-07-26" }, "FACT_VERIFICATION_IN_FUTURE"],
+    [{ evidence: [{ type: "repository", reference: "README.md", captured_on: "2026-07-26" }] }, "FACT_EVIDENCE_IN_FUTURE"],
+  ] as const)("rejects a future date relative to the requested decision date (%j)", (overrides, code) => {
+    const report = validateFactFile({ schema_version: 1, facts: [validFact(overrides)] }, { asOfDate: "2026-07-25" });
+    expect(report.valid).toBe(false);
+    expect(report.issues).toContainEqual(expect.objectContaining({ code, factId: "TOS-FACT-900" }));
+  });
+
   it("requires an expired fact to be reverified or marked stale", () => {
     const report = validateFactFile(
       { schema_version: 1, facts: [validFact()] },
@@ -63,6 +72,17 @@ describe("canonical fact catalog", () => {
     );
     expect(report.valid).toBe(false);
     expect(report.issues.some((entry) => entry.code === "FACT_FRESHNESS_EXPIRED")).toBe(true);
+  });
+
+  it.each([
+    ["2026-10-01", "2026-08-24", true],
+    ["2026-10-01", "2026-08-25", false],
+    ["2026-08-01", "2026-08-02", false],
+  ] as const)("enforces the earlier of maximum age and declared expiry (%s at %s)", (expires_on, asOfDate, valid) => {
+    const fact = validFact({ freshness: { max_age_days: 30, expires_on } });
+    const report = validateFactFile({ schema_version: 1, facts: [fact] }, { asOfDate });
+    expect(report.valid).toBe(valid);
+    if (!valid) expect(report.issues).toContainEqual(expect.objectContaining({ code: "FACT_FRESHNESS_EXPIRED" }));
   });
 
   it("accepts an expired fact when its status is stale", () => {
