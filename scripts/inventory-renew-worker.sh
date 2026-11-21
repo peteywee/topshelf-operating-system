@@ -20,8 +20,14 @@ if [ "$#" -eq 3 ]; then set -- "$1" "$target" "$3"; else set -- "$1" "$target"; 
 
 # Hide host control sockets, deny network access, and limit durable writes to receipts.
 # Disposable scratch under /run keeps repositories and fixtures under /tmp visible.
-exec /usr/bin/unshare --user --map-current-user --net -- /usr/bin/bwrap --unshare-all --share-net --die-with-parent --new-session --cap-drop ALL \
+set -- --die-with-parent --new-session --cap-drop ALL \
   --ro-bind / / --dev /dev --proc /proc --tmpfs /run --dir /run/tos \
   --bind "$receipts" "$receipts" --chdir "$script_dir" --setenv TMPDIR /run/tos \
   --unsetenv SSH_AUTH_SOCK --unsetenv DBUS_SESSION_BUS_ADDRESS \
   -- "$node_bin" "$script_dir/inventory-renew.mjs" "$@"
+if /usr/bin/unshare --user --map-current-user --net -- /bin/true 2>/dev/null; then
+  # Inherit the new network namespace without configuring a loopback device.
+  exec /usr/bin/unshare --user --map-current-user --net -- /usr/bin/bwrap --unshare-all --share-net "$@"
+fi
+# Hosts with a bwrap-specific namespace policy use its native isolated network.
+exec /usr/bin/bwrap --unshare-all "$@"
