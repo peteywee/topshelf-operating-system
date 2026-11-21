@@ -156,7 +156,7 @@ Do not infer merge deletion from `git diff base..branch` alone.
 
 Pinned historical-date tests are allowed as deterministic regression tests. They do not establish current-date liveness.
 
-Documentation freshness CI is a separate control and must run against the exact pull-request candidate on every supported TOS Node.js version. Current-date canonical fact/requirement/boot liveness remains a separate control boundary tracked independently from document freshness.
+Documentation freshness CI is a separate control and must run against the exact pull-request candidate on every supported TOS Node.js version. The daily and manually dispatchable operational health workflow reports current-date fact, requirement, and full-planner boot readiness. Pull requests exercise isolated expiry and recovery. Contract promotion evaluates its canonical requirement and common boot controls against the current candidate. Independent local diagnostics and owner-granted snapshot reads remain available during a scoped fact failure.
 
 A canonical branch that is red solely because its registered verification anchor is not in that branch's ancestry is itself in an invalid governed-document state. New unrelated material work must not normalize that failure; repair the anchor lineage or re-verification first when it blocks exact-candidate evidence.
 

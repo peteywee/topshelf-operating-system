@@ -29,7 +29,8 @@ export async function runFact(commandArgs: readonly string[]): Promise<void> {
       }
       console.log(`Fact catalog: ${catalog.facts.length} records (as of ${catalog.asOfDate})`);
       for (const fact of catalog.facts) {
-        console.log(`${fact.id}\t${fact.status}\t${fact.confidence}\texpires:${fact.freshness.expires_on}\t${fact.statement}`);
+        const freshness = "commit_sha" in fact.freshness ? `snapshot:${fact.freshness.commit_sha}` : `expires:${fact.freshness.expires_on}`;
+        console.log(`${fact.id}\t${fact.status}\t${fact.confidence}\t${freshness}\t${fact.statement}`);
       }
       return;
     }

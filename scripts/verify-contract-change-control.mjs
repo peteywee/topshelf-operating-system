@@ -7,6 +7,8 @@ import process from "node:process";
 import { validateChangedContractAuthorization } from "../packages/contracts/dist/authorization.js";
 import { readYamlDocument } from "../packages/contracts/dist/change.js";
 
+import { loadBootPacket } from "../packages/kernel/dist/boot.js";
+
 const root = process.cwd();
 const expectedOwner = process.env.TOS_CONTRACT_OWNER ?? "Patrick Craven";
 const baseRef = process.env.TOS_CONTRACT_BASE_REF ?? "origin/main";
@@ -14,12 +16,11 @@ const baseRef = process.env.TOS_CONTRACT_BASE_REF ?? "origin/main";
 function changedPaths() {
   const output = execFileSync(
     "git",
-    ["diff", "--name-only", `${baseRef}...HEAD`],
+    ["diff", "--no-renames", "--name-only", "-z", `${baseRef}...HEAD`],
     { cwd: root, encoding: "utf8" },
   );
   return output
-    .split(/\r?\n/u)
-    .map((value) => value.trim())
+    .split("\0")
     .filter(Boolean);
 }
 
@@ -51,6 +52,17 @@ async function approvedProposals() {
 
 const changed = changedPaths();
 const changedContracts = changed.filter((filePath) => /^contracts\/.+\.ya?ml$/iu.test(filePath));
+
+// Canonical contract promotion consumes the inventory/traceability requirement.
+const promotesInventory = changedContracts.length > 0 || changed.includes("registers/contract-register.csv")
+  || changed.includes("packages/contracts/src/index.ts");
+if (promotesInventory) {
+  const readiness = await loadBootPacket(root, undefined, "TOS-REQ-002");
+  if (!readiness.ready) {
+    console.error(JSON.stringify({ action: "promote-contract-catalog", requirement: "TOS-REQ-002", issues: readiness.issues }));
+    process.exit(1);
+  }
+}
 
 if (changedContracts.length === 0) {
   console.log("OK: no canonical contract files changed.");

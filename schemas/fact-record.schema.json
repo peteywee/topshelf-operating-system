@@ -81,13 +81,26 @@
         "authority": { "type": "string", "minLength": 1 },
         "last_verified": { "$ref": "#/$defs/date" },
         "freshness": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["max_age_days", "expires_on"],
-          "properties": {
-            "max_age_days": { "type": "integer", "minimum": 1 },
-            "expires_on": { "$ref": "#/$defs/date" }
-          }
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["max_age_days", "expires_on"],
+              "properties": {
+                "max_age_days": { "type": "integer", "minimum": 1 },
+                "expires_on": { "$ref": "#/$defs/date" }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "commit_sha"],
+              "properties": {
+                "kind": { "const": "contract_inventory_snapshot" },
+                "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+              }
+            }
+          ]
         },
         "invalidated_by": {
           "type": "array",
