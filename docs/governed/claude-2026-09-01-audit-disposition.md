@@ -102,6 +102,12 @@ Issue #37 and PR #38 record the post-#35 canonical project baseline without crea
 
 This separation prevents a self-referential baseline: the baseline record describes a commit that was already canonical and fully validated before the record was authored. The runtime choice continues to be governed by TOS-DEC-021; the project-baseline record is evidence/reconciliation state, not a new architectural decision.
 
+## November 20 manifest capability review
+
+The CLI now accepts one human-triggered work order through `tos execute manifest`. F-03 still applies to `tos execute next`, which the CLI rejects. F-04 still applies to the general CLI surface. The new command emits a JSON result and stores its own job state outside the source repository. The local Linux and Git implementation leaves the F-09 portability limitation in place.
+
+On November 20, 2026, current-date fact and boot validation reported two expired facts dated October 2, 2026. Issue #23 introduced the liveness check. Its historical closure does not establish current planning readiness. The manifest grant binds one exact read-only snapshot operation independently of planning readiness.
+
 ## Separation of work
 
 This disposition keeps work boundaries explicit while recording completed and active blockers accurately:
