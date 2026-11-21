@@ -114,6 +114,9 @@ The scoped-readiness follow-up binds inventory evidence to its Git inputs, keeps
 
 The inventory-renewal follow-up adds one local recurring verifier. Its standing grant covers evidence for the approved inventory claim. F-03 still applies to general work selection, and this single-host capability does not establish the portability in F-09.
 
+The hosted workflow invokes the existing manifest command for packages/kernel at the main event commit. It also runs the approved inventory verifier on that snapshot. Each hosted delivery uses a fresh runner and exports its evidence as a run artifact. General work selection remains outside this capability.
+
+
 ## Separation of work
 
 This disposition keeps work boundaries explicit while recording completed and active blockers accurately:
