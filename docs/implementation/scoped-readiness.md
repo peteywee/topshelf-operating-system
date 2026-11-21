@@ -21,6 +21,8 @@ The first supported work order inventories a granted Git snapshot. Adding a capa
 
 TOS-FACT-002 compares the current register, contract YAML paths and bytes, catalog validator source and pnpm lockfile with the Git commit recorded in its freshness policy. Git history containing that commit must be available. The verifier reads the working tree, including untracked template files. An unrelated change preserves the evidence. The initial binding uses TOS-EVD-012, which already verified the inventory at that commit. The snapshot reader checks whether those verified inputs still match.
 
+For a standing grant on one execution host, see [Unattended inventory renewal](unattended-inventory.md). The following procedure updates portable repository evidence.
+
 After an inventory change, commit the new inputs. From a clean checkout of that revision, run the following checks with the project dependencies installed.
 
 ```sh

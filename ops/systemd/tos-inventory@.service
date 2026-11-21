@@ -1,0 +1,11 @@
+[Unit]
+Description=Verify inventory evidence for %f
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/lib/tos-inventory/bin:/usr/bin:/bin
+UnsetEnvironment=NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH BASH_ENV ENV
+ExecStart=%h/.local/lib/tos-inventory/scripts/inventory-renew-worker.sh run %f
+TimeoutStartSec=25s
+UMask=0077
+NoNewPrivileges=yes

@@ -1,0 +1,10 @@
+[Unit]
+Description=Check inventory evidence for %f each minute
+
+[Timer]
+OnStartupSec=15s
+OnUnitInactiveSec=1min
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target
