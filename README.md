@@ -122,6 +122,8 @@ TOS will use four logical roles: Planner, Worker, Verifier, and Promoter. Specia
 
 The future Planner may compile work only from requirements whose governing facts are current and free of unresolved material conflicts. Workers cannot verify their own completion, and reserved promotion decisions remain with Patrick Craven.
 
+The CLI supports a human-triggered [project-file manifest from a pinned Git commit](docs/implementation/pinned-manifest.md) through `tos execute manifest <order.json>`.
+
 The primary bounded execution proving workflow is planned around `tos execute next`:
 
 ```text

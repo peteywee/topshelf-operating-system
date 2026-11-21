@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import process from "node:process";
-import { inspectProject, validateProject } from "@topshelf-os/kernel";
+import { inspectProject, readManifestOrder, runManifest, validateProject } from "@topshelf-os/kernel";
 import {
   TOS_OFFICIAL_NAME,
   TOS_RUNTIME_VERSION,
@@ -17,6 +17,7 @@ import { runRequirement } from "./requirement.js";
 const HELP = `${TOS_OFFICIAL_NAME} (${TOS_SHORT_NAME})
 
 Usage:
+  tos execute manifest <order.json>                Run or resume an owner-granted snapshot manifest
   tos status                                      Show canonical project state
   tos validate                                    Validate required .tos records
   tos inspect [as-of-date]                        Inspect repository signals and module applicability
@@ -105,6 +106,13 @@ async function main(): Promise<void> {
     case "-v":
       console.log(TOS_RUNTIME_VERSION);
       return;
+    case "execute": {
+      if (args.length !== 3 || args[1] !== "manifest") throw new Error("Usage: tos execute manifest <order.json>");
+      const result = runManifest(readManifestOrder(args[2]!));
+      console.log(JSON.stringify(result));
+      if (result.status !== "succeeded") process.exitCode = 1;
+      return;
+    }
     case "status":
       await runStatus();
       return;
