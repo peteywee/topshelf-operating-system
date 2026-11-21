@@ -1,6 +1,7 @@
 import type { FactStatus, ValidationIssue, ValidationReport } from "@topshelf-os/shared";
 import { findProjectRoot, readYamlRecord } from "./index.js";
 
+import { INVENTORY_STATEMENT, renewedInventoryCommit } from "./inventory-ledger.js";
 import { inventoryMatchesSnapshot } from "./inventory-snapshot.js";
 
 export type FactObservedState = "yes" | "no" | "unknown" | "conflicting" | "not_applicable";
@@ -355,7 +356,7 @@ async function readFactInputs(root: string, options: FactCatalogOptions, snapsho
       const index = await readYamlRecord<unknown>(root, ".tos/evidence-index.yaml");
       const refs = fact.evidence.filter(item => item.type === "automated-validation" && item.commit_sha === commit);
       const records: unknown[] = isRecord(index) && index.schema_version === 1 && Array.isArray(index.evidence) ? index.evidence : [];
-      const verified = refs.some(ref => {
+      const verified = refs.find(ref => {
         const matches = records.filter(item => isRecord(item) && item.id === ref.reference);
         const record = matches[0];
         return matches.length === 1 && isRecord(record) && record.fact_id === fact.id && record.commit_sha === commit
@@ -366,7 +367,12 @@ async function readFactInputs(root: string, options: FactCatalogOptions, snapsho
       if (!verified) {
         failure = issue("FACT_SNAPSHOT_EVIDENCE_MISSING", "Missing a verified inventory evidence record for this commit.", recordPath);
       } else if (!await inventoryMatchesSnapshot(root, commit)) {
-        failure = issue("FACT_SNAPSHOT_CHANGED", "Inventory inputs differ from the verified commit.", recordPath);
+        const binding = { baseline: commit, evidenceId: verified.reference };
+        const renewed = fact.statement === INVENTORY_STATEMENT && fact.observed_state === "yes" && fact.status === "verified_yes"
+          ? renewedInventoryCommit(root, binding) : undefined;
+        if (!renewed || !await inventoryMatchesSnapshot(root, renewed) || renewedInventoryCommit(root, binding) !== renewed) {
+          failure = issue("FACT_SNAPSHOT_CHANGED", "Inventory inputs differ from the verified commit.", recordPath);
+        }
       }
     } catch {
       failure = issue("FACT_SNAPSHOT_UNAVAILABLE", "The verified inventory inputs could not be read.", recordPath);
