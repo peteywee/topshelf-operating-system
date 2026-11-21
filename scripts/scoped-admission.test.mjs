@@ -41,7 +41,9 @@ test("one expired inventory fact blocks its consumer while the recount and grant
   assert.equal(run("boot", "validate").status, 1);
   const health = run("requirement", "health");
   assert.equal(health.status, 1);
-  assert.equal(JSON.parse(health.stdout).status, "degraded");
+  const report = JSON.parse(health.stdout);
+  assert.equal(report.status, "degraded");
+  assert.deepEqual(report.unavailableFacts, [{ id: "TOS-FACT-002", recordedStatus: "verified_yes" }]);
   const recount = run("contract", "validate");
   assert.equal(recount.status, 0, recount.stderr);
   assert.match(recount.stdout, /105 registered templates/);

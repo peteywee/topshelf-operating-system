@@ -29,8 +29,18 @@ export async function runRequirement(commandArgs: readonly string[]): Promise<vo
 
   if (subcommand === "health") {
     if (commandArgs.length !== (asOfDate ? 2 : 1)) fail("Usage: tos requirement health [as-of-date]");
-    const unavailableFacts = catalog.facts.filter(fact => ["unknown", "stale", "conflicting"].includes(fact.status))
-      .map(({ id, status }) => ({ id, status }));
+    const affected = new Set<string>();
+    for (const issue of [...catalog.issues, ...catalog.readiness.flatMap(entry => entry.issues)]) {
+      if (issue.factId && issue.severity === "error") affected.add(issue.factId);
+    }
+    for (const conflict of catalog.conflicts) {
+      if (conflict.severity === "error") for (const id of conflict.fact_ids) affected.add(id);
+    }
+    const statuses = new Map(catalog.facts.map(fact => [fact.id, fact.status]));
+    for (const [id, status] of statuses) {
+      if (["unknown", "stale", "conflicting"].includes(status)) affected.add(id);
+    }
+    const unavailableFacts = [...affected].sort().map(id => ({ id, recordedStatus: statuses.get(id) ?? null }));
     const degraded = !catalog.valid || unavailableFacts.length > 0 || catalog.conflicts.some(conflict => conflict.severity === "error")
       || catalog.readiness.some(entry => entry.status === "blocked" && entry.issues.some(issue => issue.code !== "REQUIREMENT_NOT_ACTIVE"));
     console.log(JSON.stringify({ status: degraded ? "degraded" : "healthy", asOfDate: catalog.asOfDate,
