@@ -59,13 +59,23 @@ def verify(artifact, expected, api, read, reuse):
     require(saved == comparison, "receipt differs from fresh result")
 
 
-def delivery(mode, expected, name, artifact_id, read=download):
+def record_delivery(action, artifact, summary):
+    if summary:
+        run_id = artifact["workflow_run"]["id"]
+        artifact_id = artifact["id"]
+        url = f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{run_id}/artifacts/{artifact_id}"
+        with open(summary, "a", encoding="utf-8") as stream:
+            stream.write(f"Receipt {action}: [artifact {artifact_id} from run {run_id}]({url})\n")
+
+
+def delivery(mode, expected, name, artifact_id, read=download, summary=None):
     api = "repos/" + os.environ["GITHUB_REPOSITORY"] + "/actions"
     if mode == "confirm":
         require(artifact_id.isdecimal(), "upload returned no artifact ID")
         artifact = json.loads(read(f"{api}/artifacts/{artifact_id}"))
         require(str(artifact["id"]) == artifact_id and artifact["name"] == name, "wrong uploaded artifact")
         verify(artifact, expected, api, read, False)
+        record_delivery("confirmed", artifact, summary)
         return "confirmed"
     require(mode == "reuse", "unknown delivery mode")
     if expected["result"] != "success" or expected["attempt"] != 1:
@@ -83,6 +93,7 @@ def delivery(mode, expected, name, artifact_id, read=download):
         candidate = artifact["id"]
         require(artifact["name"] == name, "artifact name mismatch")
         verify(artifact, expected, api, read, True)
+        record_delivery("reused", artifact, summary)
         return "reuse"
     except Exception as error:
         print(f"Retained receipt {candidate} unavailable: {type(error).__name__}: {str(error)[:180]}", file=sys.stderr)
@@ -93,6 +104,7 @@ if __name__ == "__main__":
     try:
         receipt = json.loads(Path("receipt.json").read_bytes(), object_pairs_hook=unique_keys)
         VALIDATE(receipt)
-        print(delivery(sys.argv[1], receipt, os.environ["NAME"], os.environ.get("ARTIFACT_ID", "")))
+        print(delivery(sys.argv[1], receipt, os.environ["NAME"], os.environ.get("ARTIFACT_ID", ""),
+                       summary=os.environ.get("GITHUB_STEP_SUMMARY")))
     except Exception as error:
         sys.exit(f"Evidence delivery unconfirmed: {error}")

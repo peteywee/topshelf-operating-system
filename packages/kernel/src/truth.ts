@@ -257,12 +257,16 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
   const asOfTime = parseDateOnly(asOfDate);
   if (asOfTime === undefined) throw new Error(`Invalid as-of date: ${asOfDate}`);
   if (expiresTime !== undefined) {
-    const expired = expiresTime < asOfTime;
+    const effectiveExpiry = lastVerifiedTime !== undefined && maxAgeDays !== undefined
+      ? Math.min(expiresTime, lastVerifiedTime + maxAgeDays * 86_400_000)
+      : expiresTime;
+    const expiryDate = new Date(effectiveExpiry).toISOString().slice(0, 10);
+    const expired = effectiveExpiry < asOfTime;
     if (expired && status !== "stale") {
-      issues.push(issue("FACT_FRESHNESS_EXPIRED", `Fact expired on ${expiresOn} and must be reverified or marked stale.`, `${factPath}.status`));
+      issues.push(issue("FACT_FRESHNESS_EXPIRED", `Fact expired on ${expiryDate} and must be reverified or marked stale.`, `${factPath}.status`));
     }
     if (!expired && status === "stale") {
-      issues.push(issue("FACT_STALE_BEFORE_EXPIRY", `Fact is marked stale before its ${expiresOn} expiry.`, `${factPath}.status`, "warning"));
+      issues.push(issue("FACT_STALE_BEFORE_EXPIRY", `Fact is marked stale before its ${expiryDate} expiry.`, `${factPath}.status`, "warning"));
     }
   }
 

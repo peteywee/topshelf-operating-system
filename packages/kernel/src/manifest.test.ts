@@ -85,6 +85,7 @@ describe("project-file-manifest", () => {
     expect(run().status).toBe("succeeded");
     const initial = readFileSync(state, "utf8");
     expect(runManifest({ ...order(), scope: "." }, control)).toMatchObject({ status: "blocked", detail: expect.stringContaining("different") });
+    expect(json(join(control, "jobs", "job-1", "last-denial.json"))).toMatchObject({ order: { ...order(), scope: "." }, status: "blocked" });
     expect(readFileSync(state, "utf8")).toBe(initial);
     rmSync(grantPath());
     expect(run().status).toBe("blocked");
@@ -100,6 +101,19 @@ describe("project-file-manifest", () => {
     expect(run().status).toBe("uncertain");
     expect(json(state).status).toBe("uncertain");
     expect(run().status).toBe("uncertain");
+  });
+
+  it.each(["truncated", "unrecognized status"])("preserves a damaged checkpoint and records uncertainty for %s state", issue => {
+    expect(run().status).toBe("succeeded");
+    const damaged = issue === "truncated" ? "{" : JSON.stringify({ ...json(state), status: "unknown" });
+    const initialOutput = readFileSync(output);
+    writeFileSync(state, damaged);
+    const result = run();
+    expect(result.status).toBe("uncertain");
+    expect(json(join(control, "jobs", "job-1", "last-uncertainty.json"))).toMatchObject({ order: order(), status: "uncertain" });
+    expect(readFileSync(state, "utf8")).toBe(damaged);
+    expect(readFileSync(output)).toEqual(initialOutput);
+    expect(run()).toEqual(result);
   });
 
   it("records a failure for an authorized unavailable commit", () => {

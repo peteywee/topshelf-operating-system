@@ -5,6 +5,7 @@ import io
 import json
 import os
 from pathlib import Path
+import tempfile
 import unittest
 import zipfile
 
@@ -56,6 +57,21 @@ class ReceiptChaos(unittest.TestCase):
 
     def test_healthy_duplicate(self):
         self.assertEqual(self.decision(), "reuse")
+
+    def test_only_verified_evidence_is_linked_to_the_consuming_run(self):
+        with tempfile.TemporaryDirectory() as temp:
+            summary = Path(temp) / "summary"
+            args = ("reuse", self.current, "receipt-key", "", self.api, summary)
+            self.data += b"damage"
+            self.assertEqual(worker.delivery(*args), "publish")
+            self.assertFalse(summary.exists())
+            self.pack(json.dumps(self.saved).encode())
+            self.assertEqual(worker.delivery(*args), "reuse")
+            self.assertIn("/actions/runs/101/artifacts/7", summary.read_text())
+            self.art["workflow_run"]["id"] = self.run["id"] = 102
+            self.pack(json.dumps(self.current).encode())
+            self.assertEqual(worker.delivery("confirm", self.current, "receipt-key", "7", self.api, summary), "confirmed")
+            self.assertIn("/actions/runs/102/artifacts/7", summary.read_text())
 
     def test_corrupt_zip_with_original_metadata(self):
         self.data = self.data[:-1] + bytes([self.data[-1] ^ 1])
