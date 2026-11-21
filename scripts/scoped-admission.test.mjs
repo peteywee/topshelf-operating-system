@@ -20,7 +20,10 @@ test("one expired inventory fact blocks its consumer while the recount and grant
     return spawnSync(process.execPath, [cli, ...args], { cwd: root, encoding: "utf8", timeout: 8000 });
   }
   const file = join(root, ".tos/facts.yaml");
-  const catalog = parse(readFileSync(file, "utf8"));
+  // Preserve the known two-requirement scenario even when live facts are explicitly marked stale.
+  const seed = "1e029d633d47f42663c203ad78189fbc2de67ab9";
+  const catalog = parse(git("show", seed + ":.tos/facts.yaml").toString());
+  writeFileSync(join(root, ".tos/requirements.yaml"), git("show", seed + ":.tos/requirements.yaml"));
   const day = offset => new Date(Date.now() + offset * 86400000).toISOString().slice(0, 10);
   // Exercise the backwards-compatible time policy deterministically on any run date.
   for (const fact of catalog.facts) {

@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -21,6 +22,11 @@ describe("canonical requirement readiness", () => {
   beforeEach(() => {
     root = mkdtempSync(join(tmpdir(), "tos-readiness-"));
     cpSync(new URL("../../../.tos/", import.meta.url), join(root, ".tos"), { recursive: true });
+    // These are regression inputs. Operational catalog edits must not redefine the fixture.
+    for (const file of ["facts.yaml", "requirements.yaml", "evidence-index.yaml"]) {
+      const bytes = execFileSync("git", ["show", `883afffe24530cef15ae78d0509bd809bc66354b:.tos/${file}`]);
+      writeFileSync(join(root, ".tos", file), bytes);
+    }
     facts = read("facts.yaml");
     requirements = read("requirements.yaml");
     // A clock-bound fixture isolates expiry from the canonical inventory's snapshot policy.

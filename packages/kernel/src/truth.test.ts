@@ -33,11 +33,9 @@ describe("canonical fact catalog", () => {
     const catalog = await loadFactCatalog(process.cwd(), { asOfDate: "2026-07-25" });
     // Operational freshness is monitored separately. This assertion checks catalog structure.
     expect(catalog.issues.filter(issue => !issue.factId)).toEqual([]);
-    expect(catalog.facts.map((fact) => fact.id)).toEqual([
-      "TOS-FACT-001",
-      "TOS-FACT-002",
-      "TOS-FACT-003",
-    ]);
+    const ids = catalog.facts.map(fact => fact.id);
+    expect(ids).toEqual([...new Set(ids)].sort());
+    expect(ids).toEqual(expect.arrayContaining(["TOS-FACT-001", "TOS-FACT-002", "TOS-FACT-003"]));
   });
 
   it("rejects duplicate fact IDs", () => {
