@@ -1,7 +1,7 @@
 import type { ValidationIssue, ValidationReport } from "@topshelf-os/shared";
 import { inspectProject, findProjectRoot, readYamlRecord } from "./index.js";
 import { inspectRepository, type ModuleDecision, type RepositoryInspection } from "./inspect.js";
-import { loadRequirementCatalog, type RequirementCatalog } from "./requirements.js";
+import { loadRequirementCatalog, loadRequirementReadiness } from "./requirements.js";
 
 export type AgentExecutionMode = "human_assisted" | "autonomous";
 
@@ -242,16 +242,24 @@ export function validateBootRecord(input: unknown, context: BootValidationContex
   return record === undefined ? { valid, issues } : { valid, issues, record };
 }
 
-function bootContext(
-  owner: string,
-  inspection: RepositoryInspection,
-  requirements: RequirementCatalog,
-): BootValidationContext {
+async function bootRequirements(root: string, asOfDate: string, requirementId?: string) {
+  if (requirementId !== undefined) {
+    const scoped = await loadRequirementReadiness(root, requirementId, { asOfDate });
+    return {
+      requirementIds: [requirementId],
+      requirementsValid: scoped.status === "ready",
+      requirementIssues: scoped.issues,
+      // The scoped decision already includes conflicts on its governing facts.
+      materialConflictIds: [],
+    };
+  }
+  const requirements = await loadRequirementCatalog(root, { asOfDate });
+  const activeIds = new Set(requirements.requirements.filter(entry => entry.status === "active").map(entry => entry.id));
+  const blocked = requirements.readiness.filter(entry => activeIds.has(entry.requirementId) && entry.status === "blocked");
   return {
-    owner,
-    inspection,
-    requirementsValid: requirements.valid,
-    requirementIssues: requirements.issues,
+    requirementIds: requirements.requirements.map(entry => entry.id),
+    requirementsValid: requirements.valid && blocked.length === 0,
+    requirementIssues: [...new Set([...requirements.issues, ...blocked.flatMap(entry => entry.issues)])],
     materialConflictIds: requirements.conflicts
       .filter((conflict) => conflict.severity === "error")
       .map((conflict) => conflict.id),
@@ -261,13 +269,14 @@ function bootContext(
 export async function loadBootPacket(
   startDirectory = process.cwd(),
   asOfDate?: string,
+  requirementId?: string,
 ): Promise<BootPacket> {
   const root = await findProjectRoot(startDirectory);
   const snapshot = await inspectProject(root);
   const bootInput = await readYamlRecord<unknown>(root, ".tos/boot.yaml");
   const inspection = await inspectRepository(root, asOfDate ?? new Date().toISOString().slice(0, 10));
-  const requirements = await loadRequirementCatalog(root, { asOfDate: inspection.asOfDate });
-  const validation = validateBootRecord(bootInput, bootContext(snapshot.project.project.owner, inspection, requirements));
+  const requirements = await bootRequirements(root, inspection.asOfDate, requirementId);
+  const validation = validateBootRecord(bootInput, { owner: snapshot.project.project.owner, inspection, ...requirements });
   const blockingQuestions = inspection.unresolvedQuestions.filter((entry) => entry.blocks_boot);
 
   return {
@@ -278,7 +287,7 @@ export async function loadBootPacket(
     issues: validation.issues,
     ...(validation.record === undefined ? {} : { record: validation.record }),
     inspection,
-    requirementIds: requirements.requirements.map((entry) => entry.id),
+    requirementIds: requirements.requirementIds,
     activeRuntimeModuleIds: snapshot.modules.filter((entry) => entry.status === "active").map((entry) => entry.id).sort(),
     unresolvedQuestionIds: inspection.unresolvedQuestions.map((entry) => entry.id),
   };

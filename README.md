@@ -87,6 +87,8 @@ tos fact conflicts [as-of-date]
 tos requirement list [as-of-date]
 tos requirement show TOS-REQ-001 [as-of-date]
 tos requirement validate [as-of-date]
+tos requirement ready <requirement-id>
+tos requirement health [as-of-date]
 tos requirement trace TOS-REQ-001 [as-of-date]
 tos requirement gaps [as-of-date]
 ```
@@ -99,6 +101,7 @@ Reconciliation detects duplicate claims, opposite observed states, authority dis
 tos inspect [as-of-date]
 tos boot show [as-of-date]
 tos boot validate [as-of-date]
+tos boot ready <requirement-id>
 ```
 
 Inspection derives repository evidence and unresolved questions. `.tos/boot.yaml` records Patrick-approved module decisions, reserved actions, and role modes by reference; it does not copy canonical facts or requirements. Boot validation rejects premature autonomous modes.
@@ -193,3 +196,5 @@ The approved direction is therefore not "replace every YAML file immediately." I
 - Acceptance criterion IDs: `TOS-AC-###`
 - Versioning: Semantic Versioning
 - Durable material-work tracking: GitHub issues and milestones with evidence-backed closeout
+
+For per-action fact prerequisites, contract promotion, and inventory renewal, see [scoped readiness](docs/implementation/scoped-readiness.md).

@@ -1,0 +1,38 @@
+name: Operational fact health
+
+on:
+  schedule:
+    - cron: '17 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Report current facts, affected requirements, and full planning readiness
+        shell: bash
+        run: |
+          status=0
+          for check in 'fact validate' 'requirement health' 'boot validate'; do
+            read -r group command <<< "$check"
+            echo "::group::$check"
+            node packages/cli/dist/index.js "$group" "$command" || status=1
+            echo "::endgroup::"
+          done
+          exit "$status"

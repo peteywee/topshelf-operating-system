@@ -29,6 +29,7 @@ Usage:
   tos intake evaluate <answers.json>              Classify work, tier, artifacts, modules, and blockers
   tos boot show [as-of-date]                      Show the reference-based agent boot packet
   tos boot validate [as-of-date]                  Validate boot authority and planning readiness
+  tos boot ready <requirement-id>                   Check planning readiness for one requirement
   tos contract list                               List registered contract templates
   tos contract show <id>                          Show one contract template
   tos contract validate                           Validate the complete contract catalog
@@ -43,6 +44,8 @@ Usage:
   tos fact validate [as-of-date]                  Validate provenance, state, and freshness
   tos fact reconcile [as-of-date]                 Detect duplicate and contradictory claims
   tos fact conflicts [as-of-date]                 List unresolved fact conflicts
+  tos requirement ready <id>                      Check current readiness for one canonical requirement
+  tos requirement health [as-of-date]             Report catalog health and affected requirements
   tos requirement list [as-of-date]               List canonical requirements
   tos requirement show <id> [as-of-date]          Show one requirement
   tos requirement validate [as-of-date]           Validate fact-to-acceptance traceability

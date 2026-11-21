@@ -16,6 +16,13 @@ function printIssues(issues: readonly { code: string; message: string; path?: st
 
 export async function runBoot(commandArgs: readonly string[]): Promise<void> {
   const subcommand = commandArgs[0] ?? "show";
+  if (subcommand === "ready") {
+    if (commandArgs.length !== 2) fail("Usage: tos boot ready <requirement-id>");
+    const packet = await loadBootPacket(process.cwd(), undefined, commandArgs[1]);
+    console.log(JSON.stringify({ requirementId: commandArgs[1], status: packet.ready ? "ready" : "blocked", issues: packet.issues }));
+    if (!packet.ready) process.exitCode = 1;
+    return;
+  }
   const asOfDate = commandArgs[1];
   const packet = await loadBootPacket(process.cwd(), asOfDate);
 

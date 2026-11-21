@@ -110,6 +110,8 @@ On November 20, 2026, current-date fact and boot validation reported two expired
 
 On November 21, the 105-template inventory and incomplete runtime were independently rechecked at PR #46 commit `1f7431860c6614ae73b7c3302debe31db8f39c6d`. TOS-EVD-012 and TOS-EVD-013 record the evidence for the renewed facts. The October expiry regression uses the historical catalog from main.
 
+The scoped-readiness follow-up binds inventory evidence to its Git inputs, keeps full-planner health observable, and limits the contract-promotion gate to its own prerequisite and shared boot controls. Historical expiry remains covered against the October catalog.
+
 ## Separation of work
 
 This disposition keeps work boundaries explicit while recording completed and active blockers accurately:
