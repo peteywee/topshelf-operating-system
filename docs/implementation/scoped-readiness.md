@@ -49,3 +49,17 @@ PY
 ```
 
 In a follow-up commit, append the result to `.tos/evidence-index.yaml` using a new evidence ID with `fact_id: TOS-FACT-002`, the exact `statement` and `observed_state` being certified, class `automated`, status `verified`, the source commands, the observation date and the full input commit SHA. Update the fact's register and automated-validation references, dates, `last_verified`, and `freshness.commit_sha` to the new evidence. Confirm with `pnpm tos -- requirement ready TOS-REQ-002`. If the count itself changed, the old claim is false. Reconcile its wording, verifier expectation and governing requirement before recording a different count.
+
+### Runtime completeness
+
+The full audit checks TOS-FACT-003 against TOS-EVD-014. The recorded observation is that the runtime is incomplete. At the reviewed revision, the required `tos execute next` command exited 1 with manifest-only usage. The validator checks the inputs behind that observation against the approved revision and the current checkout. A calendar change alone does not invalidate it. A change to those inputs, missing Git history, or an invalid evidence reference requires reassessment. Reassess against the new revision and record what the command actually does; support for a single new command cannot establish completion of the whole runtime.
+
+To reproduce the December boundary with the full repository history available:
+
+```sh
+node packages/cli/dist/index.js fact validate 2026-12-22
+node packages/cli/dist/index.js requirement health 2026-12-22
+node packages/cli/dist/index.js boot validate 2026-12-22
+```
+
+These commands use a simulated decision date. Production readiness uses the actual date and checkout. Timed facts retain their existing deadlines.

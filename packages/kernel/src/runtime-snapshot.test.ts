@@ -18,7 +18,7 @@ it("keeps a reviewed negative witness usable across time and rejects drift or re
     execFileSync("git", ["clone", "--quiet", "--no-hardlinks", "--no-checkout", source, root]);
     git("checkout", "--quiet", "--detach", incompleteRuntimeBaseline);
     for (const file of [".tos/facts.yaml", ".tos/evidence-index.yaml"]) {
-      writeFileSync(join(root, file), readFileSync(join(source, file)));
+      writeFileSync(join(root, file), git("show", `6536425ac3f6ec7f76b493e942d993329d64ca74:${file}`));
     }
     const readme = join(root, "README.md");
     const originalReadme = readFileSync(readme, "utf8");
