@@ -31,6 +31,21 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Check out pinned receipt reader
+        uses: actions/checkout@v4
+        with:
+          ref: 7d76e907eeaec5212185f02ce740a8cc84148d41
+          path: reader
+          sparse-checkout: |
+            scripts/receipt-integrity.py
+            schemas/scheduled-manifest-receipt.v1.schema.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Prepare JSON Schema validator
+        run: |
+          if ! /usr/bin/python3 -c 'from jsonschema import Draft202012Validator'; then
+            sudo apt-get update -qq && sudo apt-get install -y python3-jsonschema
+          fi
       - uses: pnpm/action-setup@v4
         with:
           version: 10.33.3
@@ -106,14 +121,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           NAME: ${{ steps.receipt.outputs.name }}
         run: |
-          # On a lookup error, keep this receipt. Always retain a recovery after a failed run.
-          api="repos/$GITHUB_REPOSITORY/actions"
-          prior=$(gh api "$api/workflows/scheduled-manifest.yml/runs?branch=main&per_page=5" \
-            --jq "[.workflow_runs[] | select(.id < $GITHUB_RUN_ID)][0].conclusion" ) || exit 0
-          [[ "$prior" == success ]] || exit 0
-          count=$(gh api "$api/artifacts?name=$NAME&per_page=100" --jq '[.artifacts[] | select(.expired == false)] | length') || exit 0
-          if [[ "$count" -gt 0 ]]; then echo 'duplicate=true' >> "$GITHUB_OUTPUT"; fi
+          decision=$(/usr/bin/python3 reader/scripts/receipt-integrity.py reuse)
+          if [[ "$decision" == reuse ]]; then echo 'duplicate=true' >> "$GITHUB_OUTPUT"; fi
       - name: Publish compact receipt
+        id: upload
         if: ${{ !cancelled() && steps.receipt.outcome == 'success' && steps.previous.outputs.duplicate != 'true' }}
         uses: actions/upload-artifact@v4
         with:
@@ -121,3 +132,11 @@ jobs:
           path: receipt.json
           if-no-files-found: error
           retention-days: 30
+
+      - name: Confirm published receipt or fail delivery
+        if: ${{ !cancelled() && steps.previous.outputs.duplicate != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.receipt.outputs.name }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+        run: /usr/bin/python3 reader/scripts/receipt-integrity.py confirm
