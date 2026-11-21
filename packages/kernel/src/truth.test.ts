@@ -56,6 +56,15 @@ describe("canonical fact catalog", () => {
     expect(report.issues.some((entry) => entry.code === "FACT_STATUS_STATE_MISMATCH")).toBe(true);
   });
 
+  it.each([
+    [{ last_verified: "2026-07-26" }, "FACT_VERIFICATION_IN_FUTURE"],
+    [{ evidence: [{ type: "repository", reference: "README.md", captured_on: "2026-07-26" }] }, "FACT_EVIDENCE_IN_FUTURE"],
+  ] as const)("rejects a future date relative to the requested decision date (%j)", (overrides, code) => {
+    const report = validateFactFile({ schema_version: 1, facts: [validFact(overrides)] }, { asOfDate: "2026-07-25" });
+    expect(report.valid).toBe(false);
+    expect(report.issues).toContainEqual(expect.objectContaining({ code, factId: "TOS-FACT-900" }));
+  });
+
   it("requires an expired fact to be reverified or marked stale", () => {
     const report = validateFactFile(
       { schema_version: 1, facts: [validFact()] },

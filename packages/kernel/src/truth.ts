@@ -125,7 +125,7 @@ function expectedObservedState(status: FactStatus): FactObservedState | undefine
   }
 }
 
-function validateEvidence(value: unknown, factPath: string, issues: ValidationIssue[]): FactEvidenceReference[] {
+function validateEvidence(value: unknown, factPath: string, asOfTime: number, issues: ValidationIssue[]): FactEvidenceReference[] {
   if (!Array.isArray(value) || value.length === 0) {
     issues.push(issue("FACT_EVIDENCE_MISSING", "Every fact requires at least one provenance reference.", `${factPath}.evidence`));
     return [];
@@ -144,8 +144,11 @@ function validateEvidence(value: unknown, factPath: string, issues: ValidationIs
     if (reference === undefined) issues.push(issue("FACT_EVIDENCE_REFERENCE_MISSING", "Evidence reference is required.", `${evidencePath}.reference`));
 
     const capturedOn = entry.captured_on;
-    if (capturedOn !== undefined && parseDateOnly(capturedOn) === undefined) {
+    const capturedTime = parseDateOnly(capturedOn);
+    if (capturedOn !== undefined && capturedTime === undefined) {
       issues.push(issue("FACT_EVIDENCE_DATE_INVALID", "captured_on must be a valid YYYY-MM-DD date.", `${evidencePath}.captured_on`));
+    } else if (capturedTime !== undefined && capturedTime > asOfTime) {
+      issues.push(issue("FACT_EVIDENCE_IN_FUTURE", "Evidence was captured after the decision date.", `${evidencePath}.captured_on`));
     }
     const commitSha = entry.commit_sha;
     if (commitSha !== undefined && (typeof commitSha !== "string" || !/^[0-9a-f]{40}$/i.test(commitSha))) {
@@ -256,6 +259,9 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
 
   const asOfTime = parseDateOnly(asOfDate);
   if (asOfTime === undefined) throw new Error(`Invalid as-of date: ${asOfDate}`);
+  if (lastVerifiedTime !== undefined && lastVerifiedTime > asOfTime) {
+    issues.push(issue("FACT_VERIFICATION_IN_FUTURE", "Fact was verified after the decision date.", `${factPath}.last_verified`));
+  }
   if (expiresTime !== undefined) {
     const effectiveExpiry = lastVerifiedTime !== undefined && maxAgeDays !== undefined
       ? Math.min(expiresTime, lastVerifiedTime + maxAgeDays * 86_400_000)
@@ -270,7 +276,7 @@ function validateFact(input: unknown, index: number, asOfDate: string, issues: V
     }
   }
 
-  const evidence = validateEvidence(input.evidence, factPath, issues);
+  const evidence = validateEvidence(input.evidence, factPath, asOfTime, issues);
   if (policy && "commit_sha" in policy) {
     const commit = policy.commit_sha;
     if (!evidence.some(entry => entry.type === "automated-validation" && entry.commit_sha === commit)) {
