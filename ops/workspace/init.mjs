@@ -19,10 +19,17 @@ const root = join(realpathSync(dirname(requested)), basename(requested));
 function within(path, parent) {
   return path === parent || path.startsWith(parent + sep);
 }
-function ensureDirectory(path) {
+function checkDirectory(path) {
   const stat = lstatSync(path, { throwIfNoEntry: false });
-  if (!stat) mkdirSync(path, { mode: 0o700 });
-  else if (!stat.isDirectory() || stat.uid !== process.getuid()) throw Error("Expected an owner-controlled directory: " + path);
+  if (stat && (!stat.isDirectory() || stat.uid !== process.getuid() || (stat.mode & 0o022) !== 0)) {
+    throw Error("Expected an owner-controlled directory: " + path);
+  }
+}
+function checkLink(path, target) {
+  const stat = lstatSync(path, { throwIfNoEntry: false });
+  if (stat && (!stat.isSymbolicLink() || readlinkSync(path) !== target)) {
+    throw Error("Path already in use: " + path);
+  }
 }
 
 if (root === sep || [tos, tsal, runtime].some(path => within(root, path) || within(path, root))) {
@@ -41,16 +48,27 @@ const links = {
   "var/tos": runtime,
 };
 
-ensureDirectory(root);
-for (const folder of ["src", "etc", "share", "var"]) ensureDirectory(join(root, folder));
+const directories = [root, ...["src", "etc", "share", "var"].map(name => join(root, name))];
+// Check all existing paths before creating anything, including after an interrupted setup.
+for (const path of directories) checkDirectory(path);
 for (const [name, target] of Object.entries(links)) {
   if (target !== runtime) realpathSync(target);
-  const path = join(root, name);
-  const stat = lstatSync(path, { throwIfNoEntry: false });
-  if (stat && (!stat.isSymbolicLink() || readlinkSync(path) !== target)) throw Error("Path already in use: " + path);
+  checkLink(join(root, name), target);
+}
+
+for (const path of directories) {
+  try { mkdirSync(path, { mode: 0o700 }); }
+  catch (error) {
+    if (error.code !== "EEXIST") throw error;
+    checkDirectory(path);
+  }
 }
 for (const [name, target] of Object.entries(links)) {
   const path = join(root, name);
-  if (!lstatSync(path, { throwIfNoEntry: false })) symlinkSync(target, path);
+  try { symlinkSync(target, path); }
+  catch (error) {
+    if (error.code !== "EEXIST") throw error;
+    checkLink(path, target);
+  }
 }
 console.log(root);
