@@ -1,0 +1,77 @@
+name: Scheduled project manifest
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main' && github.repository == 'peteywee/topshelf-operating-system'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out trusted worker
+        uses: actions/checkout@v4
+        with:
+          path: worker
+          ref: f6b598d65497a94ead3ec9ca4225a23ecac22bde
+          persist-credentials: false
+      - name: Check out event snapshot as data
+        uses: actions/checkout@v4
+        with:
+          path: source
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: worker/.nvmrc
+      - name: Build trusted worker
+        id: build
+        working-directory: worker
+        run: pnpm install --frozen-lockfile && pnpm build
+      - name: Prepare evidence directory
+        run: mkdir evidence
+      - name: Run the granted kernel-source manifest
+        run: |
+          set -eu
+          umask 077
+          test "$(git -C source rev-parse HEAD)" = "$GITHUB_SHA"
+          root="$(node -p "require('node:os').userInfo().homedir")/.tos-execution"
+          install -d -m 700 "$root" "$root/grants"
+          job="kernel-$GITHUB_SHA"
+          jq -n --arg job "$job" --arg commit "$GITHUB_SHA" \
+            '{jobId:$job, capability:"project-file-manifest",commit:$commit,scope:"packages/kernel"}' > evidence/order.json
+          jq -n --slurpfile order evidence/order.json --arg repo "$(realpath source)" \
+            '{order:$order[0],repository:$repo}' > "$root/grants/$job.json"
+          node worker/packages/cli/dist/index.js execute manifest evidence/order.json > evidence/execution.json
+          cp "$root/jobs/$job/manifest.json" evidence/manifest.json
+          test "$(sha256sum evidence/manifest.json | cut -d' ' -f1)" = "$(jq -er 'select(.status=="succeeded").sha256' evidence/execution.json)"
+      - name: Verify approved inventory independently
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: |
+          set -eu
+          if ! command -v bwrap >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y bubblewrap
+          fi
+          target="$(realpath source)"
+          node worker/scripts/inventory-renew.mjs grant "$target" 1f7431860c6614ae73b7c3302debe31db8f39c6d TOS-EVD-012
+          worker/scripts/inventory-renew-worker.sh run "$target" > evidence/inventory.json
+          (cd source && node ../worker/packages/cli/dist/index.js requirement ready TOS-REQ-002) > evidence/readiness.json
+      - name: Publish run evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifest-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 30
